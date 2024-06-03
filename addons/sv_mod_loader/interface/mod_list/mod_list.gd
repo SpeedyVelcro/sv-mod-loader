@@ -1,8 +1,8 @@
 extends Tree
 ## UI Element for oganizing a mod list
 ##
-## This UI element displays all the mods in the mod folder in an ItemList. The
-## mods can be organised and enabled or disabled to form a load order.
+## This UI element displays all the mods in the mod folder using Godot's Tree
+## node. The mods can be organised and enabled or disabled to form a load order.
 ## Functions are provided to support serializing and deserializing the load
 ## order to a dictionary (i.e. JSON)
 
@@ -12,8 +12,7 @@ func _ready() -> void:
 	set_column_expand(0, false) # Checkbox
 	set_column_expand(1, true) # File name
 	
-	# Test code
-	# TODO: remove
+	# TODO: test code, remove
 	for i in 100:
 		var item = create_item(null, i)
 		item.set_cell_mode(0, TreeItem.CELL_MODE_CHECK)
