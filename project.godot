@@ -12,4 +12,3 @@ config_version=5
 
 config/name="SV Mod Loader"
 config/features=PackedStringArray("4.2", "Forward Plus")
-config/icon="res://icon.svg"
