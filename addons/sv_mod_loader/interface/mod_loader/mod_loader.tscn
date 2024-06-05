@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://cxfqajstekahy"]
 
-[ext_resource type="PackedScene" uid="uid://m0yyqaweebn7" path="res://addons/sv_mod_loader/interface/load_order_editor/load_order_editor.tscn" id="1_28m0n"]
+[ext_resource type="PackedScene" uid="uid://6huoh8opodh2" path="res://addons/sv_mod_loader/interface/mod_list_editor/mod_list_editor.tscn" id="1_28m0n"]
 [ext_resource type="Script" path="res://addons/sv_mod_loader/interface/mod_loader/mod_loader.gd" id="1_ebwwu"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_wedkw"]
@@ -73,28 +73,5 @@ text = "Quit"
 custom_minimum_size = Vector2(32, 0)
 layout_mode = 2
 
-[node name="ModListEditor" type="VBoxContainer" parent="Panel/MarginContainer/HBoxContainer"]
+[node name="ModListEditor" parent="Panel/MarginContainer/HBoxContainer" instance=ExtResource("1_28m0n")]
 layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="LoadOrderEditor" parent="Panel/MarginContainer/HBoxContainer/ModListEditor" instance=ExtResource("1_28m0n")]
-layout_mode = 2
-
-[node name="ReferenceRect" type="ReferenceRect" parent="Panel/MarginContainer/HBoxContainer/ModListEditor"]
-custom_minimum_size = Vector2(0, 16)
-layout_mode = 2
-
-[node name="OptionButton" type="OptionButton" parent="Panel/MarginContainer/HBoxContainer/ModListEditor"]
-layout_mode = 2
-
-[node name="HBoxContainer" type="HBoxContainer" parent="Panel/MarginContainer/HBoxContainer/ModListEditor"]
-layout_mode = 2
-
-[node name="Button" type="Button" parent="Panel/MarginContainer/HBoxContainer/ModListEditor/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "New Mod List"
-
-[node name="Button2" type="Button" parent="Panel/MarginContainer/HBoxContainer/ModListEditor/HBoxContainer"]
-layout_mode = 2
-text = "Delete Mod List"
