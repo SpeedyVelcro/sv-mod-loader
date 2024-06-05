@@ -1,8 +1,8 @@
 [gd_scene load_steps=2 format=3 uid="uid://m0yyqaweebn7"]
 
-[ext_resource type="Script" path="res://addons/sv_mod_loader/interface/mod_list/mod_list.gd" id="1_fvffs"]
+[ext_resource type="Script" path="res://addons/sv_mod_loader/interface/load_order_editor/load_order_editor.gd" id="1_fvffs"]
 
-[node name="Tree" type="Tree"]
+[node name="LoadOrderEditor" type="Tree"]
 offset_right = 256.0
 offset_bottom = 512.0
 size_flags_vertical = 3

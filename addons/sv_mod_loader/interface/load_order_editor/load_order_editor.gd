@@ -1,10 +1,8 @@
 extends Tree
-## UI Element for oganizing a mod list
+## UI Element for oganizing the load order of mods
 ##
-## This UI element displays all the mods in the mod folder using Godot's Tree
-## node. The mods can be organised and enabled or disabled to form a load order.
-## Functions are provided to support serializing and deserializing the load
-## order to a dictionary (i.e. JSON)
+## This UI element displays a list of mods, and allows re-ordering and enabling
+## or disabling them.
 
 
 # Override
@@ -62,3 +60,41 @@ func _create_drag_preview(tree_item: TreeItem) -> Control:
 	label.modulate = Color(1, 1, 1, 0.5)
 	
 	return label
+
+## Returns the load order as an array
+func get_mod_array() -> Array[Mod]:
+	var mod_array: Array[Mod] = []
+	
+	for tree_item in get_root().get_children():
+		var mod = _get_mod(tree_item)
+		mod_array.append(mod)
+	
+	return mod_array
+
+
+## Set an array of mods to be displayed and edited
+func set_mod_array(mod_array: Array[Mod]) -> void:
+	clear()
+	
+	for mod in mod_array:
+		_add_mod(mod.filename, mod.enabled)
+
+## Adds a mod to the end of the list. Returns the resulting TreeItem
+func _add_mod(filename: String = "", enabled: bool = false) -> TreeItem:
+	var item = create_item()
+	
+	item.set_cell_mode(0, TreeItem.CELL_MODE_CHECK)
+	item.set_editable(0, true)
+	item.set_checked(0, enabled)
+	item.set_text(1, filename)
+	
+	return item
+
+## Gets the mod represented by the specified TreeItem
+func _get_mod(tree_item: TreeItem) -> Mod:
+	var mod = Mod.new()
+	
+	mod.filename = tree_item.get_text(1)
+	mod.enabled = tree_item.is_checked(0)
+		
+	return mod
