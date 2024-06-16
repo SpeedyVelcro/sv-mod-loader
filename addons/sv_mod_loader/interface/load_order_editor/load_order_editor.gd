@@ -7,16 +7,9 @@ extends Tree
 
 # Override
 func _ready() -> void:
+	# TODO: move magic numbers to enums e.g. COLUMN_CHECKBOX, COLUMN_FILENAME
 	set_column_expand(0, false) # Checkbox
 	set_column_expand(1, true) # File name
-	
-	# TODO: test code, remove
-	for i in 100:
-		var item = create_item(null, i)
-		item.set_cell_mode(0, TreeItem.CELL_MODE_CHECK)
-		item.set_editable(0, true)
-		item.set_checked(0, false)
-		item.set_text(1, "Mod " + str(i + 1))
 
 
 # Override
@@ -39,6 +32,9 @@ func _drop_data(at_position: Vector2, data) -> void:
 	
 	var target_item: TreeItem = get_item_at_position(at_position)
 	
+	if target_item == null:
+		return
+	
 	if get_drop_section_at_position(at_position) == -1:
 		data.move_before(target_item)
 	else:
@@ -48,7 +44,9 @@ func _drop_data(at_position: Vector2, data) -> void:
 # Override
 func _get_drag_data(at_position: Vector2):
 	var data: TreeItem = get_item_at_position(at_position)
-	set_drag_preview(_create_drag_preview(data))
+	
+	if data != null:
+		set_drag_preview(_create_drag_preview(data))
 	
 	return data
 
@@ -75,18 +73,19 @@ func get_mod_array() -> Array[Mod]:
 ## Set an array of mods to be displayed and edited
 func set_mod_array(mod_array: Array[Mod]) -> void:
 	clear()
+	create_item() # Root
 	
 	for mod in mod_array:
-		_add_mod(mod.filename, mod.enabled)
+		_append_mod(mod)
 
 ## Adds a mod to the end of the list. Returns the resulting TreeItem
-func _add_mod(filename: String = "", enabled: bool = false) -> TreeItem:
-	var item = create_item()
+func _append_mod(mod: Mod) -> TreeItem:
+	var item = create_item(get_root())
 	
 	item.set_cell_mode(0, TreeItem.CELL_MODE_CHECK)
 	item.set_editable(0, true)
-	item.set_checked(0, enabled)
-	item.set_text(1, filename)
+	item.set_checked(0, mod.enabled)
+	item.set_text(1, mod.filename)
 	
 	return item
 
