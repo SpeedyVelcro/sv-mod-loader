@@ -11,12 +11,12 @@ extends VBoxContainer
 
 @export_group("Internal Nodes")
 ## Child load order editor
-@export var load_order_editor: Node
+@export var mod_array_editor: Node
 
 # Override
 func _ready():
 	var mod_array: Array[Mod] = _get_mods_in_mod_path()
-	load_order_editor.set_mod_array(mod_array)
+	mod_array_editor.set_mod_array(mod_array)
 
 
 ## Gets an array of all mods on disk stored in the mod_path

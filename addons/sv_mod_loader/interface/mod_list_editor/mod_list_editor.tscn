@@ -3,12 +3,12 @@
 [ext_resource type="PackedScene" uid="uid://m0yyqaweebn7" path="res://addons/sv_mod_loader/interface/mod_array_editor/mod_array_editor.tscn" id="1_1mjct"]
 [ext_resource type="Script" path="res://addons/sv_mod_loader/interface/mod_list_editor/mod_list_editor.gd" id="1_fvffs"]
 
-[node name="ModListEditor" type="VBoxContainer" node_paths=PackedStringArray("load_order_editor")]
+[node name="ModListEditor" type="VBoxContainer" node_paths=PackedStringArray("mod_array_editor")]
 offset_right = 512.0
 offset_bottom = 512.0
 size_flags_horizontal = 3
 script = ExtResource("1_fvffs")
-load_order_editor = NodePath("ModArrayEditor")
+mod_array_editor = NodePath("ModArrayEditor")
 
 [node name="ModArrayEditor" parent="." instance=ExtResource("1_1mjct")]
 layout_mode = 2
