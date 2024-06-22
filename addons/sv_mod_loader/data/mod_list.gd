@@ -20,7 +20,7 @@ func _init():
 func serialize(include_name: bool = true) -> Dictionary:
 	var dict: Dictionary = {}
 	
-	dict["loadOrder"] = load_order
+	dict["modList"] = load_order
 	if include_name:
 		dict["name"] = name
 	

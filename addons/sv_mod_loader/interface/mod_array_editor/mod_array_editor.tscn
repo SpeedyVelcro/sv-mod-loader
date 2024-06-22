@@ -1,0 +1,12 @@
+[gd_scene load_steps=2 format=3 uid="uid://m0yyqaweebn7"]
+
+[ext_resource type="Script" path="res://addons/sv_mod_loader/interface/mod_array_editor/mod_array_editor.gd" id="1_mocfe"]
+
+[node name="ModArrayEditor" type="Tree"]
+offset_right = 256.0
+offset_bottom = 512.0
+size_flags_vertical = 3
+columns = 2
+hide_root = true
+select_mode = 1
+script = ExtResource("1_mocfe")

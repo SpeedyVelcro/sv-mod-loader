@@ -1,7 +1,7 @@
 extends Tree
-## UI Element for oganizing the load order of mods
+## UI Element for editing an array of mods
 ##
-## This UI element displays a list of mods, and allows re-ordering and enabling
+## This UI element displays an array of mods, and allows re-ordering and enabling
 ## or disabling them.
 
 

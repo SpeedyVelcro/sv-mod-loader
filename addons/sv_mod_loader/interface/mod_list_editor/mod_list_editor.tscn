@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://6huoh8opodh2"]
 
-[ext_resource type="PackedScene" uid="uid://m0yyqaweebn7" path="res://addons/sv_mod_loader/interface/load_order_editor/load_order_editor.tscn" id="1_1mjct"]
+[ext_resource type="PackedScene" uid="uid://m0yyqaweebn7" path="res://addons/sv_mod_loader/interface/mod_array_editor/mod_array_editor.tscn" id="1_1mjct"]
 [ext_resource type="Script" path="res://addons/sv_mod_loader/interface/mod_list_editor/mod_list_editor.gd" id="1_fvffs"]
 
 [node name="ModListEditor" type="VBoxContainer" node_paths=PackedStringArray("load_order_editor")]
@@ -8,9 +8,9 @@ offset_right = 512.0
 offset_bottom = 512.0
 size_flags_horizontal = 3
 script = ExtResource("1_fvffs")
-load_order_editor = NodePath("LoadOrderEditor")
+load_order_editor = NodePath("ModArrayEditor")
 
-[node name="LoadOrderEditor" parent="." instance=ExtResource("1_1mjct")]
+[node name="ModArrayEditor" parent="." instance=ExtResource("1_1mjct")]
 layout_mode = 2
 
 [node name="ReferenceRect" type="ReferenceRect" parent="."]
