@@ -12,3 +12,7 @@ config_version=5
 
 config/name="SV Mod Loader"
 config/features=PackedStringArray("4.2", "Forward Plus")
+
+[display]
+
+window/subwindows/embed_subwindows=false

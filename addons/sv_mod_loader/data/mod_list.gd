@@ -28,7 +28,8 @@ func serialize(include_name: bool = true) -> Dictionary:
 
 
 ## Configure this mod list by deserializing from a dictionary.
-func deserialize(dict: Dictionary) -> void:
+## If include_name is false, name is not changed from its current value.
+func deserialize(dict: Dictionary, include_name: bool = true) -> void:
 	_reset()
 	
 	if dict.has("name") and dict["name"] is String:
@@ -41,7 +42,9 @@ func deserialize(dict: Dictionary) -> void:
 				load_order.back().deserialize(mod)
 
 
-## Reset to defaults
-func _reset():
-	name = ""
+## Reset to defaults.
+## If reset_name is false, name is not reset.
+func _reset(reset_name: bool = true):
+	if reset_name:
+		name = ""
 	load_order = []

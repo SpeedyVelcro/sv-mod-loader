@@ -12,6 +12,8 @@ extends VBoxContainer
 @export_group("Internal Nodes")
 ## Child load order editor
 @export var mod_array_editor: Node
+## Popup for new mod list
+@export var new_mod_list_window: Window
 
 
 ## Name of the currently selected mod list
@@ -25,15 +27,52 @@ func _ready():
 
 ## Save the currently selected mod list
 func _save_current() -> void:
-	pass # TODO
+	var path: String = _name_to_path(mod_list_name)
+	var mod_list: ModList = get_mod_list()
+	
+	var include_name: bool = false # Name is stored in file name instead
+	var dict: Dictionary = mod_list.serialize(false)
+	var json: String = JSON.stringify(dict, "\t")
+	
+	var file: FileAccess = FileAccess.open(path, FileAccess.WRITE)
+	file.store_string(json)
 
 
 ## Load the currently selected mod list
 func _load_current() -> void:
-	pass # TODO
+	var path: String = _name_to_path(mod_list_name)
+	var mod_list: ModList = ModList.new()
+	mod_list.name = mod_list_name
+	
+	var file: FileAccess = FileAccess.open(path, FileAccess.READ)
+	
+	if file == null:
+		push_error("Failed to open " + path)
+		_set_mod_list(mod_list)
+		return
+	
+	var json_string = file.get_as_text()
+	
+	var json = JSON.new()
+	var error = json.parse_string(json_string)
+	
+	if error != OK:
+		push_error("Failed to parse JSON from file " + path)
+		_set_mod_list(mod_list)
+		return
+	
+	if not (json.data is Dictionary):
+		push_warning("Mod list was not a dictionary.")
+		_set_mod_list(mod_list)
+		return
+	
+	var include_name: bool = false # We already set the name
+	mod_list.deserialize(json.data, include_name)
+	
+	_set_mod_list(mod_list)
 
 
-## Select and load the mod list with given name
+## Select a mod list. Saves the current mod list and loads the selected one.
 func _select(new_name: String) -> void:
 	_save_current()
 	mod_list_name = new_name
@@ -70,6 +109,16 @@ func _is_filename_mod(filename: String) -> bool:
 	return results.size() > 0
 
 
+## Returns true if the given filename is a mod list by checking the extension
+func _is_filename_mod_list(filename: String) -> bool:
+	var regex = RegEx.new()
+	regex.compile("\\.[mM][lL][iI]$")
+	
+	var results = regex.search_all(filename)
+	
+	return results.size() > 0
+
+
 ## Gets the current configuration as a ModList
 func get_mod_list() -> ModList:
 	var mod_array: Array[Mod] = mod_array_editor.get_mod_array()
@@ -87,6 +136,21 @@ func _set_mod_list(mod_list: ModList) -> void:
 	mod_array_editor.update_mod_array(mod_list.load_order)
 
 
+## Configures as a new ModList with the given name
+func _new_mod_list(new_name: String) -> void:
+	var mod_list: ModList = ModList.new()
+	mod_list.name = new_name
+	_set_mod_list(mod_list)
+	# TODO: sort alphabetically?
+
+
+## Configures as a new ModList with the same name as the current one
+func _copy_mod_list(new_name: String) -> void:
+	var mod_list: ModList = get_mod_list()
+	mod_list.name = new_name
+	_set_mod_list(mod_list)
+
+
 ## Converts a mod list file path to the name of the mod list
 func _path_to_name(path: String) -> String:
 	path = path.trim_prefix(mod_list_path)
@@ -102,7 +166,7 @@ func _name_to_path(name_to_convert: String) -> String:
 
 # Signal connection
 func _on_new_button_pressed() -> void:
-	pass # TODO
+	new_mod_list_window.popup_centered()
 
 
 # Signal connection
@@ -113,3 +177,10 @@ func _on_delete_button_pressed() -> void:
 # Signal connection
 func _on_option_button_item_selected(index) -> void:
 	pass # TODO
+
+
+func _on_new_mod_list_window_confirm(new_name, is_copy):
+	if is_copy:
+		_copy_mod_list(new_name)
+	else:
+		_new_mod_list(new_name)
