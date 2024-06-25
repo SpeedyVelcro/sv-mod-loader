@@ -8,7 +8,7 @@ extends Object
 
 
 ## File extension for mod lists
-const FILE_EXTENSION = ".pck"
+const FILE_EXTENSION = ".mli"
 ## Regex to match mod list file extension. This must match FILE_EXTENSION,
 ## regardless of case, and nothing else.
 const FILE_EXTENSION_REGEX = "\\.[mM][lL][iI]$"
