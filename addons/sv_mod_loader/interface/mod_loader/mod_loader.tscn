@@ -76,5 +76,3 @@ layout_mode = 2
 
 [node name="ModListEditor" parent="Panel/MarginContainer/HBoxContainer" instance=ExtResource("1_28m0n")]
 layout_mode = 2
-
-[connection signal="tree_entered" from="Panel/MarginContainer/HBoxContainer/ModListEditor" to="." method="_on_mod_list_editor_tree_entered"]

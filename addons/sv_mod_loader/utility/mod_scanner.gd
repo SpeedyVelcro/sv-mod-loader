@@ -15,6 +15,8 @@ static var path: String = "user://mods"
 
 ## Gets all mod filenames in the mod directory
 static func get_mod_filenames() -> Array[String]:
+	_set_up_path()
+	
 	var filenames: Array[String] = DirAccess.get_files_at(path)
 	
 	var mod_filenames: Array[String] = filenames.filter(
@@ -47,3 +49,9 @@ static func is_filename_mod(filename: String) -> bool:
 	var results = regex.search_all(filename)
 	
 	return results.size() > 0
+
+
+## Create configured path if it doesn't already exist
+static func _set_up_path():
+	if not DirAccess.dir_exists_absolute(path):
+		DirAccess.make_dir_recursive_absolute(path)

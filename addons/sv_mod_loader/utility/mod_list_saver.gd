@@ -20,6 +20,8 @@ static var path: String = "user://mod_lists"
 
 ## Saves the given mod list to a file
 static func save_file(mod_list: ModList) -> void:
+	_set_up_path()
+	
 	var abs_path: String = name_to_absolute_path(mod_list.name)
 
 	var include_name: bool = false # Name is stored in file name instead
@@ -32,6 +34,8 @@ static func save_file(mod_list: ModList) -> void:
 
 ## Loads and returns the mod list with the given name from a file
 static func load_file(mod_list_name: String) -> ModList:
+	_set_up_path()
+	
 	var abs_path: String = name_to_absolute_path(mod_list_name)
 	var mod_list: ModList = ModList.new()
 	mod_list.name = mod_list_name
@@ -60,6 +64,8 @@ static func load_file(mod_list_name: String) -> ModList:
 
 ## Deletes from disk the mod list with the given name
 static func delete_file(mod_list_name: String) -> void:
+	_set_up_path()
+	
 	var abs_path: String = name_to_absolute_path(mod_list_name)
 	
 	var error = DirAccess.remove_absolute(abs_path)
@@ -96,6 +102,8 @@ static func get_absolute_paths() -> Array[String]:
 
 ## Gets the filenames of all saved mod lists
 static func get_filenames() -> Array[String]:
+	_set_up_path()
+	
 	var filenames: Array[String] = DirAccess.get_files_at(path)
 	
 	var mod_list_filenames: Array[String] = filenames.filter(
@@ -164,3 +172,9 @@ static func is_absolute_path_file_in_path(test_path: String) -> bool:
 ## Returns true if the given absolute path is a valid mod list path
 static func is_absolute_path_valid(test_path: String) -> bool:
 	return is_filename_mod_list(test_path) and is_absolute_path_file_in_path(test_path)
+
+
+## Create configured path if it doesn't already exist
+static func _set_up_path():
+	if not DirAccess.dir_exists_absolute(path):
+		DirAccess.make_dir_recursive_absolute(path)
