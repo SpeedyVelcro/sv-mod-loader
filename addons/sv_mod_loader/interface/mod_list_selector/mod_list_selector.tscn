@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://d0pnw4m070pc1"]
+
+[ext_resource type="Script" path="res://addons/sv_mod_loader/interface/mod_list_selector/mod_list_selector.gd" id="1_1rt0h"]
+
+[node name="ModListSelector" type="OptionButton"]
+script = ExtResource("1_1rt0h")
+
+[connection signal="item_selected" from="." to="." method="_on_item_selected"]
