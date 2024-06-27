@@ -77,4 +77,5 @@ layout_mode = 2
 [node name="ModListEditor" parent="Panel/MarginContainer/HBoxContainer" instance=ExtResource("1_28m0n")]
 layout_mode = 2
 
+[connection signal="pressed" from="Panel/MarginContainer/HBoxContainer/VBoxContainer/PlayButton" to="." method="_on_play_button_pressed"]
 [connection signal="pressed" from="Panel/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/QuitButton" to="." method="_on_quit_button_pressed"]
