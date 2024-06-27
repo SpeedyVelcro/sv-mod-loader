@@ -30,9 +30,9 @@ func serialize(include_name: bool = true) -> Dictionary:
 ## Configure this mod list by deserializing from a dictionary.
 ## If include_name is false, name is not changed from its current value.
 func deserialize(dict: Dictionary, include_name: bool = true) -> void:
-	_reset()
+	_reset(include_name)
 	
-	if dict.has("name") and dict["name"] is String:
+	if include_name and dict.has("name") and dict["name"] is String:
 		name = dict["name"]
 	
 	if dict.has("loadOrder") and dict["loadOrder"] is Array:

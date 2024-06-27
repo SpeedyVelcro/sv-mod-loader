@@ -130,7 +130,7 @@ static func name_to_absolute_path(name: String) -> String:
 ## Converts an absolute path to the name of the mod list that would be saved to
 ## that path
 static func absolute_path_to_name(abs_path: String) -> String:
-	if is_absolute_path_valid(abs_path):
+	if not is_absolute_path_valid(abs_path):
 		push_error("Invalid mod list path: " + abs_path)
 	
 	var filename: String = abs_path.get_file()
