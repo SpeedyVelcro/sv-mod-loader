@@ -20,3 +20,8 @@ extends Control
 func _init():
 	ModListSaver.path = mod_list_path
 	ModScanner.path = mod_path
+
+
+func _on_quit_button_pressed():
+	mod_list_editor.save_current()
+	get_tree().quit()

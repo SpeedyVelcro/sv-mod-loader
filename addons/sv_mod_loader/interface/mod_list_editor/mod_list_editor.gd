@@ -42,6 +42,13 @@ func _ready():
 	_populate_option_button(mod_list_name)
 
 
+# Override
+func _notification(what):
+	match what:
+		NOTIFICATION_WM_CLOSE_REQUEST, NOTIFICATION_WM_GO_BACK_REQUEST:
+			save_current()
+
+
 ## Populates OptionButton with mod lists.
 ## select_name sets which mod list is to be selected after population. Empty
 ## string means none selected
@@ -62,7 +69,7 @@ func _populate_option_button(select_name: String = ""):
 
 
 ## Save the currently selected mod list
-func _save_current() -> void:
+func save_current() -> void:
 	ModListSaver.save_file(get_mod_list())
 
 
@@ -92,7 +99,7 @@ func _delete_current() -> void:
 
 ## Select a mod list. Saves the current mod list and loads the selected one.
 func _select(new_name: String) -> void:
-	_save_current()
+	save_current()
 	mod_list_name = new_name
 	_load_current()
 
