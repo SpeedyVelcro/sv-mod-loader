@@ -86,6 +86,8 @@ func _delete_current() -> void:
 	var mod_list_names: Array[String] = ModListSaver.get_names()
 	var mod_list: ModList = ModListSaver.load_file(mod_list_names.front())
 	_set_mod_list(mod_list)
+	
+	_populate_option_button(mod_list_name)
 
 
 ## Select a mod list. Saves the current mod list and loads the selected one.
@@ -135,6 +137,8 @@ func _new_mod_list(new_name: String) -> void:
 	ModListSaver.save_file(mod_list)
 	
 	_select(mod_list.name)
+	
+	_populate_option_button(mod_list_name)
 
 
 ## Configures as a new ModList with the same name as the current one
@@ -144,6 +148,8 @@ func _copy_mod_list(new_name: String) -> void:
 	ModListSaver.save_file(mod_list)
 	
 	_select(mod_list.name)
+	
+	_populate_option_button(mod_list_name)
 
 
 # Signal connection
