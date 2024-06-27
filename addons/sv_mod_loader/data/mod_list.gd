@@ -20,11 +20,20 @@ func _init():
 func serialize(include_name: bool = true) -> Dictionary:
 	var dict: Dictionary = {}
 	
-	dict["modList"] = load_order
+	dict["loadOrder"] = _serialize_load_order()
 	if include_name:
 		dict["name"] = name
 	
 	return dict
+
+
+## Serialize the load order to an array
+func _serialize_load_order() -> Array:
+	var arr: Array = []
+	for mod: Mod in load_order:
+		arr.append(mod.serialize())
+	
+	return arr
 
 
 ## Configure this mod list by deserializing from a dictionary.
