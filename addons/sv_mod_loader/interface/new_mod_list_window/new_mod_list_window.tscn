@@ -4,7 +4,7 @@
 
 [node name="NewModListWindow" type="Window" node_paths=PackedStringArray("confirm_button", "name_line_edit", "copy_check_box")]
 title = "New Mod List"
-initial_position = 1
+initial_position = 2
 size = Vector2i(379, 169)
 wrap_controls = true
 transient = true

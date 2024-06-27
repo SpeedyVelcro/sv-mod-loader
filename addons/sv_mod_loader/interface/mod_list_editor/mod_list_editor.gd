@@ -14,15 +14,26 @@ extends VBoxContainer
 @export var mod_array_editor: Node
 ## Popup for new mod list
 @export var new_mod_list_window: Window
+## Popup to confirm deletion
+@export var delete_mod_list_window: Window
 
+## Default mod list name
+const DEFAULT_MOD_LIST_NAME = "Default"
 
 ## Name of the currently selected mod list
 var mod_list_name: String = ""
 
 # Override
 func _ready():
+	# Scan for mods
 	var mod_array: Array[Mod] = ModScanner.get_mods()
 	mod_array_editor.set_mod_array(mod_array)
+	
+	# Select starting mod list
+	_create_default_if_no_mod_lists()
+	
+	var mod_list_names: Array[String] = ModListSaver.get_names()
+	_set_mod_list(mod_list_names.front()) # TODO: Select last selected mod list according to config file
 
 
 ## Save the currently selected mod list
@@ -35,6 +46,17 @@ func _load_current() -> void:
 	var mod_list: ModList = ModListSaver.load_file(mod_list_name)
 	
 	_set_mod_list(mod_list)
+
+
+## Delete currently selected mod list
+func _delete_current() -> void:
+	ModListSaver.save_file(get_mod_list()) # To ensure there is something to delete on disk
+	ModListSaver.delete_file(mod_list_name)
+	
+	_create_default_if_no_mod_lists()
+	
+	var mod_list_names: Array[String] = ModListSaver.get_names()
+	_set_mod_list(mod_list_names.front())
 
 
 ## Select a mod list. Saves the current mod list and loads the selected one.
@@ -55,7 +77,22 @@ func get_mod_list() -> ModList:
 	return mod_list
 
 
-## Configures according to given ModList
+## Gets a configuration for the default ModList
+func _get_default_mod_list() -> ModList:
+	var mod_list: ModList = ModList.new()
+	mod_list.name = DEFAULT_MOD_LIST_NAME
+	return mod_list
+
+
+## Creates the default mod list if no mod lists exist
+func _create_default_if_no_mod_lists() -> void:
+	var mod_list_names: Array[String] = ModListSaver.get_names()
+	
+	if mod_list_names.size() <= 0:
+		var default: ModList = _get_default_mod_list()
+
+
+## Configures according to given ModList. This discards any existing mod list
 func _set_mod_list(mod_list: ModList) -> void:
 	mod_list_name = mod_list.name
 	mod_array_editor.update_mod_array(mod_list.load_order)
@@ -86,7 +123,7 @@ func _on_new_button_pressed() -> void:
 
 # Signal connection
 func _on_delete_button_pressed() -> void:
-	pass # TODO
+	delete_mod_list_window.popup_centered()
 
 
 # Signal connection
@@ -94,8 +131,20 @@ func _on_option_button_item_selected(index) -> void:
 	pass # TODO
 
 
+# Signal connection
 func _on_new_mod_list_window_confirm(new_name, is_copy):
 	if is_copy:
 		_copy_mod_list(new_name)
 	else:
 		_new_mod_list(new_name)
+
+
+# Signal connection
+func _on_delete_confirm_button_pressed():
+	_delete_current()
+	delete_mod_list_window.hide()
+
+
+# Signal connection
+func _on_delete_cancel_button_pressed():
+	delete_mod_list_window.hide()
