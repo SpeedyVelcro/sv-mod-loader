@@ -84,7 +84,8 @@ func _delete_current() -> void:
 	# immediately after or before the one we just deleted, rather than just thed
 	# first in the list
 	var mod_list_names: Array[String] = ModListSaver.get_names()
-	_set_mod_list(mod_list_names.front())
+	var mod_list: ModList = ModListSaver.load_file(mod_list_names.front())
+	_set_mod_list(mod_list)
 
 
 ## Select a mod list. Saves the current mod list and loads the selected one.
