@@ -17,7 +17,8 @@ static var path: String = "user://mods"
 static func get_mod_filenames() -> Array[String]:
 	_set_up_path()
 	
-	var filenames: Array[String] = DirAccess.get_files_at(path)
+	var filenames: Array[String]
+	filenames.assign(DirAccess.get_files_at(path))
 	
 	var mod_filenames: Array[String] = filenames.filter(
 			func(str: String) -> bool: return is_filename_mod(str)
@@ -30,13 +31,14 @@ static func get_mod_filenames() -> Array[String]:
 static func get_mods(enabled = false) -> Array[Mod]:
 	var mod_filenames: Array[String] = get_mod_filenames()
 	
-	var mods: Array[Mod] = mod_filenames.map(
+	var mods: Array[Mod]
+	mods.assign(mod_filenames.map(
 			func(str: String) -> Mod:
 					var mod: Mod = Mod.new()
 					mod.filename = str
 					mod.enabled = enabled
 					return mod
-	)
+	))
 	
 	return mods
 

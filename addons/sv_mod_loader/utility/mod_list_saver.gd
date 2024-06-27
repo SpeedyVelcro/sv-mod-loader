@@ -48,7 +48,7 @@ static func load_file(mod_list_name: String) -> ModList:
 	var json_string = file.get_as_text()
 	
 	var json = JSON.new()
-	var error = json.parse_string(json_string)
+	var error = json.parse(json_string)
 	
 	if error != OK:
 		push_error("Failed to parse JSON from file: " + abs_path)
@@ -78,10 +78,11 @@ static func delete_file(mod_list_name: String) -> void:
 static func get_names() -> Array[String]:
 	var abs_paths: Array[String] = get_absolute_paths()
 	
-	var names: Array[String] = abs_paths.map(
+	var names: Array[String]
+	names.assign(abs_paths.map(
 			func(str: String) -> String:
 					return absolute_path_to_name(str)
-	)
+	))
 	
 	return names
 
@@ -92,10 +93,11 @@ static func get_absolute_paths() -> Array[String]:
 	
 	var base_path: String = path if path.ends_with("/") else path + "/"
 	
-	var mod_list_paths: Array[String] = filenames.map(
+	var mod_list_paths: Array[String]
+	mod_list_paths.assign(filenames.map(
 			func(str: String) -> String:
 					return base_path + str
-	)
+	))
 	
 	return mod_list_paths
 
@@ -104,7 +106,8 @@ static func get_absolute_paths() -> Array[String]:
 static func get_filenames() -> Array[String]:
 	_set_up_path()
 	
-	var filenames: Array[String] = DirAccess.get_files_at(path)
+	var filenames: Array[String]
+	filenames.assign(DirAccess.get_files_at(path))
 	
 	var mod_list_filenames: Array[String] = filenames.filter(
 			func(str: String) -> bool: return is_filename_mod_list(str)

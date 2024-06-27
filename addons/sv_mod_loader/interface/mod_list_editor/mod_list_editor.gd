@@ -35,7 +35,8 @@ func _ready():
 	_create_default_if_no_mod_lists()
 	
 	var mod_list_names: Array[String] = ModListSaver.get_names()
-	_set_mod_list(mod_list_names.front()) # TODO: Select last selected mod list according to config file
+	var mod_list = ModListSaver.load_file(mod_list_names.front()) # TODO: Select last selected mod list according to config file
+	_set_mod_list(mod_list)
 	
 	# Set up OptionButton
 	_populate_option_button(mod_list_name)

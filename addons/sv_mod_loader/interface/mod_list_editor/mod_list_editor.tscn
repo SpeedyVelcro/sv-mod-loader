@@ -4,7 +4,7 @@
 [ext_resource type="Script" path="res://addons/sv_mod_loader/interface/mod_list_editor/mod_list_editor.gd" id="1_fvffs"]
 [ext_resource type="PackedScene" uid="uid://ebaiksgghdwb" path="res://addons/sv_mod_loader/interface/new_mod_list_window/new_mod_list_window.tscn" id="3_a6cuf"]
 
-[node name="ModListEditor" type="VBoxContainer" node_paths=PackedStringArray("mod_array_editor", "new_mod_list_window", "delete_mod_list_window")]
+[node name="ModListEditor" type="VBoxContainer" node_paths=PackedStringArray("mod_array_editor", "new_mod_list_window", "delete_mod_list_window", "option_button")]
 offset_right = 512.0
 offset_bottom = 512.0
 size_flags_horizontal = 3
@@ -12,6 +12,7 @@ script = ExtResource("1_fvffs")
 mod_array_editor = NodePath("ModArrayEditor")
 new_mod_list_window = NodePath("NewModListWindow")
 delete_mod_list_window = NodePath("DeleteModListWindow")
+option_button = NodePath("OptionButton")
 
 [node name="ModArrayEditor" parent="." instance=ExtResource("1_1mjct")]
 layout_mode = 2
