@@ -16,6 +16,8 @@ extends VBoxContainer
 @export var new_mod_list_window: Window
 ## Popup to confirm deletion
 @export var delete_mod_list_window: Window
+## OptionButton for selecting mod lists
+@export var option_button: OptionButton
 
 ## Default mod list name
 const DEFAULT_MOD_LIST_NAME = "Default"
@@ -34,6 +36,28 @@ func _ready():
 	
 	var mod_list_names: Array[String] = ModListSaver.get_names()
 	_set_mod_list(mod_list_names.front()) # TODO: Select last selected mod list according to config file
+	
+	# Set up OptionButton
+	_populate_option_button(mod_list_name)
+
+
+## Populates OptionButton with mod lists.
+## select_name sets which mod list is to be selected after population. Empty
+## string means none selected
+func _populate_option_button(select_name: String = ""):
+	option_button.select(-1)
+	option_button.clear()
+	
+	var mod_list_names: Array[String] = ModListSaver.get_names()
+	
+	for i in mod_list_names.size():
+		option_button.add_item(mod_list_names[i], i)
+	
+	if select_name == "":
+		return
+	
+	var select_index: int = mod_list_names.find(select_name)
+	option_button.select(select_index)
 
 
 ## Save the currently selected mod list
@@ -55,6 +79,9 @@ func _delete_current() -> void:
 	
 	_create_default_if_no_mod_lists()
 	
+	# TODO: More advanced selection where we default to whatever mod list was
+	# immediately after or before the one we just deleted, rather than just thed
+	# first in the list
 	var mod_list_names: Array[String] = ModListSaver.get_names()
 	_set_mod_list(mod_list_names.front())
 
@@ -90,6 +117,7 @@ func _create_default_if_no_mod_lists() -> void:
 	
 	if mod_list_names.size() <= 0:
 		var default: ModList = _get_default_mod_list()
+		ModListSaver.save_file(default)
 
 
 ## Configures according to given ModList. This discards any existing mod list
@@ -128,7 +156,8 @@ func _on_delete_button_pressed() -> void:
 
 # Signal connection
 func _on_option_button_item_selected(index) -> void:
-	pass # TODO
+	var selected_name: String = option_button.get_item_text(index)
+	_select(selected_name)
 
 
 # Signal connection
