@@ -62,3 +62,7 @@ func _on_close_requested():
 
 func _on_cancel_button_pressed():
 	hide()
+
+
+func _on_about_to_popup():
+	reset()

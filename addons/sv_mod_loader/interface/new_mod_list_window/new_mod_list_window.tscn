@@ -66,6 +66,7 @@ size_flags_horizontal = 4
 disabled = true
 text = "Create"
 
+[connection signal="about_to_popup" from="." to="." method="_on_about_to_popup"]
 [connection signal="close_requested" from="." to="." method="_on_close_requested"]
 [connection signal="text_changed" from="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/NameLineEdit" to="." method="_on_name_line_edit_text_changed"]
 [connection signal="toggled" from="PanelContainer/MarginContainer/VBoxContainer/CopyCheckBox" to="." method="_on_copy_check_box_toggled"]
