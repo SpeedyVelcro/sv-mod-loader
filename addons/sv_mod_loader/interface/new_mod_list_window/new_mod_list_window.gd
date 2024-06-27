@@ -21,6 +21,14 @@ var mod_list_name: String = "":
 ## True if the new mod list will be a copy of the current one
 var mod_list_is_copy: bool = false
 
+## List of existing mod list names
+var existing_names: Array[String] = []
+
+
+# Override
+func _ready():
+	reset()
+
 
 ## Reset all fields to default
 func reset() -> void:
@@ -29,6 +37,8 @@ func reset() -> void:
 	name_line_edit.text = mod_list_name
 	copy_check_box.button_pressed = mod_list_is_copy
 	confirm_button.disabled = true
+	
+	existing_names = ModListSaver.get_names()
 
 
 ## Get the name of the mod list
@@ -39,7 +49,21 @@ func get_mod_list_name() -> String:
 ## Set the name of the mod list
 func set_mod_list_name(val: String) -> void:
 	mod_list_name = val
-	confirm_button.disabled = not mod_list_name.is_valid_filename()
+	confirm_button.disabled = not is_name_valid()
+
+
+## Returns true if the current mod list name is valid
+func is_name_valid() -> bool:
+	if mod_list_name == "":
+		return false
+	
+	if not mod_list_name.is_valid_filename():
+		return false
+	
+	if existing_names.has(mod_list_name):
+		return false
+	
+	return true
 
 
 # Signal connection
