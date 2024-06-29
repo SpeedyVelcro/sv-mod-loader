@@ -5,4 +5,4 @@
 [node name="Main" type="Node"]
 
 [node name="ModLoader" parent="." instance=ExtResource("1_g1igq")]
-play_scene = "res://example/game.tscn"
+play_scene = "res://example/ui/menu/menu.tscn"

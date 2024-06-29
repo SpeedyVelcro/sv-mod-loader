@@ -1,3 +1,36 @@
-[gd_scene format=3 uid="uid://clu2e8c5gl0ea"]
+[gd_scene load_steps=5 format=3 uid="uid://clu2e8c5gl0ea"]
 
-[node name="Game" type="Node2D"]
+[ext_resource type="Script" path="res://example/game.gd" id="1_3uyy4"]
+[ext_resource type="PackedScene" uid="uid://biyulv6kqgwo7" path="res://example/entity/player/player.tscn" id="1_aaqr0"]
+[ext_resource type="PackedScene" uid="uid://d32ek3hyyach6" path="res://example/entity/bullet/bullet.tscn" id="2_d7fo3"]
+
+[sub_resource type="Curve2D" id="Curve2D_4e2sw"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, -64, -64, 0, 0, 0, 0, 1216, -64, 0, 0, 0, 0, 1216, 712, 0, 0, 0, 0, -64, 712, 0, 0, 0, 0, -64, -64)
+}
+point_count = 5
+
+[node name="Game" type="Node2D" node_paths=PackedStringArray("player", "bullet_timer")]
+script = ExtResource("1_3uyy4")
+spawn_curve = SubResource("Curve2D_4e2sw")
+bullet_scene = ExtResource("2_d7fo3")
+player = NodePath("Player")
+bullet_timer = NodePath("BulletTimer")
+
+[node name="Polygon2D" type="Polygon2D" parent="."]
+color = Color(0.2923, 0.731935, 0.79, 1)
+polygon = PackedVector2Array(0, 0, 1152, 0, 1152, 648, 0, 648)
+
+[node name="Player" parent="." instance=ExtResource("1_aaqr0")]
+position = Vector2(576, 324)
+
+[node name="BulletTimer" type="Timer" parent="."]
+autostart = true
+
+[node name="StaticBody2D" type="StaticBody2D" parent="."]
+collision_layer = 4
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="StaticBody2D"]
+polygon = PackedVector2Array(0, 0, 1152, 0, 1152, 648, 0, 648, 0, -64, -64, -64, -64, 704, 1216, 704, 1216, -64, 0, -64)
+
+[connection signal="timeout" from="BulletTimer" to="." method="_on_bullet_timer_timeout"]
