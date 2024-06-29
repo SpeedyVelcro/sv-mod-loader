@@ -13,8 +13,9 @@ const FILE_EXTENSION = ".mli"
 ## regardless of case, and nothing else.
 const FILE_EXTENSION_REGEX = "\\.[mM][lL][iI]$"
 
-## Path where mod lists are stored. Must point to a directory (whether or not
-## it has been created),
+## Path where mod lists can be found. Should be an absolute path to a directory.
+## Can include or not include a trailing forward-slash, does not matter.
+## Directory will be created recursively if it doesn't already exist.
 static var path: String = "user://mod_lists"
 
 

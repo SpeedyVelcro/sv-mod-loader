@@ -37,14 +37,38 @@ func play(save_first = true) -> void:
 		push_warning("Play scene not set on ModLoader")
 		return
 	
-	load_mods()
+	var success = load_mods()
+	if not success:
+		push_error("Failed to load mods. Aborting play.")
+		# TODO: Popup a message box to the user (not just logging to console)
+		# Might have to re-organize some things so we can display the mod name
+		# here
+		return
 	
 	get_tree().change_scene_to_file(play_scene)
 
 
-## Loads mods in the order configured in the mod_list_editor
-func load_mods() -> void:
-	pass # TODO
+## Loads mods in the order configured in the mod_list_editor. Returns true if
+## successful. Pushes an error (unless you specify not to) and returns false
+## if unsuccessful
+func load_mods(push_error = true) -> bool:
+	save()
+	
+	var mod_list: ModList = mod_list_editor.get_mod_list()
+	
+	for mod: Mod in mod_list.load_order:
+		if not mod.enabled:
+			continue
+		
+		var path = ModScanner.filename_to_absolute_path(mod.filename)
+		
+		var success = ProjectSettings.load_resource_pack(path)
+		
+		if not success:
+			push_error("Failed to load mod as resource pack: " + mod.filename)
+			return false
+	
+	return true
 
 
 ## Saves any currently unsaved configs

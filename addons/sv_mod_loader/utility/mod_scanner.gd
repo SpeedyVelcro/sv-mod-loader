@@ -9,7 +9,9 @@ extends Node
 ## Regex to match mod file extension
 const FILE_EXTENSION_REGEX = "\\.[pP][cC][kK]$"
 
-## Path where mods can be found
+## Path where mods can be found. Should be an absolute path to a directory. Can
+## include or not include a trailing forward-slash, does not matter. Directory
+## will be created recursively if it doesn't already exist.
 static var path: String = "user://mods"
 
 
@@ -51,6 +53,13 @@ static func is_filename_mod(filename: String) -> bool:
 	var results = regex.search_all(filename)
 	
 	return results.size() > 0
+
+
+## Prepends the mod directory to the given filename to form an absolute path
+static func filename_to_absolute_path(filename: String) -> String:
+	var base_path: String = path if path.ends_with("/") else path + "/"
+	
+	return base_path + filename
 
 
 ## Create configured path if it doesn't already exist
