@@ -1,5 +1,7 @@
 extends CharacterBody2D
 
+signal death
+
 ## How fast the player moves
 @export var speed: int = 400
 
@@ -25,4 +27,5 @@ func _physics_process(_delta) -> void:
 
 ## Call this to cause the player to lose the game
 func kill() -> void:
-	print("dead") # TODO
+	visible = false
+	death.emit()

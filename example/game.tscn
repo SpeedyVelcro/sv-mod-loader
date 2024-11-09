@@ -1,8 +1,10 @@
-[gd_scene load_steps=5 format=3 uid="uid://clu2e8c5gl0ea"]
+[gd_scene load_steps=7 format=3 uid="uid://clu2e8c5gl0ea"]
 
 [ext_resource type="Script" path="res://example/game.gd" id="1_3uyy4"]
 [ext_resource type="PackedScene" uid="uid://biyulv6kqgwo7" path="res://example/entity/player/player.tscn" id="1_aaqr0"]
 [ext_resource type="PackedScene" uid="uid://d32ek3hyyach6" path="res://example/entity/bullet/bullet.tscn" id="2_d7fo3"]
+[ext_resource type="PackedScene" uid="uid://ca2dmp3j3d1wi" path="res://example/ui/pause/pause.tscn" id="4_vukwp"]
+[ext_resource type="PackedScene" uid="uid://xe4tilsucmy5" path="res://example/ui/game_over/game_over.tscn" id="5_s86jb"]
 
 [sub_resource type="Curve2D" id="Curve2D_4e2sw"]
 _data = {
@@ -10,12 +12,14 @@ _data = {
 }
 point_count = 5
 
-[node name="Game" type="Node2D" node_paths=PackedStringArray("player", "bullet_timer")]
+[node name="Game" type="Node2D" node_paths=PackedStringArray("player", "bullet_timer", "pause_ui", "game_over_ui")]
 script = ExtResource("1_3uyy4")
 spawn_curve = SubResource("Curve2D_4e2sw")
 bullet_scene = ExtResource("2_d7fo3")
 player = NodePath("Player")
 bullet_timer = NodePath("BulletTimer")
+pause_ui = NodePath("Interface/Pause")
+game_over_ui = NodePath("Interface/GameOver")
 
 [node name="Polygon2D" type="Polygon2D" parent="."]
 color = Color(0.2923, 0.731935, 0.79, 1)
@@ -33,4 +37,14 @@ collision_layer = 4
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="StaticBody2D"]
 polygon = PackedVector2Array(0, 0, 1152, 0, 1152, 648, 0, 648, 0, -64, -64, -64, -64, 704, 1216, 704, 1216, -64, 0, -64)
 
+[node name="Interface" type="CanvasLayer" parent="."]
+
+[node name="Pause" parent="Interface" instance=ExtResource("4_vukwp")]
+
+[node name="GameOver" parent="Interface" instance=ExtResource("5_s86jb")]
+
+[connection signal="death" from="Player" to="." method="_on_player_death"]
 [connection signal="timeout" from="BulletTimer" to="." method="_on_bullet_timer_timeout"]
+[connection signal="return_to_menu" from="Interface/Pause" to="." method="_on_pause_return_to_menu"]
+[connection signal="retry" from="Interface/GameOver" to="." method="_on_game_over_retry"]
+[connection signal="return_to_menu" from="Interface/GameOver" to="." method="_on_game_over_return_to_menu"]

@@ -1,0 +1,54 @@
+[gd_scene load_steps=3 format=3 uid="uid://xe4tilsucmy5"]
+
+[ext_resource type="Script" path="res://example/ui/game_over/game_over.gd" id="1_5ydnk"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_pwth3"]
+font_size = 32
+
+[node name="GameOver" type="Control"]
+process_mode = 3
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_5ydnk")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.501961)
+
+[node name="CenterContainer" type="CenterContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="CenterContainer/VBoxContainer"]
+layout_mode = 2
+text = "Game Over"
+label_settings = SubResource("LabelSettings_pwth3")
+horizontal_alignment = 1
+
+[node name="RetryButton" type="Button" parent="CenterContainer/VBoxContainer"]
+layout_mode = 2
+text = "Retry"
+
+[node name="ReturnToMenuButton" type="Button" parent="CenterContainer/VBoxContainer"]
+layout_mode = 2
+text = "Return to Menu"
+
+[connection signal="pressed" from="CenterContainer/VBoxContainer/RetryButton" to="." method="_on_retry_button_pressed"]
+[connection signal="pressed" from="CenterContainer/VBoxContainer/ReturnToMenuButton" to="." method="_on_return_to_menu_button_pressed"]
