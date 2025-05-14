@@ -1,2 +1,5 @@
 # Godot 4+ specific ignores
 .godot/
+
+# Build files
+example-mods/blue-player/build/blue-player.pck
