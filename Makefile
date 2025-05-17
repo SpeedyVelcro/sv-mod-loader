@@ -1,5 +1,5 @@
 GODOT_PATH := godot
-MOD_DIRECTORY := ${HOME}/.local/share/godot/app_userdata/SV Mod Loader/mods
+MOD_DIRECTORY := ${HOME}/.local/share/godot/app_userdata/SV Mod Loader Example Game/mods
 
 
 
