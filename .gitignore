@@ -2,6 +2,9 @@
 .godot/
 
 # Build files
+build/linux/SV Mod Loader Example Game.pck
+build/linux/SV Mod Loader Example Game.sh
+build/linux/SV Mod Loader Example Game.x86_64
 example-mods/blue-player/build/blue-player.pck
 example-mods/yellow-player/build/yellow-player.pck
 example-mods/red-background/build/red-background.pck

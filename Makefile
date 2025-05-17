@@ -3,9 +3,15 @@ MOD_DIRECTORY := ${HOME}/.local/share/godot/app_userdata/SV Mod Loader Example G
 
 
 
-all: example-mod-blue-player example-mod-yellow-player example-mod-red-background
+all: linux
+
+linux:
+	mkdir -p build/linux
+	$(GODOT_PATH) --headless --export-release Linux "build/linux/SV Mod Loader Example Game.x86_64"
 
 
+
+example-mods: example-mod-blue-player example-mod-yellow-player example-mod-red-background
 
 example-mod-blue-player:
 	cd example-mods/blue-player; $(GODOT_PATH) --headless --export-pack Mod build/blue-player.pck
