@@ -11,6 +11,11 @@ install-example-mods: install-example-mod-blue-player
 install-example-mod-blue-player: mod-directory
 	cp --update=all example-mods/blue-player/build/blue-player.pck "${MOD_DIRECTORY}/blue-player.pck"
 
+uninstall-example-mods: uninstall-example-mod-blue-player
+
+uninstall-example-mod-blue-player:
+	rm -f "${MOD_DIRECTORY}/blue-player.pck"
+
 clean: clean-example-mod-blue-player
 
 clean-example-mod-blue-player:
