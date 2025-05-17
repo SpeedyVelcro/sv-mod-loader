@@ -11,7 +11,7 @@ example-mod-blue-player:
 	cd example-mods/blue-player; $(GODOT_PATH) --headless --export-pack Mod build/blue-player.pck
 
 example-mod-yellow-player:
-	cd example-mods/yello-player; $(GODOT_PATH) --headless --export-pack Mod build/yellow-player.pck
+	cd example-mods/yellow-player; $(GODOT_PATH) --headless --export-pack Mod build/yellow-player.pck
 
 
 
