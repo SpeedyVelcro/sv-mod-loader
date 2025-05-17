@@ -3,7 +3,7 @@ MOD_DIRECTORY := ${HOME}/.local/share/godot/app_userdata/SV Mod Loader/mods
 
 
 
-all: example-mod-blue-player
+all: example-mod-blue-player example-mod-yellow-player
 
 
 
