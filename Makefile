@@ -9,7 +9,7 @@ example-mod-blue-player:
 install-example-mods: install-example-mod-blue-player
 
 install-example-mod-blue-player: mod-directory
-	cp example-mods/blue-player/build/blue-player.pck "${MOD_DIRECTORY}/blue-player.pck"
+	cp --update=all example-mods/blue-player/build/blue-player.pck "${MOD_DIRECTORY}/blue-player.pck"
 
 clean: clean-example-mod-blue-player
 
