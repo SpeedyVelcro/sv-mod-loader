@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://6huoh8opodh2"]
 
 [ext_resource type="PackedScene" uid="uid://m0yyqaweebn7" path="res://addons/sv_mod_loader/interface/mod_array_editor/mod_array_editor.tscn" id="1_1mjct"]
-[ext_resource type="Script" path="res://addons/sv_mod_loader/interface/mod_list_editor/mod_list_editor.gd" id="1_fvffs"]
+[ext_resource type="Script" uid="uid://jaf0dfmnwhl5" path="res://addons/sv_mod_loader/interface/mod_list_editor/mod_list_editor.gd" id="1_fvffs"]
 [ext_resource type="PackedScene" uid="uid://ebaiksgghdwb" path="res://addons/sv_mod_loader/interface/new_mod_list_window/new_mod_list_window.tscn" id="3_a6cuf"]
 
 [node name="ModListEditor" type="VBoxContainer" node_paths=PackedStringArray("mod_array_editor", "new_mod_list_window", "delete_mod_list_window", "option_button")]

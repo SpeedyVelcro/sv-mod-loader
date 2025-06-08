@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://ebaiksgghdwb"]
 
-[ext_resource type="Script" path="res://addons/sv_mod_loader/interface/new_mod_list_window/new_mod_list_window.gd" id="1_oftdn"]
+[ext_resource type="Script" uid="uid://ctsvy7ul7f7ep" path="res://addons/sv_mod_loader/interface/new_mod_list_window/new_mod_list_window.gd" id="1_oftdn"]
 
 [node name="NewModListWindow" type="Window" node_paths=PackedStringArray("confirm_button", "name_line_edit", "copy_check_box")]
 title = "New Mod List"

@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://cxfqajstekahy"]
 
 [ext_resource type="PackedScene" uid="uid://6huoh8opodh2" path="res://addons/sv_mod_loader/interface/mod_list_editor/mod_list_editor.tscn" id="1_28m0n"]
-[ext_resource type="Script" path="res://addons/sv_mod_loader/interface/mod_loader/mod_loader.gd" id="1_ebwwu"]
+[ext_resource type="Script" uid="uid://cbvvrg60yiqsi" path="res://addons/sv_mod_loader/interface/mod_loader/mod_loader.gd" id="1_ebwwu"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_wedkw"]
 font_size = 48
