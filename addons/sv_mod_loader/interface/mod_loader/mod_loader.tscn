@@ -43,13 +43,24 @@ layout_mode = 2
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Label" type="Label" parent="Panel/MarginContainer/HBoxContainer/VBoxContainer"]
+[node name="TitleLabel" type="Label" parent="Panel/MarginContainer/HBoxContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 6
 text = "SV Mod Loader"
 label_settings = SubResource("LabelSettings_wedkw")
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="TitleTextureRect" type="TextureRect" parent="Panel/MarginContainer/HBoxContainer/VBoxContainer"]
+visible = false
+layout_mode = 2
+size_flags_vertical = 3
+stretch_mode = 3
+
+[node name="TitleSceneParent" type="Control" parent="Panel/MarginContainer/HBoxContainer/VBoxContainer"]
+visible = false
+layout_mode = 2
+size_flags_vertical = 3
 
 [node name="PlayButton" type="Button" parent="Panel/MarginContainer/HBoxContainer/VBoxContainer"]
 custom_minimum_size = Vector2(0, 64)
