@@ -4,6 +4,9 @@ extends Control
 ## This scene contains a full interface that allows setup of a mod load order
 ## and starting the game with that load order.
 
+## Emitted when the player attempts to open the "About" menu
+signal about_open
+
 ## Types of title that can be displayed in the title area
 enum TitleType {
 	## The default title will be displayed
@@ -165,3 +168,8 @@ func _on_quit_button_pressed() -> void:
 # Signal connection
 func _on_play_button_pressed() -> void:
 	play()
+
+
+# Signal connection
+func _on_about_button_pressed() -> void:
+	about_open.emit()
