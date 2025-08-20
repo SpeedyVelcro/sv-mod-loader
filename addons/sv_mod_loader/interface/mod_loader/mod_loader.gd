@@ -46,9 +46,15 @@ enum TitleType {
 ## go.
 @export var title_scene: PackedScene
 
+@export_group("About")
+## Whether the about button should be displayed
+@export var show_about_button: bool = true
+
 ## Child mod list editor scene
 @onready var _mod_list_editor: Node = get_node(
 	"Panel/MarginContainer/HBoxContainer/ModListEditor")
+@onready var _about_button: Button = get_node(
+	"Panel/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/AboutButton")
 ## Control that displays the default or user-set title text
 @onready var _title_label: Label = get_node(
 	"Panel/MarginContainer/HBoxContainer/VBoxContainer/TitleLabel")
@@ -70,6 +76,8 @@ func _init() -> void:
 # Override
 func _ready() -> void:
 	_init_title()
+	
+	_about_button.visible = show_about_button
 
 ## Switches to the set "play scene". Set save_first to true to save all configs
 ## before leaving the mod loader.
