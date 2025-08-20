@@ -4,6 +4,19 @@ extends Control
 ## This scene contains a full interface that allows setup of a mod load order
 ## and starting the game with that load order.
 
+## Types of title that can be displayed in the title area
+enum TitleType {
+	## The default title will be displayed
+	DEFAULT,
+	## The given text is displayed in place of the default title
+	TEXT,
+	## The given texture is displayed in place of the default title
+	TEXTURE,
+	## The given scene is instantiated and inserted into the tree where the
+	## default title would be
+	SCENE
+	}
+
 ## Path of directory where mod lists are stored. Used to overwrite the same
 ## property configured on mod_list_editor.
 @export var mod_list_path: String = "user://mod_lists"
@@ -14,9 +27,35 @@ extends Control
 ## path (starting with "res://") of any *.tscn file.
 @export_file("*.tscn") var play_scene: String = ""
 
+@export_group("Title")
+## The type of title that will be displayed in the title area.
+## Determines which of title_text, title_texture, or title_scene take effect
+## (if any).
+@export var title_type: TitleType = TitleType.DEFAULT
+## If title_type is set to TitleType.TEXT, then this text will be displayed
+## instead of the default title.
+@export var title_text: String = ""
+## If title_type is set to TitleType.TEXTURE, then this texture will be
+## displayed where the default title would usually go.
+@export var title_texture: Texture2D
+## If title_type is set to TitleType.SCENE, then this scene will be
+## instantiated and added to the tree where the default title would usually
+## go.
+@export var title_scene: PackedScene
+
 @export_group("Internal Nodes")
 ## Child mod list editor scene
 @export var mod_list_editor: Node
+
+## Control that displays the default or user-set title text
+@onready var _title_label: Label = get_node(
+	"Panel/MarginContainer/HBoxContainer/VBoxContainer/TitleLabel")
+## Control that displays the user-set title text
+@onready var _title_texture_rect: TextureRect = get_node(
+	"Panel/MarginContainer/HBoxContainer/VBoxContainer/TitleTextureRect")
+## Control to which the user-set title scene will be parented
+@onready var _title_scene_parent: Control = get_node(
+	"Panel/MarginContainer/HBoxContainer/VBoxContainer/TitleSceneParent")
 
 
 # Override
@@ -26,6 +65,9 @@ func _init() -> void:
 	ModListSaver.path = mod_list_path
 	ModScanner.path = mod_path
 
+# Override
+func _ready() -> void:
+	_init_title()
 
 ## Switches to the set "play scene". Set save_first to true to save all configs
 ## before leaving the mod loader.
@@ -74,6 +116,45 @@ func load_mods(push_error = true) -> bool:
 ## Saves any currently unsaved configs
 func save() -> void:
 	mod_list_editor.save_current()
+
+
+## Initializes the title according to the exported properties. This assumes
+## the scene is in its fresh state, hence calling it multiple times will have
+## undefined behaviour.
+func _init_title() -> void:
+	match title_type:
+		TitleType.TEXT:
+			_init_title_text()
+		TitleType.TEXTURE:
+			_init_title_texture()
+		TitleType.SCENE:
+			_init_title_scene()
+
+
+## Initializes the title to display title_text
+func _init_title_text() -> void:
+	_title_label.text = title_text
+
+
+## Initializes the title to display title_texture
+func _init_title_texture() -> void:
+	_title_texture_rect.texture = title_texture
+	
+	_title_label.visible = false
+	_title_texture_rect.visible = true
+
+
+## initializes the title to display title_scene
+func _init_title_scene() -> void:
+	if (title_scene == null):
+		push_error("Tried to initialize title scene, but no title scene was set!")
+		return
+	
+	var scn = title_scene.instantiate()
+	_title_scene_parent.add_child(scn)
+	
+	_title_label.visible = false
+	_title_scene_parent.visible = true
 
 
 # Signal connection
