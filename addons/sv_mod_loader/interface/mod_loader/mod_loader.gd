@@ -43,10 +43,9 @@ enum TitleType {
 ## go.
 @export var title_scene: PackedScene
 
-@export_group("Internal Nodes")
 ## Child mod list editor scene
-@export var mod_list_editor: Node
-
+@onready var _mod_list_editor: Node = get_node(
+	"Panel/MarginContainer/HBoxContainer/ModListEditor")
 ## Control that displays the default or user-set title text
 @onready var _title_label: Label = get_node(
 	"Panel/MarginContainer/HBoxContainer/VBoxContainer/TitleLabel")
@@ -96,7 +95,7 @@ func play(save_first = true) -> void:
 func load_mods(push_error = true) -> bool:
 	save()
 	
-	var mod_list: ModList = mod_list_editor.get_mod_list()
+	var mod_list: ModList = _mod_list_editor.get_mod_list()
 	
 	for mod: Mod in mod_list.load_order:
 		if not mod.enabled:
@@ -115,7 +114,7 @@ func load_mods(push_error = true) -> bool:
 
 ## Saves any currently unsaved configs
 func save() -> void:
-	mod_list_editor.save_current()
+	_mod_list_editor.save_current()
 
 
 ## Initializes the title according to the exported properties. This assumes
