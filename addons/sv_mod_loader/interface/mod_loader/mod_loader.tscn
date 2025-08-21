@@ -1,7 +1,8 @@
-[gd_scene load_steps=4 format=3 uid="uid://cxfqajstekahy"]
+[gd_scene load_steps=5 format=3 uid="uid://cxfqajstekahy"]
 
 [ext_resource type="PackedScene" uid="uid://6huoh8opodh2" path="res://addons/sv_mod_loader/interface/mod_list_editor/mod_list_editor.tscn" id="1_28m0n"]
 [ext_resource type="Script" uid="uid://cbvvrg60yiqsi" path="res://addons/sv_mod_loader/interface/mod_loader/mod_loader.gd" id="1_ebwwu"]
+[ext_resource type="PackedScene" uid="uid://cuysorrkxvtts" path="res://addons/sv_mod_loader/interface/about_window/about_window.tscn" id="3_1hbqa"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_wedkw"]
 font_size = 48
@@ -14,6 +15,18 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_ebwwu")
+about_bbcode_enabled = true
+about_text = "[font size=12]This game uses the SV Mod Loader addon, available at [url]https://github.com/SpeedyVelcro/sv-mod-loader[/url]. For information about the game itself, please proceed into the game using the \"Play\" button and see its respective credits or about section, or any accompanying readme file.
+
+[/font][font size=16][b]SV Mod Loader License[/b][/font]
+[left][font size=12]Copyright 2024-2025 SwiftVector
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.[/font][/left]"
+about_fit_content = true
 
 [node name="Panel" type="Panel" parent="."]
 layout_mode = 1
@@ -86,6 +99,9 @@ layout_mode = 2
 
 [node name="ModListEditor" parent="Panel/MarginContainer/HBoxContainer" instance=ExtResource("1_28m0n")]
 layout_mode = 2
+
+[node name="AboutWindow" parent="." instance=ExtResource("3_1hbqa")]
+visible = false
 
 [connection signal="pressed" from="Panel/MarginContainer/HBoxContainer/VBoxContainer/PlayButton" to="." method="_on_play_button_pressed"]
 [connection signal="pressed" from="Panel/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/AboutButton" to="." method="_on_about_button_pressed"]

@@ -49,6 +49,45 @@ enum TitleType {
 @export_group("About")
 ## Whether the about button should be displayed
 @export var show_about_button: bool = true
+## Whether the about window text should recognise BBCode. Same behaviour as
+## RichtTextLabel.bbcode_enabled.
+##
+## Pass-through to AboutWindow. Passed through on ready and on set.
+@export var about_bbcode_enabled: bool = false:
+	get:
+		return about_bbcode_enabled
+	set(value):
+		about_bbcode_enabled = value
+		_pass_through_values()
+## Text to display in the about window. Same behaviour as RichTextLabel.text.
+##
+## Pass-through to AboutWindow. Passed through on ready and on set.
+@export_multiline var about_text: String = "":
+	get:
+		return about_text
+	set(value):
+		about_text = value
+		_pass_through_values()
+## Expand the about window to fit content. Same behaviour as
+## RichTextLabel.fit_content.
+##
+## Pass-through to AboutWindow. Passed through on ready and on set.
+@export var about_fit_content: bool = false:
+	get:
+		return about_fit_content
+	set(value):
+		about_fit_content = value
+		_pass_through_values()
+## Makes the scrollbar visible in the about window. Same behaviour as
+## RichTextLabel.scroll_active.
+##
+## Pass-through to AboutWindow. Passed through on ready and on set.
+@export var about_scroll_active: bool = false:
+	get:
+		return about_scroll_active
+	set(value):
+		about_scroll_active = value
+		_pass_through_values()
 
 ## Child mod list editor scene
 @onready var _mod_list_editor: Node = get_node(
@@ -64,6 +103,8 @@ enum TitleType {
 ## Control to which the user-set title scene will be parented
 @onready var _title_scene_parent: Control = get_node(
 	"Panel/MarginContainer/HBoxContainer/VBoxContainer/TitleSceneParent")
+## About window scene
+@onready var _about_window: Window = get_node("AboutWindow")
 
 
 # Override
@@ -76,6 +117,7 @@ func _init() -> void:
 # Override
 func _ready() -> void:
 	_init_title()
+	_pass_through_values()
 	
 	_about_button.visible = show_about_button
 
@@ -166,6 +208,16 @@ func _init_title_scene() -> void:
 	_title_label.visible = false
 	_title_scene_parent.visible = true
 
+## Sets all pass-through values on respective children.
+func _pass_through_values() -> void:
+	if (_about_window == null):
+		return
+	
+	_about_window.bbcode_enabled = about_bbcode_enabled
+	_about_window.text = about_text
+	_about_window.fit_content = about_fit_content
+	_about_window.scroll_active = about_scroll_active
+
 
 # Signal connection
 func _on_quit_button_pressed() -> void:
@@ -181,3 +233,4 @@ func _on_play_button_pressed() -> void:
 # Signal connection
 func _on_about_button_pressed() -> void:
 	about_open.emit()
+	_about_window.popup_centered()
