@@ -1,27 +1,27 @@
 extends Window
 
-## Pass-through to RichTextLabel. Passed through on ready.
+## Pass-through to RichTextLabel. Passed through on ready and on set.
 @export var bbcode_enabled: bool = false:
 	get:
 		return bbcode_enabled
 	set(value):
 		bbcode_enabled = value
 		_pass_through_values()
-## Pass-through to RichTextLabel. Passed through on ready.
+## Pass-through to RichTextLabel. Passed through on ready and on set.
 @export_multiline var text: String = "":
 	get:
 		return text
 	set(value):
 		text = value
 		_pass_through_values()
-## Pass-through to RichTextLabel. Passed through on ready.
+## Pass-through to RichTextLabel. Passed through on ready and on set.
 @export var fit_content: bool = false:
 	get:
 		return fit_content
 	set(value):
 		fit_content = value
 		_pass_through_values()
-## Pass-through to RichTextLabel. Passed through on ready.
+## Pass-through to RichTextLabel. Passed through on ready and on set.
 @export var scroll_active: bool = false:
 	get:
 		return scroll_active
