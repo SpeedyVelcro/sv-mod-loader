@@ -51,3 +51,4 @@ layout_mode = 2
 text = "Close"
 
 [connection signal="resized" from="PanelContainer" to="." method="_on_panel_container_resized"]
+[connection signal="pressed" from="PanelContainer/MarginContainer/VBoxContainer/CenterContainer/CloseButton" to="." method="_on_close_button_pressed"]

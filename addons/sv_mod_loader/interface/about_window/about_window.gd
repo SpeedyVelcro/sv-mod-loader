@@ -29,14 +29,17 @@ extends Window
 		scroll_active = value
 		_pass_through_values()
 
+## Child rich text label node
 @onready var _rich_text_label: RichTextLabel = get_node(
 	"PanelContainer/MarginContainer/VBoxContainer/RichTextLabel")
 
 
+# Override
 func _ready() -> void:
 	_pass_through_values()
 
 
+## Pass all pass-through values to children
 func _pass_through_values() -> void:
 	if (_rich_text_label == null):
 		return
@@ -47,6 +50,7 @@ func _pass_through_values() -> void:
 	_rich_text_label.scroll_active = scroll_active
 
 
+# Signal connection
 func _on_panel_container_resized() -> void:
 	# Wrap contents does not shrink the window when children get smaller
 	# so we have to do that ourselves
@@ -54,3 +58,8 @@ func _on_panel_container_resized() -> void:
 	# but it doesn't seem to have gotten much traction. Maybe worth making a
 	# minimum reproducible example and raising as a bug?
 	size.y = get_child(0).size.y
+
+
+# Signal connection
+func _on_close_button_pressed() -> void:
+	hide()
