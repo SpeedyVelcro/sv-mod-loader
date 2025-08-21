@@ -45,3 +45,12 @@ func _pass_through_values() -> void:
 	_rich_text_label.text = text
 	_rich_text_label.fit_content = fit_content
 	_rich_text_label.scroll_active = scroll_active
+
+
+func _on_panel_container_resized() -> void:
+	# Wrap contents does not shrink the window when children get smaller
+	# so we have to do that ourselves
+	# TODO: Somebody has reported this here: https://forum.godotengine.org/t/issue-with-wrap-controls-property-containing-window-node-wont-shrink-with-its-contents/81067
+	# but it doesn't seem to have gotten much traction. Maybe worth making a
+	# minimum reproducible example and raising as a bug?
+	size.y = get_child(0).size.y

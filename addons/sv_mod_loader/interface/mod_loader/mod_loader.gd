@@ -53,7 +53,7 @@ enum TitleType {
 ## RichtTextLabel.bbcode_enabled.
 ##
 ## Pass-through to AboutWindow. Passed through on ready and on set.
-@export_custom(PROPERTY_HINT_NONE, "BBCode Enabled") var about_bbcode_enabled: bool = false:
+@export var about_bbcode_enabled: bool = false:
 	get:
 		return about_bbcode_enabled
 	set(value):
@@ -210,6 +210,9 @@ func _init_title_scene() -> void:
 
 ## Sets all pass-through values on respective children.
 func _pass_through_values() -> void:
+	if (_about_window == null):
+		return
+	
 	_about_window.bbcode_enabled = about_bbcode_enabled
 	_about_window.text = about_text
 	_about_window.fit_content = about_fit_content
@@ -230,3 +233,4 @@ func _on_play_button_pressed() -> void:
 # Signal connection
 func _on_about_button_pressed() -> void:
 	about_open.emit()
+	_about_window.popup_centered()

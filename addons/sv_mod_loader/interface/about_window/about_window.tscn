@@ -5,23 +5,24 @@
 [node name="AboutWindow" type="Window"]
 title = "About"
 initial_position = 2
-size = Vector2i(400, 100)
+size = Vector2i(620, 135)
 wrap_controls = true
 transient = true
 exclusive = true
-unresizable = true
 popup_window = true
+max_size = Vector2i(32768, 720)
 script = ExtResource("1_js8un")
 
 [node name="PanelContainer" type="PanelContainer" parent="."]
-anchors_preset = 15
+anchors_preset = 10
 anchor_right = 1.0
-anchor_bottom = 1.0
+offset_bottom = 135.0
 grow_horizontal = 2
-grow_vertical = 2
+size_flags_vertical = 0
 
 [node name="MarginContainer" type="MarginContainer" parent="PanelContainer"]
 layout_mode = 2
+size_flags_vertical = 0
 theme_override_constants/margin_left = 32
 theme_override_constants/margin_top = 32
 theme_override_constants/margin_right = 32
@@ -29,8 +30,24 @@ theme_override_constants/margin_bottom = 32
 
 [node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/MarginContainer"]
 layout_mode = 2
+size_flags_vertical = 0
 
 [node name="RichTextLabel" type="RichTextLabel" parent="PanelContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
-fit_content = true
-scroll_active = false
+size_flags_vertical = 0
+horizontal_alignment = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="PanelContainer/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="CenterContainer" type="CenterContainer" parent="PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="CloseButton" type="Button" parent="PanelContainer/MarginContainer/VBoxContainer/CenterContainer"]
+layout_mode = 2
+text = "Close"
+
+[connection signal="resized" from="PanelContainer" to="." method="_on_panel_container_resized"]
