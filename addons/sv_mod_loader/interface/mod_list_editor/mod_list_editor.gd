@@ -23,22 +23,20 @@ extends VBoxContainer
 ## malicious actors by replacing your required mods.
 @export var verify_required_mods: bool
 
-@export_group("Internal Nodes")
-## Child load order editor
-@export var mod_array_editor: Node
-## Popup for new mod list
-@export var new_mod_list_window: Window
-## Popup to confirm deletion
-@export var delete_mod_list_window: Window
-## OptionButton for selecting mod lists
-@export var option_button: OptionButton
-
 ## Default mod list name
 const DEFAULT_MOD_LIST_NAME = "Default"
 
 ## Name of the currently selected mod list
 var mod_list_name: String = ""
 
+## Child load order editor
+@onready var _mod_array_editor: Node = get_node("ModArrayEditor")
+## Popup for new mod list
+@onready var _new_mod_list_window: Window = get_node("NewModListWindow")
+## Popup to confirm deletion
+@onready var _delete_mod_list_window: Window = get_node("DeleteModListWindow")
+## OptionButton for selecting mod lists
+@onready var _option_button: OptionButton = get_node("OptionButton")
 
 ## Save the currently selected mod list
 func save_current() -> void:
@@ -47,9 +45,11 @@ func save_current() -> void:
 
 ## Populate the mod list editor based on the user's files
 func populate() -> void:
+	_mod_array_editor.set_mod_requirements(required_mods)
+	
 	# Scan for mods
 	var mod_array: Array[Mod] = ModScanner.get_mods()
-	mod_array_editor.set_mod_array(mod_array)
+	_mod_array_editor.set_mod_array(mod_array)
 	
 	# Select starting mod list
 	_create_default_if_no_mod_lists()
@@ -80,19 +80,19 @@ func _notification(what):
 ## select_name sets which mod list is to be selected after population. Empty
 ## string means none selected
 func _populate_option_button(select_name: String = ""):
-	option_button.select(-1)
-	option_button.clear()
+	_option_button.select(-1)
+	_option_button.clear()
 	
 	var mod_list_names: Array[String] = ModListSaver.get_names()
 	
 	for i in mod_list_names.size():
-		option_button.add_item(mod_list_names[i], i)
+		_option_button.add_item(mod_list_names[i], i)
 	
 	if select_name == "":
 		return
 	
 	var select_index: int = mod_list_names.find(select_name)
-	option_button.select(select_index)
+	_option_button.select(select_index)
 
 
 ## Load the currently selected mod list
@@ -128,11 +128,11 @@ func _select(new_name: String) -> void:
 
 ## Gets the current configuration as a ModList
 func get_mod_list() -> ModList:
-	var mod_array: Array[Mod] = mod_array_editor.get_mod_array()
+	var mod_array: Array[Mod] = _mod_array_editor.get_mod_array()
 	var mod_list: ModList = ModList.new()
 	
 	mod_list.name = mod_list_name
-	mod_list.load_order = mod_array_editor.get_mod_array()
+	mod_list.load_order = _mod_array_editor.get_mod_array()
 	
 	return mod_list
 
@@ -156,7 +156,7 @@ func _create_default_if_no_mod_lists() -> void:
 ## Configures according to given ModList. This discards any existing mod list
 func _set_mod_list(mod_list: ModList) -> void:
 	mod_list_name = mod_list.name
-	mod_array_editor.update_mod_array(mod_list.load_order)
+	_mod_array_editor.update_mod_array(mod_list.load_order)
 
 
 ## Configures as a new ModList with the given name
@@ -183,17 +183,17 @@ func _copy_mod_list(new_name: String) -> void:
 
 # Signal connection
 func _on_new_button_pressed() -> void:
-	new_mod_list_window.popup_centered()
+	_new_mod_list_window.popup_centered()
 
 
 # Signal connection
 func _on_delete_button_pressed() -> void:
-	delete_mod_list_window.popup_centered()
+	_delete_mod_list_window.popup_centered()
 
 
 # Signal connection
 func _on_option_button_item_selected(index) -> void:
-	var selected_name: String = option_button.get_item_text(index)
+	var selected_name: String = _option_button.get_item_text(index)
 	_select(selected_name)
 
 
@@ -208,9 +208,9 @@ func _on_new_mod_list_window_confirm(new_name, is_copy):
 # Signal connection
 func _on_delete_confirm_button_pressed():
 	_delete_current()
-	delete_mod_list_window.hide()
+	_delete_mod_list_window.hide()
 
 
 # Signal connection
 func _on_delete_cancel_button_pressed():
-	delete_mod_list_window.hide()
+	_delete_mod_list_window.hide()
