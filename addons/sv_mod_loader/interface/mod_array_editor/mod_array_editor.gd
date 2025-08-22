@@ -48,7 +48,8 @@ func update_mod_array(mod_array: Array[Mod]) -> void:
 		if not _is_required(tree_item):
 			tree_item.set_checked(Column.CHECK, false)
 	
-	var first_index_after_requirements = _get_last_mod_requirement().get_index() + 1
+	var last_requirement = _get_last_mod_requirement()
+	var first_index_after_requirements = last_requirement.get_index() + 1 if last_requirement != null else 0
 	
 	for i in mod_array.size():
 		var mod = mod_array[i]
