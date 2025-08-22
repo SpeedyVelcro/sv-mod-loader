@@ -99,6 +99,9 @@ layout_mode = 2
 
 [node name="ModListEditor" parent="Panel/MarginContainer/HBoxContainer" instance=ExtResource("1_28m0n")]
 layout_mode = 2
+mod_list_path = ""
+mod_path = ""
+populate_on_ready = false
 
 [node name="AboutWindow" parent="." instance=ExtResource("3_1hbqa")]
 visible = false
