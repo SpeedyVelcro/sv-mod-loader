@@ -20,11 +20,11 @@ enum TitleType {
 	SCENE
 	}
 
-## Path of directory where mod lists are stored. Used to overwrite the same
-## property configured on mod_list_editor.
+## Path of directory where mod lists are stored. Passed through to child mod
+## list editor on ready.
 @export var mod_list_path: String = "user://mod_lists"
-## Path of directory where mods are stored. Used to overwrite the same property
-## configured on mod_list_editor.
+## Path of directory where mods are stored. Passed through to child mod list
+## editor on ready.
 @export var mod_path: String = "user://mods"
 ## Scene to change to when the "Play" button is pressed. Should be set to the
 ## path (starting with "res://") of any *.tscn file.
@@ -45,6 +45,18 @@ enum TitleType {
 ## instantiated and added to the tree where the default title would usually
 ## go.
 @export var title_scene: PackedScene
+
+@export_group("Required Mods")
+## Mods that are required to launch the game. They will be automatically
+## enabled, and users will not be able to disable them. This is passed through
+## to the mod list editor on ready.
+@export var required_mods: Array[ModRequirement] = []
+## Whether to verify the integrity of the required mods before launching the
+## game. This uses MD5 hashes. It is strongly recommended that you keep this
+## set to TRUE, as disabling this will put users at risk of attacks from
+## malicious actors by replacing your required mods. This is passed through to
+## the mod list editor on ready.
+@export var verify_required_mods: bool
 
 @export_group("About")
 ## Whether the about button should be displayed
@@ -118,6 +130,12 @@ func _init() -> void:
 func _ready() -> void:
 	_init_title()
 	_pass_through_values()
+	
+	_mod_list_editor.mod_list_path = mod_list_path
+	_mod_list_editor.mod_path = mod_path
+	_mod_list_editor.required_mods = required_mods
+	_mod_list_editor.verify_required_mods = verify_required_mods
+	_mod_list_editor.populate()
 	
 	_about_button.visible = show_about_button
 

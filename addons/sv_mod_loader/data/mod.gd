@@ -7,6 +7,7 @@ extends Resource
 
 @export var filename: String
 @export var enabled: bool
+@export var required: bool = false
 
 
 # Override
@@ -18,7 +19,8 @@ func _init():
 func serialize() -> Dictionary:
 	return {
 		"filename": filename,
-		"enabled": enabled
+		"enabled": enabled,
+		"required": required
 	}
 
 
@@ -31,6 +33,9 @@ func deserialize(dict: Dictionary) -> void:
 	
 	if dict.has("enabled") and dict["enabled"] is bool:
 		enabled = dict["enabled"]
+	
+	if dict.has("required") and dict["required"] is bool:
+		required = dict["required"]
 
 
 ## Reset to defaults

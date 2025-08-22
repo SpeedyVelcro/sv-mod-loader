@@ -5,9 +5,23 @@ extends VBoxContainer
 ## mod lists and create new ones.
 
 ## File path where mod lists are stored.
-@export var mod_list_path: String = "user://mod_lists"
+@export var mod_list_path: String = "user://mod_lists" # TODO: use this
 ## File path where mods are stored.
-@export var mod_path: String = "user://mods"
+@export var mod_path: String = "user://mods" # TODO: use this
+## Whether the mod list should populate on ready based on the exported
+## properties. You may set this to false if you wish to set them programatically
+## first.
+@export var populate_on_ready: bool = true
+
+@export_group("Required Mods")
+## Mods that are required to launch the game. They will be automatically
+## enabled, and users will not be able to disable them.
+@export var required_mods: Array[ModRequirement] = []
+## Whether to verify the integrity of the required mods before launching the
+## game. This uses MD5 hashes. It is strongly recommended that you keep this
+## set to TRUE, as disabling this will put users at risk of attacks from
+## malicious actors by replacing your required mods.
+@export var verify_required_mods: bool
 
 @export_group("Internal Nodes")
 ## Child load order editor
@@ -25,8 +39,14 @@ const DEFAULT_MOD_LIST_NAME = "Default"
 ## Name of the currently selected mod list
 var mod_list_name: String = ""
 
-# Override
-func _ready():
+
+## Save the currently selected mod list
+func save_current() -> void:
+	ModListSaver.save_file(get_mod_list())
+
+
+## Populate the mod list editor based on the user's files
+func populate() -> void:
 	# Scan for mods
 	var mod_array: Array[Mod] = ModScanner.get_mods()
 	mod_array_editor.set_mod_array(mod_array)
@@ -34,12 +54,19 @@ func _ready():
 	# Select starting mod list
 	_create_default_if_no_mod_lists()
 	
+	# TODO: prepend required mods
 	var mod_list_names: Array[String] = ModListSaver.get_names()
 	var mod_list = ModListSaver.load_file(mod_list_names.front()) # TODO: Select last selected mod list according to config file
 	_set_mod_list(mod_list)
 	
 	# Set up OptionButton
 	_populate_option_button(mod_list_name)
+
+
+# Override
+func _ready():
+	if (populate_on_ready):
+		populate()
 
 
 # Override
@@ -66,11 +93,6 @@ func _populate_option_button(select_name: String = ""):
 	
 	var select_index: int = mod_list_names.find(select_name)
 	option_button.select(select_index)
-
-
-## Save the currently selected mod list
-func save_current() -> void:
-	ModListSaver.save_file(get_mod_list())
 
 
 ## Load the currently selected mod list
