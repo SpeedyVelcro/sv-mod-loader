@@ -1,26 +1,29 @@
-class_name ModScanner
+class_name ModLoader
 extends Node
-## Gets information about mods on disk
+## Loads mods and gets information about mods from disk.
 ##
-## ModScanner provides static functions and variables for getting information
-## about which mods are in the mod directory.
-# TODO: Confirm mod directory exists
+## Initialize using ModLoader.new("<MY PATH>") where <MY_PATH> is the fully
+## qualified path to the directory where mods will be stored, for example
+## "user://mods".
 
 ## Regex to match mod file extension
 const FILE_EXTENSION_REGEX = "\\.[pP][cC][kK]$"
 
-## Path where mods can be found. Should be an absolute path to a directory. Can
-## include or not include a trailing forward-slash, does not matter. Directory
-## will be created recursively if it doesn't already exist.
-static var path: String = "user://mods"
+## Path where mods can be found.
+var _path: String
+
+# Override
+func _init(path: String):
+	if not DirAccess.dir_exists_absolute(path):
+		DirAccess.make_dir_recursive_absolute(path)
+	
+	_path = path
 
 
 ## Gets all mod filenames in the mod directory
-static func get_mod_filenames() -> Array[String]:
-	_set_up_path()
-	
+func get_mod_filenames() -> Array[String]:
 	var filenames: Array[String]
-	filenames.assign(DirAccess.get_files_at(path))
+	filenames.assign(DirAccess.get_files_at(_path))
 	
 	var mod_filenames: Array[String] = filenames.filter(
 			func(str: String) -> bool: return is_filename_mod(str)
@@ -30,7 +33,7 @@ static func get_mod_filenames() -> Array[String]:
 
 
 ## Gets all the mods in the mod directory, disabled by default
-static func get_mods(enabled = false) -> Array[Mod]:
+func get_mods(enabled = false) -> Array[Mod]:
 	var mod_filenames: Array[String] = get_mod_filenames()
 	
 	var mods: Array[Mod]
@@ -56,13 +59,7 @@ static func is_filename_mod(filename: String) -> bool:
 
 
 ## Prepends the mod directory to the given filename to form an absolute path
-static func filename_to_absolute_path(filename: String) -> String:
-	var base_path: String = path if path.ends_with("/") else path + "/"
+func filename_to_absolute_path(filename: String) -> String:
+	var base_path: String = _path if _path.ends_with("/") else _path + "/"
 	
 	return base_path + filename
-
-
-## Create configured path if it doesn't already exist
-static func _set_up_path():
-	if not DirAccess.dir_exists_absolute(path):
-		DirAccess.make_dir_recursive_absolute(path)

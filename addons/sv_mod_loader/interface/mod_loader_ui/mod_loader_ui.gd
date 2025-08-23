@@ -1,3 +1,4 @@
+class_name ModLoaderUI
 extends Control
 ## Main SV Mod Loader interface
 ##
@@ -120,13 +121,6 @@ enum TitleType {
 
 
 # Override
-func _init() -> void:
-	# This is done in the "init" step to get ahead of the "ready" step, which is
-	# when all other scenes use these values
-	ModListSaver.path = mod_list_path
-	ModScanner.path = mod_path
-
-# Override
 func _ready() -> void:
 	_init_title()
 	_pass_through_values()
@@ -172,7 +166,7 @@ func load_mods(push_error = true) -> bool:
 		if not mod.enabled:
 			continue
 		
-		var path = ModScanner.filename_to_absolute_path(mod.filename)
+		var path = ModLoader.new(mod_path).filename_to_absolute_path(mod.filename)
 		
 		var success = ProjectSettings.load_resource_pack(path)
 		

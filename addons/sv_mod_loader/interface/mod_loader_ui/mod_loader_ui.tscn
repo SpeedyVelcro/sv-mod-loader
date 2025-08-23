@@ -1,13 +1,13 @@
 [gd_scene load_steps=5 format=3 uid="uid://cxfqajstekahy"]
 
 [ext_resource type="PackedScene" uid="uid://6huoh8opodh2" path="res://addons/sv_mod_loader/interface/mod_list_editor/mod_list_editor.tscn" id="1_28m0n"]
-[ext_resource type="Script" uid="uid://cbvvrg60yiqsi" path="res://addons/sv_mod_loader/interface/mod_loader/mod_loader.gd" id="1_ebwwu"]
+[ext_resource type="Script" uid="uid://cbvvrg60yiqsi" path="res://addons/sv_mod_loader/interface/mod_loader_ui/mod_loader_ui.gd" id="1_ebwwu"]
 [ext_resource type="PackedScene" uid="uid://cuysorrkxvtts" path="res://addons/sv_mod_loader/interface/about_window/about_window.tscn" id="3_1hbqa"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_wedkw"]
 font_size = 48
 
-[node name="ModLoader" type="Control"]
+[node name="ModLoaderUI" type="Control"]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0

@@ -5,9 +5,9 @@ extends VBoxContainer
 ## mod lists and create new ones.
 
 ## File path where mod lists are stored.
-@export var mod_list_path: String = "user://mod_lists" # TODO: use this
+@export var mod_list_path: String = "user://mod_lists"
 ## File path where mods are stored.
-@export var mod_path: String = "user://mods" # TODO: use this
+@export var mod_path: String = "user://mods"
 ## Whether the mod list should populate on ready based on the exported
 ## properties. You may set this to false if you wish to set them programatically
 ## first.
@@ -40,23 +40,26 @@ var mod_list_name: String = ""
 
 ## Save the currently selected mod list
 func save_current() -> void:
-	ModListSaver.save_file(get_mod_list())
+	ModListAccess.new(mod_list_path).save_file(get_mod_list())
 
 
-## Populate the mod list editor based on the user's files
+## Populate the mod list editor based on the user's files. Also "populates" the
+## new mod list window with the mod list path.
 func populate() -> void:
+	_new_mod_list_window.mod_list_path = mod_list_path
+	
 	_mod_array_editor.set_mod_requirements(required_mods)
 	
 	# Scan for mods
-	var mod_array: Array[Mod] = ModScanner.get_mods()
+	var mod_array: Array[Mod] = ModLoader.new(mod_path).get_mods()
 	_mod_array_editor.set_mod_array(mod_array)
 	
 	# Select starting mod list
 	_create_default_if_no_mod_lists()
 	
-	# TODO: prepend required mods
-	var mod_list_names: Array[String] = ModListSaver.get_names()
-	var mod_list = ModListSaver.load_file(mod_list_names.front()) # TODO: Select last selected mod list according to config file
+	var mod_list_access = ModListAccess.new(mod_list_path)
+	var mod_list_names: Array[String] = mod_list_access.get_names()
+	var mod_list = mod_list_access.load_file(mod_list_names.front()) # TODO: Select last selected mod list according to config file
 	_set_mod_list(mod_list)
 	
 	# Set up OptionButton
@@ -83,7 +86,7 @@ func _populate_option_button(select_name: String = ""):
 	_option_button.select(-1)
 	_option_button.clear()
 	
-	var mod_list_names: Array[String] = ModListSaver.get_names()
+	var mod_list_names: Array[String] = ModListAccess.new(mod_list_path).get_names()
 	
 	for i in mod_list_names.size():
 		_option_button.add_item(mod_list_names[i], i)
@@ -97,23 +100,25 @@ func _populate_option_button(select_name: String = ""):
 
 ## Load the currently selected mod list
 func _load_current() -> void:
-	var mod_list: ModList = ModListSaver.load_file(mod_list_name)
+	var mod_list: ModList = ModListAccess.new(mod_list_path).load_file(mod_list_name)
 	
 	_set_mod_list(mod_list)
 
 
 ## Delete currently selected mod list
 func _delete_current() -> void:
-	ModListSaver.save_file(get_mod_list()) # To ensure there is something to delete on disk
-	ModListSaver.delete_file(mod_list_name)
+	var mod_list_access = ModListAccess.new(mod_list_path)
+	
+	mod_list_access.save_file(get_mod_list()) # To ensure there is something to delete on disk
+	mod_list_access.delete_file(mod_list_name)
 	
 	_create_default_if_no_mod_lists()
 	
 	# TODO: More advanced selection where we default to whatever mod list was
-	# immediately after or before the one we just deleted, rather than just thed
+	# immediately after or before the one we just deleted, rather than just the
 	# first in the list
-	var mod_list_names: Array[String] = ModListSaver.get_names()
-	var mod_list: ModList = ModListSaver.load_file(mod_list_names.front())
+	var mod_list_names: Array[String] = mod_list_access.get_names()
+	var mod_list: ModList = mod_list_access.load_file(mod_list_names.front())
 	_set_mod_list(mod_list)
 	
 	_populate_option_button(mod_list_name)
@@ -146,11 +151,13 @@ func _get_default_mod_list() -> ModList:
 
 ## Creates the default mod list if no mod lists exist
 func _create_default_if_no_mod_lists() -> void:
-	var mod_list_names: Array[String] = ModListSaver.get_names()
+	var mod_list_access = ModListAccess.new(mod_list_path)
+	
+	var mod_list_names: Array[String] = mod_list_access.get_names()
 	
 	if mod_list_names.size() <= 0:
 		var default: ModList = _get_default_mod_list()
-		ModListSaver.save_file(default)
+		mod_list_access.save_file(default)
 
 
 ## Configures according to given ModList. This discards any existing mod list
@@ -163,7 +170,7 @@ func _set_mod_list(mod_list: ModList) -> void:
 func _new_mod_list(new_name: String) -> void:
 	var mod_list: ModList = ModList.new()
 	mod_list.name = new_name
-	ModListSaver.save_file(mod_list)
+	ModListAccess.new(mod_list_path).save_file(mod_list)
 	
 	_select(mod_list.name)
 	
@@ -174,7 +181,7 @@ func _new_mod_list(new_name: String) -> void:
 func _copy_mod_list(new_name: String) -> void:
 	var mod_list: ModList = get_mod_list()
 	mod_list.name = new_name
-	ModListSaver.save_file(mod_list)
+	ModListAccess.new(mod_list_path).save_file(mod_list)
 	
 	_select(mod_list.name)
 	
