@@ -120,9 +120,7 @@ func name_to_absolute_path(name: String) -> String:
 	if not name.is_valid_filename():
 		push_error("Name would be invalid as a filename: " + name)
 	
-	var base_path: String = _path if _path.ends_with("/") else _path + "/"
-	
-	return base_path + name + FILE_EXTENSION
+	return PathHelper.filename_to_path(name + FILE_EXTENSION, _path)
 
 
 ## Converts an absolute path to the name of the mod list that would be saved to

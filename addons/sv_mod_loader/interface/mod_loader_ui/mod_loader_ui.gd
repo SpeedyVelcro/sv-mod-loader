@@ -166,13 +166,7 @@ func load_mods(push_error = true) -> bool:
 		if not mod.enabled:
 			continue
 		
-		var path = ModLoader.new(mod_path).filename_to_absolute_path(mod.filename)
-		
-		var success = ProjectSettings.load_resource_pack(path)
-		
-		if not success:
-			push_error("Failed to load mod as resource pack: " + mod.filename)
-			return false
+		ModLoader.new(mod_path).load_mod(mod)
 	
 	return true
 
