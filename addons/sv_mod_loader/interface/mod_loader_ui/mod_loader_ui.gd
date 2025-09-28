@@ -158,9 +158,11 @@ func play(save_first = true) -> void:
 ## successful. Pushes an error (unless you specify not to) and returns false
 ## if unsuccessful
 func load_mods(push_error = true) -> bool:
-	save()
-	
 	var mod_list: ModList = _mod_list_editor.get_mod_list()
+	var mod_loader = ModLoader.new(mod_path)
+	
+	for req: ModRequirement in required_mods:
+		mod_loader.load_requirement(req, verify_required_mods)
 	
 	for mod: Mod in mod_list.load_order:
 		if not mod.enabled:
