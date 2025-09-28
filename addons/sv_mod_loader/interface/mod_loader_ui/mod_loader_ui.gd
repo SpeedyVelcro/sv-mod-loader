@@ -140,7 +140,7 @@ func play(save_first = true) -> void:
 		save()
 	
 	if play_scene == "":
-		push_warning("Play scene not set on ModLoader")
+		push_warning("Play scene not set on ModLoaderUI")
 		return
 	
 	var success = load_mods()

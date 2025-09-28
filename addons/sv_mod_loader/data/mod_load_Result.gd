@@ -5,7 +5,7 @@ extends Resource
 ## Result of attempting to load mod
 enum Status {SUCCESS, FAILURE}
 ## Error that was encountered
-enum LoadError {NONE, FILE_NOT_FOUND, HASH_MISMATCH, FAILED_TO_LOAD}
+enum LoadError {NONE, FILE_NOT_FOUND, HASH_MISMATCH, NO_HASH, FAILED_TO_LOAD}
 ## Type of hash that was used, if any
 enum Hash {NONE, MD5, SHA_256}
 

@@ -55,17 +55,40 @@ func get_mods(enabled = false) -> Array[Mod]:
 
 
 ## Attempts to load the given required mod. Returns the result of loading.
-func load_requirement(req: ModRequirement) -> ModLoadResult:
+func load_requirement(req: ModRequirement, verify_integrity: bool) -> ModLoadResult:
 	var result = ModLoadResult.new()
 	result.display_name = req.display_name
 	result.absolute_path = ProjectSettings.globalize_path(req.path)
-	
-	# TODO: Verify hash
 	
 	if not FileAccess.file_exists(req.path):
 		result.Status = ModLoadResult.Status.FAILURE
 		result.error = ModLoadResult.LoadError.FILE_NOT_FOUND
 		return result
+	
+	if verify_integrity and req.md5_hash.is_empty() and req.sha256_hash.is_empty():
+		result.Status = ModLoadResult.Status.FAILURE
+		result.error = ModLoadResult.LoadError.NO_HASH
+		return result
+	
+	if verify_integrity and not req.sha256_hash.is_empty():
+		var hash = FileAccess.get_sha256(req.path)
+		if hash != req.sha256_hash:
+			result.Status = ModLoadResult.Status.FAILURE
+			result.error = ModLoadResult.LoadError.HASH_MISMATCH
+			result.hash_type = ModLoadResult.Hash.SHA_256
+			result.expected_hash = req.sha256_hash
+			result.actual_hash = hash
+			return result
+	
+	if verify_integrity and not req.md5_hash.is_empty():
+		var hash = FileAccess.get_md5(req.path)
+		if hash != req.md5_hash:
+			result.Status = ModLoadResult.Status.FAILURE
+			result.error = ModLoadResult.LoadError.HASH_MISMATCH
+			result.hash_type = ModLoadResult.Hash.MD5
+			result.expected_hash = req.md5_hash
+			result.actual_hash = hash
+			return result
 	
 	var load_success = ProjectSettings.load_resource_pack(req.path)
 	
