@@ -14,6 +14,12 @@ const FILE_EXTENSION_REGEX = "\\.[pP][cC][kK]$"
 
 ## Path where mods can be found.
 var _path: String
+## Required mods that are queued for loading
+var _queued_required_mods: Array[ModRequirement]
+## Mods that are queued for loading
+var _queued_mods: Array[Mod]
+## Cumulative results of mod loading
+var _result: Array[ModLoadResult]
 
 # Override
 func _init(path: String):
@@ -52,6 +58,40 @@ func get_mods(enabled = false) -> Array[Mod]:
 	))
 	
 	return mods
+
+
+## Loads all of the given mod requirements, then the entire mod list. Returns
+## true if successful. Returns the result of each load as an array. If an error
+## is encountered loading a mod, the function aborts and returns all results
+## so far including the error.
+## 
+## ModLoader remembers its progress and all mods are still queued (including the
+## one that has failed, which you may want to skip). Therefore after an error
+## you can take action to recover, and continue loading the rest of the mods
+## (usually this would involve prompting the user to ask them what to do).
+func load_all(mod_list: ModList, required_mods: Array[ModRequirement] = [], verify_required: bool = true, verify_trusted: bool = true) -> Array[ModLoadResult]:
+	return [] # TODO
+	# TODO: should first reset this._result
+	# TODO: return this._result
+
+
+## Continues a previously aborted load_all() attempt
+func continue_load_all() -> Array[ModLoadResult]:
+	return [] # TODO: implement
+	# TODO: should continue appending to this._result
+
+
+## Dequeue the first queued mod from loading. Useful after load_all() has
+## aborted due to an error, so that you don't attempt to load the offending mod.
+func skip_next():
+	pass # TODO
+
+
+## Pop and load the first queued mod, skipping hash verification. This is useful
+## after a load_all() has aborted due to a hash mismatch, if you want to recover
+## by ignoring the error. Note that this may incur security risks. 
+func force_load_next():
+	pass # TODO
 
 
 ## Attempts to load the given required mod. Returns the result of loading.
