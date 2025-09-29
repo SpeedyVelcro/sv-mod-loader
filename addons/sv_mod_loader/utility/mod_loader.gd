@@ -2,6 +2,11 @@ class_name ModLoader
 extends Node
 ## Loads mods and gets information about mods from disk.
 ##
+## A class that loads mod pcks. This class is stateful, storing information
+## about current progress loading mods, and therefore allowing the consumer
+## to recover from any errors and continue loading mods. This is intended to
+## allow the implementation of dialogs for user intervention.
+##
 ## Initialize using ModLoader.new("<MY PATH>") where <MY_PATH> is the fully
 ## qualified path to the directory where mods will be stored, for example
 ## "user://mods".
@@ -15,11 +20,16 @@ const FILE_EXTENSION_REGEX = "\\.[pP][cC][kK]$"
 ## Path where mods can be found.
 var _path: String
 ## Required mods that are queued for loading
-var _queued_required_mods: Array[ModRequirement]
+var _queued_required_mods: Array[ModRequirement] = []
 ## Mods that are queued for loading
-var _queued_mods: Array[Mod]
-## Cumulative results of mod loading
-var _result: Array[ModLoadResult]
+var _queued_mods: Array[Mod] = []
+## True if current required mods queue should be verified
+var _verify_required: bool = false
+## True if current mods queue should have trusted mods verified
+var _verify_trusted: bool = false
+## Cumulative results of mod loading. When a mod is retried, it may appear
+## multiple times.
+var _results: Array[ModLoadResult] = []
 
 # Override
 func _init(path: String):
@@ -69,29 +79,38 @@ func get_mods(enabled = false) -> Array[Mod]:
 ## one that has failed, which you may want to skip). Therefore after an error
 ## you can take action to recover, and continue loading the rest of the mods
 ## (usually this would involve prompting the user to ask them what to do).
-func load_all(mod_list: ModList, required_mods: Array[ModRequirement] = [], verify_required: bool = true, verify_trusted: bool = true) -> Array[ModLoadResult]:
-	return [] # TODO
-	# TODO: should first reset this._result
-	# TODO: return this._result
-
-
-## Continues a previously aborted load_all() attempt
-func continue_load_all() -> Array[ModLoadResult]:
-	return [] # TODO: implement
-	# TODO: should continue appending to this._result
+func load_all(mods: Array[Mod], required_mods: Array[ModRequirement] = [], verify_required: bool = true, verify_trusted: bool = true) -> Array[ModLoadResult]:
+	_results = []
+	_queued_required_mods = required_mods
+	_queued_mods = mods
+	_verify_required = verify_required
+	_verify_trusted = verify_trusted
+	
+	return _continue_load_all()
 
 
 ## Dequeue the first queued mod from loading. Useful after load_all() has
 ## aborted due to an error, so that you don't attempt to load the offending mod.
-func skip_next():
-	pass # TODO
+## Then continues loading all the mods.
+func skip_next_and_continue() -> Array[ModLoadResult]:
+	if not _queued_required_mods.is_empty():
+		_queued_required_mods.pop_front()
+	elif not _queued_mods.is_empty():
+		_queued_mods.pop_front()
+	
+	return _continue_load_all()
 
 
-## Pop and load the first queued mod, skipping hash verification. This is useful
-## after a load_all() has aborted due to a hash mismatch, if you want to recover
-## by ignoring the error. Note that this may incur security risks. 
-func force_load_next():
-	pass # TODO
+## Load the first queued mod, skipping hash verification, then continue.
+## 
+## This is useful after a load_all() has aborted due to a hash mismatch, if you
+## want to recover by ignoring the error. Note that this may incur security
+## risks. 
+func force_load_next_and_continue() -> Array[ModLoadResult]:
+	var force = true
+	_load_next(force)
+	
+	return _continue_load_all()
 
 
 ## Attempts to load the given required mod. Returns the result of loading.
@@ -105,7 +124,7 @@ func load_requirement(req: ModRequirement, verify_integrity: bool) -> ModLoadRes
 		result.error = ModLoadResult.LoadError.FILE_NOT_FOUND
 		return result
 	
-	if verify_integrity and req.md5_hash.is_empty() and req.sha256_hash.is_empty():
+	if verify_integrity and req.md5_hash.is_empty() and req.sha256_hasnoth.is_empty():
 		result.Status = ModLoadResult.Status.FAILURE
 		result.error = ModLoadResult.LoadError.NO_HASH
 		return result
@@ -144,7 +163,7 @@ func load_requirement(req: ModRequirement, verify_integrity: bool) -> ModLoadRes
 
 ## Attempts to load the given mod (regardless of whether it is enabled). Returns
 ## the result of loading.
-func load_mod(mod: Mod) -> ModLoadResult:
+func load_mod(mod: Mod, verify_trusted: bool) -> ModLoadResult:
 	var result = ModLoadResult.new()
 	result.display_name = mod.filename
 	
@@ -183,6 +202,38 @@ static func is_filename_mod(filename: String) -> bool:
 ## Prepends the mod directory to the given filename to form an absolute path
 func filename_to_absolute_path(filename: String) -> String:
 	return PathHelper.filename_to_path(filename, _path)
+
+
+## Continues a previously aborted load_all() attempt
+func _continue_load_all() -> Array[ModLoadResult]:
+	while (not _queued_required_mods.is_empty()) and (not _queued_mods.is_empty()):
+		if _load_next():
+			continue
+		
+		return _results
+	
+	return _results
+
+## Load the next queued mod. Returns true and dequeues the mod if successful.
+## Also returns true if there are no queued mods to load.
+func _load_next(force: bool = false) -> bool:
+	if not _queued_required_mods.is_empty():
+		var result = load_requirement(_queued_required_mods.front(), false if force else _verify_required)
+		_results.append(result)
+		if result.Status == ModLoadResult.Status.FAILURE:
+			return false
+		_queued_required_mods.pop_front()
+		return true
+	
+	if not _queued_mods.is_empty():
+		var result = load_mod(_queued_mods.front(), false if force else _verify_trusted)
+		_results.append(result)
+		if result.Status == ModLoadResult.Status.FAILURE:
+			return false
+		_queued_mods.pop_front()
+		return true
+	
+	return true
 
 
 ## Called before destroy
