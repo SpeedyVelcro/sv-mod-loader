@@ -34,6 +34,11 @@ func prune_required() -> void:
 	load_order = load_order.filter(func(mod: Mod): mod.required)
 
 
+## Gets the mod list as an array of mods.
+func to_array(only_enabled: bool = true) -> Array[Mod]:
+	return load_order.filter(func(mod: Mod): return mod.enabled if only_enabled else true)
+
+
 ## Serialize the load order to an array
 func _serialize_load_order() -> Array:
 	var arr: Array = []

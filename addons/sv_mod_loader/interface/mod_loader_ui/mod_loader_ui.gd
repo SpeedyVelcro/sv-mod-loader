@@ -59,6 +59,9 @@ enum TitleType {
 ## the mod list editor on ready.
 @export var verify_required_mods: bool
 
+@export_group("Trusted Mods") # TODO
+@export var verify_trusted_mods: bool
+
 @export_group("About")
 ## Whether the about button should be displayed
 @export var show_about_button: bool = true
@@ -157,18 +160,15 @@ func play(save_first = true) -> void:
 ## Loads mods in the order configured in the mod_list_editor. Returns true if
 ## successful. Pushes an error (unless you specify not to) and returns false
 ## if unsuccessful
-func load_mods(push_error = true) -> bool:
-	var mod_list: ModList = _mod_list_editor.get_mod_list()
+func load_mods() -> bool:
+	var mods: Array[Mod] = _mod_list_editor.get_mods_list().to_array()
 	var mod_loader = ModLoader.new(mod_path)
 	
-	for req: ModRequirement in required_mods:
-		mod_loader.load_requirement(req, verify_required_mods)
+	var results = mod_loader.load_all(mods, required_mods, verify_required_mods, verify_trusted_mods)
 	
-	for mod: Mod in mod_list.load_order:
-		if not mod.enabled:
-			continue
-		
-		ModLoader.new(mod_path).load_mod(mod)
+	# TODO: error popups and recovery
+	if results.back().status == ModLoadResult.Status.FAILURE:
+		return false
 	
 	return true
 
