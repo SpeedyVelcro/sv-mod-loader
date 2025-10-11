@@ -231,7 +231,7 @@ func _load_next(force: bool = false) -> bool:
 	if not _queued_required_mods.is_empty():
 		var result = load_requirement(_queued_required_mods.front(), false if force else _verify_required)
 		_results.append(result)
-		if result.Status == ModLoadResult.Status.FAILURE:
+		if result.status == ModLoadResult.Status.FAILURE:
 			return false
 		_queued_required_mods.pop_front()
 		return true
@@ -239,7 +239,7 @@ func _load_next(force: bool = false) -> bool:
 	if not _queued_mods.is_empty():
 		var result = load_mod(_queued_mods.front(), false if force else _verify_trusted)
 		_results.append(result)
-		if result.Status == ModLoadResult.Status.FAILURE:
+		if result.status == ModLoadResult.Status.FAILURE:
 			return false
 		_queued_mods.pop_front()
 		return true
