@@ -66,6 +66,17 @@ func populate() -> void:
 	_populate_option_button(mod_list_name)
 
 
+## Gets the current configuration as a ModList
+func get_mod_list() -> ModList:
+	var mod_array: Array[Mod] = _mod_array_editor.get_mod_array()
+	var mod_list: ModList = ModList.new()
+	
+	mod_list.name = mod_list_name
+	mod_list.load_order = _mod_array_editor.get_mod_array()
+	
+	return mod_list
+
+
 # Override
 func _ready():
 	if (populate_on_ready):
@@ -129,17 +140,6 @@ func _select(new_name: String) -> void:
 	save_current()
 	mod_list_name = new_name
 	_load_current()
-
-
-## Gets the current configuration as a ModList
-func get_mod_list() -> ModList:
-	var mod_array: Array[Mod] = _mod_array_editor.get_mod_array()
-	var mod_list: ModList = ModList.new()
-	
-	mod_list.name = mod_list_name
-	mod_list.load_order = _mod_array_editor.get_mod_array()
-	
-	return mod_list
 
 
 ## Gets a configuration for the default ModList

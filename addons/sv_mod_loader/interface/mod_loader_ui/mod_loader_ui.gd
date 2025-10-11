@@ -156,7 +156,7 @@ func play(save_first = true) -> void:
 		push_warning("Play scene not set on ModLoaderUI")
 		return
 	
-	var mods: Array[Mod] = _mod_list_editor.get_mods_list().to_array()
+	var mods: Array[Mod] = _mod_list_editor.get_mod_list().to_array()
 	
 	var results = _mod_loader.load_all(mods, required_mods, verify_required_mods, verify_trusted_mods)
 	
