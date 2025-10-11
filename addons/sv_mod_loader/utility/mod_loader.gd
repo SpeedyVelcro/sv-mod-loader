@@ -150,7 +150,7 @@ func load_requirement(req: ModRequirement, verify_integrity: bool) -> ModLoadRes
 	if verify_integrity and not req.md5_hash.is_empty():
 		var hash = FileAccess.get_md5(req.path)
 		if hash != req.md5_hash:
-			result.Status = ModLoadResult.Status.FAILURE
+			result.status = ModLoadResult.Status.FAILURE
 			result.error = ModLoadResult.LoadError.HASH_MISMATCH
 			result.hash_type = ModLoadResult.Hash.MD5
 			result.expected_hash = req.md5_hash
