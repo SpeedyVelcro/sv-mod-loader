@@ -49,9 +49,7 @@ func get_message() -> String:
 					Actual hash: %s" % [hash_type, expected_hash, actual_hash]
 		LoadError.NO_HASH:
 			message += "Developer (NOT the mod author) has enabled hash checking
-					but no expected hash was provided for the mod.
-					\n\n
-					Actual hash: %s" % actual_hash
+					but no expected hash was provided for the mod."
 		LoadError.FAILED_TO_LOAD:
 			message += "Error while loading file."
 	
