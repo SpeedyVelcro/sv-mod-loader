@@ -250,7 +250,8 @@ func _on_about_button_pressed() -> void:
 
 # Signal connection
 func _on_mod_load_error_window_retry() -> void:
-	_mod_loader.retry_next_and_continue()
+	var results = _mod_loader.retry_next_and_continue()
+	_handle_mod_load_results(results)
 
 
 # Signal connection
