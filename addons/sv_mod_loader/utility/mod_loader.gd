@@ -128,19 +128,19 @@ func load_requirement(req: ModRequirement, verify_integrity: bool) -> ModLoadRes
 	result.absolute_path = ProjectSettings.globalize_path(req.path)
 	
 	if not FileAccess.file_exists(req.path):
-		result.Status = ModLoadResult.Status.FAILURE
+		result.status = ModLoadResult.Status.FAILURE
 		result.error = ModLoadResult.LoadError.FILE_NOT_FOUND
 		return result
 	
 	if verify_integrity and req.md5_hash.is_empty() and req.sha256_hash.is_empty():
-		result.Status = ModLoadResult.Status.FAILURE
+		result.status = ModLoadResult.Status.FAILURE
 		result.error = ModLoadResult.LoadError.NO_HASH
 		return result
 	
 	if verify_integrity and not req.sha256_hash.is_empty():
 		var hash = FileAccess.get_sha256(req.path)
 		if hash != req.sha256_hash:
-			result.Status = ModLoadResult.Status.FAILURE
+			result.status = ModLoadResult.Status.FAILURE
 			result.error = ModLoadResult.LoadError.HASH_MISMATCH
 			result.hash_type = ModLoadResult.Hash.SHA_256
 			result.expected_hash = req.sha256_hash
