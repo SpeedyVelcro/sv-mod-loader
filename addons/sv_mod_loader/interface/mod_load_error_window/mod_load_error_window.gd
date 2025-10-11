@@ -22,7 +22,7 @@ signal skip
 	"PanelContainer/MarginContainer/VBoxContainer/ErrorMessageLabel")
 
 
-# Upd
+# Override
 func _ready():
 	_update_error()
 

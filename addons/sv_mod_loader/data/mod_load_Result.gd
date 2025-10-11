@@ -13,6 +13,8 @@ enum Hash {NONE, MD5, SHA_256}
 @export var status: Status = Status.SUCCESS
 ## Error that was encountered when loading the mod, if any
 @export var error: LoadError = LoadError.NONE
+## Display name of mod
+@export var display_name: String = ""
 ## Absolute path to mod that was being attempted to load
 @export var absolute_path: String = ""
 ## Hash type that was used, if error = HASH_MISMATCH
@@ -26,9 +28,9 @@ enum Hash {NONE, MD5, SHA_256}
 ## Gets a human-readable explanation of the error
 func get_message() -> String:
 	if status == Status.SUCCESS:
-		return "Successfully loaded mod at path %s" % absolute_path
+		return "Successfully loaded mod %s from path %s" % [display_name, absolute_path]
 	
-	var message = "Failed to load mod at path %s" % absolute_path
+	var message = "Failed to load mod %s from path %s" % [display_name, absolute_path]
 	
 	message += "\n\n"
 	
