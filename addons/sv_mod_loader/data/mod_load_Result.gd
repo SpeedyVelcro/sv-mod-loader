@@ -25,6 +25,17 @@ enum Hash {NONE, MD5, SHA_256}
 @export var actual_hash: String = ""
 
 
+## Returns the name of the hash type
+func get_hash_name() -> String:
+	match hash_type:
+		Hash.MD5:
+			return "MD5"
+		Hash.SHA_256:
+			return "SHA-256"
+	
+	return "None"
+
+
 ## Gets a human-readable explanation of the error
 func get_message() -> String:
 	if status == Status.SUCCESS:
@@ -46,7 +57,7 @@ func get_message() -> String:
 					\n\n
 					Expected hash: %s
 					\n\n
-					Actual hash: %s" % [hash_type, expected_hash, actual_hash]
+					Actual hash: %s" % [get_hash_name(), expected_hash, actual_hash]
 		LoadError.NO_HASH:
 			message += "Developer (NOT the mod author) has enabled hash checking
 					but no expected hash was provided for the mod."
