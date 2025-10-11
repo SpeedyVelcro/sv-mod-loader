@@ -132,7 +132,7 @@ func load_requirement(req: ModRequirement, verify_integrity: bool) -> ModLoadRes
 		result.error = ModLoadResult.LoadError.FILE_NOT_FOUND
 		return result
 	
-	if verify_integrity and req.md5_hash.is_empty() and req.sha256_hasnoth.is_empty():
+	if verify_integrity and req.md5_hash.is_empty() and req.sha256_hash.is_empty():
 		result.Status = ModLoadResult.Status.FAILURE
 		result.error = ModLoadResult.LoadError.NO_HASH
 		return result
