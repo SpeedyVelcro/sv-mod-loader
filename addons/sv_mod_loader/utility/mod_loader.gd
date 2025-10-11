@@ -165,7 +165,7 @@ func load_requirement(req: ModRequirement, verify_integrity: bool) -> ModLoadRes
 		return result
 	
 	mod_loaded.emit(ActiveMod.from_requirement(req))
-	result.Status = ModLoadResult.Status.SUCCESS
+	result.status = ModLoadResult.Status.SUCCESS
 	return result
 
 
@@ -193,7 +193,7 @@ func load_mod(mod: Mod, verify_trusted: bool) -> ModLoadResult:
 		return result
 	
 	mod_loaded.emit(ActiveMod.from_mod(mod, path))
-	result.Status = ModLoadResult.Status.SUCCESS
+	result.status = ModLoadResult.Status.SUCCESS
 	return result
 
 
