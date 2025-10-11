@@ -214,13 +214,13 @@ func filename_to_absolute_path(filename: String) -> String:
 
 ## Continues a previously aborted load_all() attempt
 func _continue_load_all() -> Array[ModLoadResult]:
-	while (not _queued_required_mods.is_empty()) and (not _queued_mods.is_empty()):
+	while (not _queued_required_mods.is_empty()) or (not _queued_mods.is_empty()):
 		if _load_next():
 			continue
 		
 		return _results
 	
-	if (_results.is_empty() or _results.back().status == ModLoadResult.Status.SUCCESS):
+	if _results.is_empty() or _results.back().status == ModLoadResult.Status.SUCCESS:
 		finished.emit()
 	
 	return _results
