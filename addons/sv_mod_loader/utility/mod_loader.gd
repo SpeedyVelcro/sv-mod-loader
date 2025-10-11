@@ -13,6 +13,8 @@ extends Node
 
 ## Emitted when a mod is loaded by this mod loader (i.e. the .pck is activated)
 signal mod_loaded(mod: ActiveMod)
+## Emitted when the entire mod list has finished loading
+signal finished
 
 ## Regex to match mod file extension
 const FILE_EXTENSION_REGEX = "\\.[pP][cC][kK]$"
@@ -110,6 +112,12 @@ func force_load_next_and_continue() -> Array[ModLoadResult]:
 	var force = true
 	_load_next(force)
 	
+	return _continue_load_all()
+
+
+## Retry loading the first queued mod. Useful if the user has fixed something
+## in the background. Then continues loading all the mods.
+func retry_next_and_continue() -> Array[ModLoadResult]:
 	return _continue_load_all()
 
 
@@ -211,6 +219,9 @@ func _continue_load_all() -> Array[ModLoadResult]:
 			continue
 		
 		return _results
+	
+	if (_results.back().status == ModLoadResult.Status.SUCCESS):
+		finished.emit()
 	
 	return _results
 

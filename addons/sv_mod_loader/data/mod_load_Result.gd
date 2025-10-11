@@ -21,3 +21,36 @@ enum Hash {NONE, MD5, SHA_256}
 @export var expected_hash: String = ""
 ## Actual hash of file if error = HASH_MISMATCH
 @export var actual_hash: String = ""
+
+
+## Gets a human-readable explanation of the error
+func get_message() -> String:
+	if status == Status.SUCCESS:
+		return "Successfully loaded mod at path %s" % absolute_path
+	
+	var message = "Failed to load mod at path %s" % absolute_path
+	
+	message += "\n\n"
+	
+	match error:
+		LoadError.FILE_NOT_FOUND:
+			message += "File not found."
+		LoadError.HASH_MISMATCH:
+			message += "Mod is enabled for hash-checking, but the mod's hash
+					differs from the expected hash. The mod may have been
+					tampered with.
+					\n\n
+					Hash type: %s
+					\n\n
+					Expected hash: %s
+					\n\n
+					Actual hash: %s" % [hash_type, expected_hash, actual_hash]
+		LoadError.NO_HASH:
+			message += "Developer (NOT the mod author) has enabled hash checking
+					but no expected hash was provided for the mod.
+					\n\n
+					Actual hash: %s" % actual_hash
+		LoadError.FAILED_TO_LOAD:
+			message += "Error while loading file."
+	
+	return message

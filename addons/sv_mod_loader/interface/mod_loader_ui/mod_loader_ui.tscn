@@ -1,8 +1,9 @@
-[gd_scene load_steps=5 format=3 uid="uid://cxfqajstekahy"]
+[gd_scene load_steps=6 format=3 uid="uid://cxfqajstekahy"]
 
 [ext_resource type="PackedScene" uid="uid://6huoh8opodh2" path="res://addons/sv_mod_loader/interface/mod_list_editor/mod_list_editor.tscn" id="1_28m0n"]
 [ext_resource type="Script" uid="uid://cbvvrg60yiqsi" path="res://addons/sv_mod_loader/interface/mod_loader_ui/mod_loader_ui.gd" id="1_ebwwu"]
 [ext_resource type="PackedScene" uid="uid://cuysorrkxvtts" path="res://addons/sv_mod_loader/interface/about_window/about_window.tscn" id="3_1hbqa"]
+[ext_resource type="PackedScene" uid="uid://dtwjo0wnrh1gu" path="res://addons/sv_mod_loader/interface/mod_load_error_window/mod_load_error_window.tscn" id="4_la3wx"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_wedkw"]
 font_size = 48
@@ -106,6 +107,11 @@ populate_on_ready = false
 [node name="AboutWindow" parent="." instance=ExtResource("3_1hbqa")]
 visible = false
 
+[node name="ModLoadErrorWindow" parent="." instance=ExtResource("4_la3wx")]
+visible = false
+
 [connection signal="pressed" from="Panel/MarginContainer/HBoxContainer/VBoxContainer/PlayButton" to="." method="_on_play_button_pressed"]
 [connection signal="pressed" from="Panel/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/AboutButton" to="." method="_on_about_button_pressed"]
 [connection signal="pressed" from="Panel/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/QuitButton" to="." method="_on_quit_button_pressed"]
+[connection signal="retry" from="ModLoadErrorWindow" to="." method="_on_mod_load_error_window_retry"]
+[connection signal="skip" from="ModLoadErrorWindow" to="." method="_on_mod_load_error_window_skip"]
