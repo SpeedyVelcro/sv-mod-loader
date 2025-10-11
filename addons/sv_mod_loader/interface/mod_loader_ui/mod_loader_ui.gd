@@ -169,6 +169,9 @@ func save() -> void:
 
 
 func _handle_mod_load_results(results: Array[ModLoadResult]):
+	if results.is_empty():
+		return
+	
 	if results.back().status == ModLoadResult.Status.FAILURE:
 		_mod_load_error_window.error = results.back()
 		_mod_load_error_window.show()

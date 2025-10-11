@@ -220,7 +220,7 @@ func _continue_load_all() -> Array[ModLoadResult]:
 		
 		return _results
 	
-	if (_results.back().status == ModLoadResult.Status.SUCCESS):
+	if (_results.is_empty() or _results.back().status == ModLoadResult.Status.SUCCESS):
 		finished.emit()
 	
 	return _results
