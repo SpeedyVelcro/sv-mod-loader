@@ -18,7 +18,7 @@ signal skip
 		_update_error()
 
 
-@onready var _error_message_label: Label = get_node(
+@onready var _error_message_label: RichTextLabel = get_node(
 	"PanelContainer/MarginContainer/VBoxContainer/ErrorMessageLabel")
 
 
@@ -62,3 +62,7 @@ func _on_skip_button_pressed() -> void:
 func _on_abort_button_pressed() -> void:
 	# Should have already saved before loading
 	get_tree().quit()
+
+
+func _on_error_message_label_finished() -> void:
+	_on_panel_container_resized()

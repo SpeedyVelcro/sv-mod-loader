@@ -52,11 +52,11 @@ func get_message() -> String:
 			message += "Mod is enabled for hash-checking, but the mod's hash
 					differs from the expected hash. The mod may have been
 					tampered with.
-					\n\n
+					
 					Hash type: %s
-					\n\n
+					
 					Expected hash: %s
-					\n\n
+					
 					Actual hash: %s" % [get_hash_name(), expected_hash, actual_hash]
 		LoadError.NO_HASH:
 			message += "Developer (NOT the mod author) has enabled hash checking
