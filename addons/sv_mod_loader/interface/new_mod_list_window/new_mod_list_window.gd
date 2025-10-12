@@ -6,6 +6,10 @@ extends Window
 
 signal confirm(new_name: String, is_copy: bool)
 
+## Fully qualified path to mod list directory. Used to check if the mod list
+## already exists.
+@export var mod_list_path: String = ""
+
 @export_group("Internal Nodes")
 ## Child confirm button
 @export var confirm_button: Button
@@ -25,11 +29,6 @@ var mod_list_is_copy: bool = false
 var existing_names: Array[String] = []
 
 
-# Override
-func _ready():
-	reset()
-
-
 ## Reset all fields to default
 func reset() -> void:
 	mod_list_name = ""
@@ -38,7 +37,7 @@ func reset() -> void:
 	copy_check_box.button_pressed = mod_list_is_copy
 	confirm_button.disabled = true
 	
-	existing_names = ModListSaver.get_names()
+	existing_names = ModListAccess.new(mod_list_path).get_names()
 
 
 ## Get the name of the mod list

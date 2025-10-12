@@ -27,6 +27,18 @@ func serialize(include_name: bool = true) -> Dictionary:
 	return dict
 
 
+## Removes all required mods from this list. This is useful for the case where
+## you are loading/saving the mod but you do not want to load/save required mods
+## because they are not supposed to be user-editable.
+func prune_required() -> void:
+	load_order = load_order.filter(func(mod: Mod): mod.required)
+
+
+## Gets the mod list as an array of mods.
+func to_array(only_enabled: bool = true) -> Array[Mod]:
+	return load_order.filter(func(mod: Mod): return mod.enabled if only_enabled else true)
+
+
 ## Serialize the load order to an array
 func _serialize_load_order() -> Array:
 	var arr: Array = []

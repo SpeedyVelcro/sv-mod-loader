@@ -1,3 +1,4 @@
+class_name ModLoaderUI
 extends Control
 ## Main SV Mod Loader interface
 ##
@@ -20,11 +21,13 @@ enum TitleType {
 	SCENE
 	}
 
-## Path of directory where mod lists are stored. Used to overwrite the same
-## property configured on mod_list_editor.
+## Path of directory where mod lists are stored. Passed through to child mod
+## list editor on ready.
 @export var mod_list_path: String = "user://mod_lists"
-## Path of directory where mods are stored. Used to overwrite the same property
-## configured on mod_list_editor.
+## Path of directory where mods are stored. Passed through to child mod list
+## editor on ready.
+##
+## NB: mod loader is not updated if this value is updated after ready.
 @export var mod_path: String = "user://mods"
 ## Scene to change to when the "Play" button is pressed. Should be set to the
 ## path (starting with "res://") of any *.tscn file.
@@ -45,6 +48,21 @@ enum TitleType {
 ## instantiated and added to the tree where the default title would usually
 ## go.
 @export var title_scene: PackedScene
+
+@export_group("Required Mods")
+## Mods that are required to launch the game. They will be automatically
+## enabled, and users will not be able to disable them. This is passed through
+## to the mod list editor on ready.
+@export var required_mods: Array[ModRequirement] = []
+## Whether to verify the integrity of the required mods before launching the
+## game. This uses MD5 hashes. It is strongly recommended that you keep this
+## set to TRUE, as disabling this will put users at risk of attacks from
+## malicious actors by replacing your required mods. This is passed through to
+## the mod list editor on ready.
+@export var verify_required_mods: bool
+
+@export_group("Trusted Mods") # TODO
+@export var verify_trusted_mods: bool
 
 @export_group("About")
 ## Whether the about button should be displayed
@@ -94,7 +112,7 @@ enum TitleType {
 	"Panel/MarginContainer/HBoxContainer/ModListEditor")
 @onready var _about_button: Button = get_node(
 	"Panel/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/AboutButton")
-## Control that displays the default or user-set title text
+## Control that displaysButton the default or user-set title text
 @onready var _title_label: Label = get_node(
 	"Panel/MarginContainer/HBoxContainer/VBoxContainer/TitleLabel")
 ## Control that displays the user-set title text
@@ -105,21 +123,28 @@ enum TitleType {
 	"Panel/MarginContainer/HBoxContainer/VBoxContainer/TitleSceneParent")
 ## About window scene
 @onready var _about_window: Window = get_node("AboutWindow")
+@onready var _mod_load_error_window: Window = get_node("ModLoadErrorWindow")
 
 
-# Override
-func _init() -> void:
-	# This is done in the "init" step to get ahead of the "ready" step, which is
-	# when all other scenes use these values
-	ModListSaver.path = mod_list_path
-	ModScanner.path = mod_path
+## Mod loader
+var _mod_loader: ModLoader
+
 
 # Override
 func _ready() -> void:
 	_init_title()
 	_pass_through_values()
 	
+	_mod_list_editor.mod_list_path = mod_list_path
+	_mod_list_editor.mod_path = mod_path
+	_mod_list_editor.required_mods = required_mods
+	_mod_list_editor.verify_required_mods = verify_required_mods
+	_mod_list_editor.populate()
+	
 	_about_button.visible = show_about_button
+	
+	_mod_loader = ModLoader.new(mod_path)
+	_mod_loader.finished.connect(_on_mod_loader_finished)
 
 ## Switches to the set "play scene". Set save_first to true to save all configs
 ## before leaving the mod loader.
@@ -128,46 +153,28 @@ func play(save_first = true) -> void:
 		save()
 	
 	if play_scene == "":
-		push_warning("Play scene not set on ModLoader")
+		push_warning("Play scene not set on ModLoaderUI")
 		return
 	
-	var success = load_mods()
-	if not success:
-		push_error("Failed to load mods. Aborting play.")
-		# TODO: Popup a message box to the user (not just logging to console)
-		# Might have to re-organize some things so we can display the mod name
-		# here
-		return
+	var mods: Array[Mod] = _mod_list_editor.get_mod_list().to_array()
 	
-	get_tree().change_scene_to_file(play_scene)
-
-
-## Loads mods in the order configured in the mod_list_editor. Returns true if
-## successful. Pushes an error (unless you specify not to) and returns false
-## if unsuccessful
-func load_mods(push_error = true) -> bool:
-	save()
+	var results = _mod_loader.load_all(mods, required_mods, verify_required_mods, verify_trusted_mods)
 	
-	var mod_list: ModList = _mod_list_editor.get_mod_list()
-	
-	for mod: Mod in mod_list.load_order:
-		if not mod.enabled:
-			continue
-		
-		var path = ModScanner.filename_to_absolute_path(mod.filename)
-		
-		var success = ProjectSettings.load_resource_pack(path)
-		
-		if not success:
-			push_error("Failed to load mod as resource pack: " + mod.filename)
-			return false
-	
-	return true
+	_handle_mod_load_results(results)
 
 
 ## Saves any currently unsaved configs
 func save() -> void:
 	_mod_list_editor.save_current()
+
+
+func _handle_mod_load_results(results: Array[ModLoadResult]):
+	if results.is_empty():
+		return
+	
+	if results.back().status == ModLoadResult.Status.FAILURE:
+		_mod_load_error_window.show() # For some reason, needs to be before updating error (and therefore error text) or window expands to maximum vertical height
+		_mod_load_error_window.error = results.back()
 
 
 ## Initializes the title according to the exported properties. This assumes
@@ -220,6 +227,11 @@ func _pass_through_values() -> void:
 
 
 # Signal connection
+func _on_mod_loader_finished() -> void:
+	get_tree().change_scene_to_file(play_scene)
+
+
+# Signal connection
 func _on_quit_button_pressed() -> void:
 	save()
 	get_tree().quit()
@@ -234,3 +246,27 @@ func _on_play_button_pressed() -> void:
 func _on_about_button_pressed() -> void:
 	about_open.emit()
 	_about_window.popup_centered()
+
+
+# Signal connection
+func _on_mod_load_error_window_retry() -> void:
+	var results = _mod_loader.retry_next_and_continue()
+	_handle_mod_load_results(results)
+
+
+# Signal connection
+func _on_mod_load_error_window_skip() -> void:
+	_mod_loader.skip_next_and_continue()
+
+
+## Called before destroy
+func _destructor() -> void:
+	if _mod_loader != null and _mod_loader.finished.is_connected(_on_mod_loader_finished):
+		_mod_loader.finished.disconnect(_on_mod_loader_finished)
+
+
+# Override
+func _notification(what: int) -> void:
+	match what:
+		NOTIFICATION_PREDELETE:
+			_destructor()
