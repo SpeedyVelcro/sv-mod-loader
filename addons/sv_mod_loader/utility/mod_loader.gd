@@ -27,8 +27,8 @@ var _queued_required_mods: Array[ModRequirement] = []
 var _queued_mods: Array[Mod] = []
 ## True if current required mods queue should be verified
 var _verify_required: bool = false
-## True if current mods queue should have trusted mods verified
-var _verify_trusted: bool = false
+## Official (trusted) mods that won't raise a warning if their checksums match
+var _official_mods: Array[OfficialMod] = []
 ## Cumulative results of mod loading. When a mod is retried, it may appear
 ## multiple times.
 var _results: Array[ModLoadResult] = []
@@ -81,12 +81,12 @@ func get_mods(enabled = false) -> Array[Mod]:
 ## one that has failed, which you may want to skip). Therefore after an error
 ## you can take action to recover, and continue loading the rest of the mods
 ## (usually this would involve prompting the user to ask them what to do).
-func load_all(mods: Array[Mod], required_mods: Array[ModRequirement] = [], verify_required: bool = true, verify_trusted: bool = true) -> Array[ModLoadResult]:
+func load_all(mods: Array[Mod], required_mods: Array[ModRequirement] = [], verify_required: bool = true, official_mods: Array[OfficialMod] = []) -> Array[ModLoadResult]:
 	_results = []
 	_queued_required_mods = required_mods
 	_queued_mods = mods
 	_verify_required = verify_required
-	_verify_trusted = verify_trusted
+	_official_mods = official_mods
 	
 	return _continue_load_all()
 
@@ -171,7 +171,7 @@ func load_requirement(req: ModRequirement, verify_integrity: bool) -> ModLoadRes
 
 ## Attempts to load the given mod (regardless of whether it is enabled). Returns
 ## the result of loading.
-func load_mod(mod: Mod, verify_trusted: bool) -> ModLoadResult:
+func load_mod(mod: Mod, ignore_official_mod_checksum: bool) -> ModLoadResult:
 	var result = ModLoadResult.new()
 	result.display_name = mod.filename
 	
@@ -237,7 +237,7 @@ func _load_next(force: bool = false) -> bool:
 		return true
 	
 	if not _queued_mods.is_empty():
-		var result = load_mod(_queued_mods.front(), false if force else _verify_trusted)
+		var result = load_mod(_queued_mods.front(), force)
 		_results.append(result)
 		if result.status == ModLoadResult.Status.FAILURE:
 			return false

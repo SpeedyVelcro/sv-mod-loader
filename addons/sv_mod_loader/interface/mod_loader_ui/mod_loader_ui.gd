@@ -61,8 +61,11 @@ enum TitleType {
 ## the mod list editor on ready.
 @export var verify_required_mods: bool
 
-@export_group("Trusted Mods") # TODO
-@export var verify_trusted_mods: bool
+@export_group("Official Mods")
+## Mods that are officially endorsed by the author of the game. Loading these
+## mods will not show a safety warning, as the game author has presumably
+## already vouched for their safety.
+@export var official_mods: Array[OfficialMod] = []
 
 @export_group("About")
 ## Whether the about button should be displayed
@@ -158,7 +161,7 @@ func play(save_first = true) -> void:
 	
 	var mods: Array[Mod] = _mod_list_editor.get_mod_list().to_array()
 	
-	var results = _mod_loader.load_all(mods, required_mods, verify_required_mods, verify_trusted_mods)
+	var results = _mod_loader.load_all(mods, required_mods, verify_required_mods, official_mods)
 	
 	_handle_mod_load_results(results)
 
