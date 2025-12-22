@@ -1,3 +1,4 @@
+class_name OfficialMod
 extends Node
 ## Official Mod
 ##
