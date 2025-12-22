@@ -18,7 +18,7 @@ signal skip
 		_update_error()
 
 
-@onready var _error_message_label: RichTextLabel = get_node(
+@onready var _error_message_label: Label = get_node(
 	"PanelContainer/MarginContainer/VBoxContainer/ErrorMessageLabel")
 
 
