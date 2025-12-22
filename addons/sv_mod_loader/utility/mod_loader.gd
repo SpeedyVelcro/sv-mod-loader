@@ -88,6 +88,9 @@ func load_all(mods: Array[Mod], required_mods: Array[ModRequirement] = [], verif
 	_verify_required = verify_required
 	_official_mods = official_mods
 	
+	# TODO: If any of the mods are not requirements or official mods, immediately error out
+	# with a warning about untrusted code.
+	
 	return _continue_load_all()
 
 
@@ -132,6 +135,7 @@ func load_requirement(req: ModRequirement, verify_integrity: bool) -> ModLoadRes
 		result.error = ModLoadResult.LoadError.FILE_NOT_FOUND
 		return result
 	
+	# TODO: repetition from load_mod
 	if verify_integrity and req.md5_hash.is_empty() and req.sha256_hash.is_empty():
 		result.status = ModLoadResult.Status.FAILURE
 		result.error = ModLoadResult.LoadError.NO_HASH
@@ -178,12 +182,39 @@ func load_mod(mod: Mod, ignore_official_mod_checksum: bool) -> ModLoadResult:
 	var path = filename_to_absolute_path(mod.filename)
 	result.absolute_path = ProjectSettings.globalize_path(path)
 	
-	# TODO: Verify hash for trusted mods once they are implemented
-	
 	if not FileAccess.file_exists(path):
 		result.Status = ModLoadResult.Status.FAILURE
 		result.error = ModLoadResult.LoadError.FILE_NOT_FOUND
 		return result
+	
+	var official_mod: OfficialMod = null
+	official_mod = _official_mods.filter(func(m): return m.filename == mod.filename).front()
+	
+	# TODO: repetition from load_requirement
+	if official_mod and official_mod.md5_hash.is_empty() and official_mod.sha256_hash.is_empty():
+		result.status = ModLoadResult.Status.FAILURE
+		result.error = ModLoadResult.LoadError.NO_HASH
+		return result
+	
+	if official_mod and not official_mod.sha256_hash.is_empty():
+		var hash = FileAccess.get_sha256(path)
+		if hash != official_mod.sha256_hash:
+			result.status = ModLoadResult.Status.FAILURE
+			result.error = ModLoadResult.LoadError.HASH_MISMATCH
+			result.hash_type = ModLoadResult.Hash.SHA_256
+			result.expected_hash = official_mod.sha256_hash
+			result.actual_hash = hash
+			return result
+	
+	if official_mod and not official_mod.md5_hash.is_empty():
+		var hash = FileAccess.get_md5(official_mod.path)
+		if hash != official_mod.md5_hash:
+			result.status = ModLoadResult.Status.FAILURE
+			result.error = ModLoadResult.LoadError.HASH_MISMATCH
+			result.hash_type = ModLoadResult.Hash.MD5
+			result.expected_hash = official_mod.md5_hash
+			result.actual_hash = hash
+			return result
 	
 	var load_success = ProjectSettings.load_resource_pack(path)
 	
