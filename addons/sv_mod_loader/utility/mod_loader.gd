@@ -88,8 +88,14 @@ func load_all(mods: Array[Mod], required_mods: Array[ModRequirement] = [], verif
 	_verify_required = verify_required
 	_official_mods = official_mods
 	
-	# TODO: If any of the mods are not requirements or official mods, immediately error out
-	# with a warning about untrusted code.
+	var _is_not_official_mod = func(m: Mod):
+		return not _official_mods.any(func(o: OfficialMod): return o.filename == m.filename)
+	
+	if _queued_mods.any(_is_not_official_mod):
+		var result = ModLoadResult.new()
+		result.LoadError = ModLoadResult.LoadError.LOADING_UNOFFICIAL_MODS
+		
+		return [result]
 	
 	return _continue_load_all()
 
