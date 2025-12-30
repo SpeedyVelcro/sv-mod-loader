@@ -16,15 +16,6 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_ebwwu")
-mod_list_path = null
-mod_path = null
-play_scene = null
-title_type = null
-title_text = null
-required_mods = null
-verify_required_mods = null
-verify_trusted_mods = null
-show_about_button = null
 about_bbcode_enabled = true
 about_text = "[font size=12]This game uses the SV Mod Loader addon, available at [url]https://github.com/SpeedyVelcro/sv-mod-loader[/url]. For information about the game itself, please proceed into the game using the \"Play\" button and see its respective credits or about section, or any accompanying readme file.
 
@@ -37,7 +28,6 @@ The above copyright notice and this permission notice shall be included in all c
 
 THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.[/font][/left]"
 about_fit_content = true
-about_scroll_active = null
 
 [node name="Panel" type="Panel" parent="."]
 layout_mode = 1

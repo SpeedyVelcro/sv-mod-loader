@@ -43,10 +43,10 @@ func get_message() -> String:
 	if status == Status.SUCCESS:
 		return "Successfully loaded mod %s from path %s" % [display_name, absolute_path]
 	
-	var message
+	var message = ""
 	
 	if status == Status.FAILURE:
-		message = "Failed to load mod %s from path %s" % [display_name, absolute_path]
+		message += "Failed to load mod %s from path %s" % [display_name, absolute_path]
 		message += "\n\n"
 	
 	match error:

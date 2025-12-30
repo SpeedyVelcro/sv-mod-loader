@@ -10,30 +10,97 @@ signal skip
 
 
 ## Pass-through to Label. Passed through on ready and on set.
-@export var error: ModLoadResult = ModLoadResult.new():
+@export var error_message: String = "":
 	get:
-		return error
+		return error_message
 	set(value):
-		error = value
-		_update_error()
+		error_message = value
+		_update_error_message()
+## Allow cancelling without aborting. Should only be allowed when no mods have
+## been loaded yet, because loading mods is an irreversible action.
+@export var can_cancel: bool = false:
+	get:
+		return can_cancel
+	set(value):
+		can_cancel = value
+		_update_can_cancel()
+## Allow skipping the next mod then continuing. A good reason to disable would
+## be if the error doesn't pertain to a specific mod.
+@export var can_skip: bool = false:
+	get:
+		return can_skip
+	set(value):
+		can_skip = value
+		_update_can_skip()
+## True if the retry button should read "continue" instead. This is preferred
+## when trying to load a mod hasn't actually happened yet (e.g. for the
+## untrusted mod warning) as it makes more sense to the user, even though it's
+## functionally the same as retry
+@export var retry_is_continue: bool = false:
+	get:
+		return retry_is_continue
+	set(value):
+		retry_is_continue = value
+		_update_retry_is_continue()
 
 
+## Label for displaying error message text
 @onready var _error_message_label: Label = get_node(
 	"PanelContainer/MarginContainer/VBoxContainer/ErrorMessageLabel")
+## Retry mod and continue button (a.k.a. continue, it's functionally the same
+## under the hood)
+@onready var _retry_button: Button = get_node(
+	"PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/RetryButton")
+## Skip next mod then continue button
+@onready var _skip_button: Button = get_node(
+	"PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/SkipButton")
+## Abort (quit application) button
+@onready var _abort_button: Button = get_node(
+	"PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/AbortButton")
+## Cancel mod loading button
+@onready var _cancel_button: Button = get_node(
+	"PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/CancelButton")
+
+## Configure the error window for the given error and show.
+func show_error(error: ModLoadResult):
+	# TODO: Also add a "retry and skip hash check" button if the error is a hash mismatch
+	can_cancel = error.error == ModLoadResult.LoadError.LOADING_UNOFFICIAL_MODS
+	can_skip = error.error != ModLoadResult.LoadError.LOADING_UNOFFICIAL_MODS
+	retry_is_continue = error.error == ModLoadResult.LoadError.LOADING_UNOFFICIAL_MODS
+	
+	show() # For some reason, needs to be before updating error text or window expands to maximum vertical height
+	error_message = error.get_message()
 
 
 # Override
 func _ready():
-	_update_error()
+	_update_error_message()
 
 
-## Configure error message according to error
-func _update_error() -> void:
+## Update error message label
+func _update_error_message() -> void:
 	if (_error_message_label == null):
+		push_error("Mod load window does not have error message label set")
 		return
 	
-	_error_message_label.text = error.get_message()
-	# TODO: Also add a "retry and skip hash check" button if the error is a hash mismatch
+	_error_message_label.text = error_message
+
+
+## Show appropriate buttons for cancellable errors
+func _update_can_cancel() -> void:
+	_cancel_button.visible = can_cancel
+	_abort_button.visible = not can_cancel
+
+
+## Show appropriate buttons for skippable errors
+func _update_can_skip() -> void:
+	_skip_button.visible = can_skip
+
+
+## Sets retry button text according to setting
+func _update_retry_is_continue() -> void:
+	# TODO: Localisation
+	_retry_button.text = "Continue" if retry_is_continue else "Retry"
 
 
 # Signal connection
@@ -64,5 +131,11 @@ func _on_abort_button_pressed() -> void:
 	get_tree().quit()
 
 
+# Signal connection
 func _on_error_message_label_finished() -> void:
 	_on_panel_container_resized()
+
+
+# Signal connection
+func _on_cancel_button_pressed() -> void:
+	hide()

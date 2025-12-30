@@ -93,6 +93,7 @@ func load_all(mods: Array[Mod], required_mods: Array[ModRequirement] = [], verif
 	
 	if _queued_mods.any(_is_not_official_mod):
 		var result = ModLoadResult.new()
+		result.status = ModLoadResult.Status.WARNING
 		result.error = ModLoadResult.LoadError.LOADING_UNOFFICIAL_MODS
 		
 		return [result]
@@ -125,7 +126,8 @@ func force_load_next_and_continue() -> Array[ModLoadResult]:
 
 
 ## Retry loading the first queued mod. Useful if the user has fixed something
-## in the background. Then continues loading all the mods.
+## in the background (or if the error was a one-off warning). Then continues
+## loading all the mods.
 func retry_next_and_continue() -> Array[ModLoadResult]:
 	return _continue_load_all()
 
@@ -194,7 +196,8 @@ func load_mod(mod: Mod, ignore_official_mod_checksum: bool) -> ModLoadResult:
 		return result
 	
 	var official_mod: OfficialMod = null
-	official_mod = _official_mods.filter(func(m): return m.filename == mod.filename).front()
+	var filtered = _official_mods.filter(func(m): return m.filename == mod.filename)
+	official_mod = null if filtered.is_empty() else filtered.front()
 	
 	# TODO: repetition from load_requirement
 	if official_mod and official_mod.md5_hash.is_empty() and official_mod.sha256_hash.is_empty():

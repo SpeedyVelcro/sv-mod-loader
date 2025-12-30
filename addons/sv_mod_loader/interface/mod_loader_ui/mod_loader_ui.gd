@@ -175,9 +175,10 @@ func _handle_mod_load_results(results: Array[ModLoadResult]):
 	if results.is_empty():
 		return
 	
-	if results.back().status == ModLoadResult.Status.FAILURE:
-		_mod_load_error_window.show() # For some reason, needs to be before updating error (and therefore error text) or window expands to maximum vertical height
-		_mod_load_error_window.error = results.back()
+	var last_error = results.back()
+	
+	if last_error.status != ModLoadResult.Status.SUCCESS:
+		_mod_load_error_window.show_error(last_error)
 
 
 ## Initializes the title according to the exported properties. This assumes
