@@ -93,7 +93,7 @@ func load_all(mods: Array[Mod], required_mods: Array[ModRequirement] = [], verif
 	
 	if _queued_mods.any(_is_not_official_mod):
 		var result = ModLoadResult.new()
-		result.LoadError = ModLoadResult.LoadError.LOADING_UNOFFICIAL_MODS
+		result.error = ModLoadResult.LoadError.LOADING_UNOFFICIAL_MODS
 		
 		return [result]
 	
