@@ -216,7 +216,7 @@ func load_mod(mod: Mod, ignore_official_mod_checksum: bool) -> ModLoadResult:
 			return result
 	
 	if official_mod and not official_mod.md5_hash.is_empty():
-		var hash = FileAccess.get_md5(official_mod.path)
+		var hash = FileAccess.get_md5(path)
 		if hash != official_mod.md5_hash:
 			result.status = ModLoadResult.Status.FAILURE
 			result.error = ModLoadResult.LoadError.HASH_MISMATCH
