@@ -1,8 +1,17 @@
-[gd_scene load_steps=2 format=3 uid="uid://dkab354lm25x2"]
+[gd_scene load_steps=3 format=3 uid="uid://dkab354lm25x2"]
 
 [ext_resource type="PackedScene" uid="uid://cxfqajstekahy" path="res://addons/sv_mod_loader/interface/mod_loader_ui/mod_loader_ui.tscn" id="1_g1igq"]
+[ext_resource type="Script" uid="uid://dmnyvulyp5fkp" path="res://addons/sv_mod_loader/data/mod_requirement.gd" id="2_hwn3c"]
 
 [node name="Main" type="Node"]
 
 [node name="ModLoaderUI" parent="." instance=ExtResource("1_g1igq")]
+mod_list_path = "user://mod_lists"
+mod_path = "user://mods"
 play_scene = "res://example/ui/menu/menu.tscn"
+title_type = 0
+title_text = ""
+required_mods = Array[ExtResource("2_hwn3c")]([])
+verify_required_mods = false
+show_about_button = true
+about_scroll_active = false

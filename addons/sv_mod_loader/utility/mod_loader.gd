@@ -27,8 +27,8 @@ var _queued_required_mods: Array[ModRequirement] = []
 var _queued_mods: Array[Mod] = []
 ## True if current required mods queue should be verified
 var _verify_required: bool = false
-## True if current mods queue should have trusted mods verified
-var _verify_trusted: bool = false
+## Official (trusted) mods that won't raise a warning if their checksums match
+var _official_mods: Array[OfficialMod] = []
 ## Cumulative results of mod loading. When a mod is retried, it may appear
 ## multiple times.
 var _results: Array[ModLoadResult] = []
@@ -81,12 +81,22 @@ func get_mods(enabled = false) -> Array[Mod]:
 ## one that has failed, which you may want to skip). Therefore after an error
 ## you can take action to recover, and continue loading the rest of the mods
 ## (usually this would involve prompting the user to ask them what to do).
-func load_all(mods: Array[Mod], required_mods: Array[ModRequirement] = [], verify_required: bool = true, verify_trusted: bool = true) -> Array[ModLoadResult]:
+func load_all(mods: Array[Mod], required_mods: Array[ModRequirement] = [], verify_required: bool = true, official_mods: Array[OfficialMod] = []) -> Array[ModLoadResult]:
 	_results = []
 	_queued_required_mods = required_mods
 	_queued_mods = mods
 	_verify_required = verify_required
-	_verify_trusted = verify_trusted
+	_official_mods = official_mods
+	
+	var _is_not_official_mod = func(m: Mod):
+		return not _official_mods.any(func(o: OfficialMod): return o.filename == m.filename)
+	
+	if _queued_mods.any(_is_not_official_mod):
+		var result = ModLoadResult.new()
+		result.status = ModLoadResult.Status.WARNING
+		result.error = ModLoadResult.LoadError.LOADING_UNOFFICIAL_MODS
+		
+		return [result]
 	
 	return _continue_load_all()
 
@@ -116,7 +126,8 @@ func force_load_next_and_continue() -> Array[ModLoadResult]:
 
 
 ## Retry loading the first queued mod. Useful if the user has fixed something
-## in the background. Then continues loading all the mods.
+## in the background (or if the error was a one-off warning). Then continues
+## loading all the mods.
 func retry_next_and_continue() -> Array[ModLoadResult]:
 	return _continue_load_all()
 
@@ -132,6 +143,7 @@ func load_requirement(req: ModRequirement, verify_integrity: bool) -> ModLoadRes
 		result.error = ModLoadResult.LoadError.FILE_NOT_FOUND
 		return result
 	
+	# TODO: repetition from load_mod
 	if verify_integrity and req.md5_hash.is_empty() and req.sha256_hash.is_empty():
 		result.status = ModLoadResult.Status.FAILURE
 		result.error = ModLoadResult.LoadError.NO_HASH
@@ -171,19 +183,47 @@ func load_requirement(req: ModRequirement, verify_integrity: bool) -> ModLoadRes
 
 ## Attempts to load the given mod (regardless of whether it is enabled). Returns
 ## the result of loading.
-func load_mod(mod: Mod, verify_trusted: bool) -> ModLoadResult:
+func load_mod(mod: Mod, ignore_official_mod_checksum: bool) -> ModLoadResult:
 	var result = ModLoadResult.new()
 	result.display_name = mod.filename
 	
 	var path = filename_to_absolute_path(mod.filename)
 	result.absolute_path = ProjectSettings.globalize_path(path)
 	
-	# TODO: Verify hash for trusted mods once they are implemented
-	
 	if not FileAccess.file_exists(path):
 		result.Status = ModLoadResult.Status.FAILURE
 		result.error = ModLoadResult.LoadError.FILE_NOT_FOUND
 		return result
+	
+	var official_mod: OfficialMod = null
+	var filtered = _official_mods.filter(func(m): return m.filename == mod.filename)
+	official_mod = null if filtered.is_empty() else filtered.front()
+	
+	# TODO: repetition from load_requirement
+	if official_mod and official_mod.md5_hash.is_empty() and official_mod.sha256_hash.is_empty():
+		result.status = ModLoadResult.Status.FAILURE
+		result.error = ModLoadResult.LoadError.NO_HASH
+		return result
+	
+	if official_mod and not official_mod.sha256_hash.is_empty():
+		var hash = FileAccess.get_sha256(path)
+		if hash != official_mod.sha256_hash:
+			result.status = ModLoadResult.Status.FAILURE
+			result.error = ModLoadResult.LoadError.HASH_MISMATCH
+			result.hash_type = ModLoadResult.Hash.SHA_256
+			result.expected_hash = official_mod.sha256_hash
+			result.actual_hash = hash
+			return result
+	
+	if official_mod and not official_mod.md5_hash.is_empty():
+		var hash = FileAccess.get_md5(official_mod.path)
+		if hash != official_mod.md5_hash:
+			result.status = ModLoadResult.Status.FAILURE
+			result.error = ModLoadResult.LoadError.HASH_MISMATCH
+			result.hash_type = ModLoadResult.Hash.MD5
+			result.expected_hash = official_mod.md5_hash
+			result.actual_hash = hash
+			return result
 	
 	var load_success = ProjectSettings.load_resource_pack(path)
 	
@@ -237,7 +277,7 @@ func _load_next(force: bool = false) -> bool:
 		return true
 	
 	if not _queued_mods.is_empty():
-		var result = load_mod(_queued_mods.front(), false if force else _verify_trusted)
+		var result = load_mod(_queued_mods.front(), force)
 		_results.append(result)
 		if result.status == ModLoadResult.Status.FAILURE:
 			return false

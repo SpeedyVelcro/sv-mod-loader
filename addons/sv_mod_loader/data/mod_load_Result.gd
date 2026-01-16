@@ -2,10 +2,11 @@ class_name ModLoadResult
 extends Resource
 ## Carries information about the success/failure to load a mod.
 
-## Result of attempting to load mod
-enum Status {SUCCESS, FAILURE}
+## Result of attempting to load mod. Success, failure, or a general warning
+## about the mod list.
+enum Status {SUCCESS, WARNING, FAILURE}
 ## Error that was encountered
-enum LoadError {NONE, FILE_NOT_FOUND, HASH_MISMATCH, NO_HASH, FAILED_TO_LOAD}
+enum LoadError {NONE, LOADING_UNOFFICIAL_MODS, FILE_NOT_FOUND, HASH_MISMATCH, NO_HASH, FAILED_TO_LOAD}
 ## Type of hash that was used, if any
 enum Hash {NONE, MD5, SHA_256}
 
@@ -38,12 +39,15 @@ func get_hash_name() -> String:
 
 ## Gets a human-readable explanation of the error
 func get_message() -> String:
+	# TODO: Get from language files
 	if status == Status.SUCCESS:
 		return "Successfully loaded mod %s from path %s" % [display_name, absolute_path]
 	
-	var message = "Failed to load mod %s from path %s" % [display_name, absolute_path]
+	var message = ""
 	
-	message += "\n\n"
+	if status == Status.FAILURE:
+		message += "Failed to load mod %s from path %s" % [display_name, absolute_path]
+		message += "\n\n"
 	
 	match error:
 		LoadError.FILE_NOT_FOUND:
@@ -63,5 +67,15 @@ func get_message() -> String:
 					but no expected hash was provided for the mod."
 		LoadError.FAILED_TO_LOAD:
 			message += "Error while loading file."
+		LoadError.LOADING_UNOFFICIAL_MODS:
+			message += "WARNING: You are attempting to load unofficial mods.
+					
+					Mods have full access to the underlying game engine and are
+					capable of executing arbitrary code. RUNNING MODS FROM
+					UNTRUSTED SOURCES CAN BE EXTREMELY DANGEROUS. You should only
+					run mods you completely trust and know are safe.
+					
+					Do you trust the mods you are attempting to load, and wish
+					to continue?"
 	
 	return message
