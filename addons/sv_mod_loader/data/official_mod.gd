@@ -1,5 +1,5 @@
 class_name OfficialMod
-extends Node
+extends Resource
 ## Official Mod
 ##
 ## Specifies information about an official mod, or a mod otherwise trusted by
