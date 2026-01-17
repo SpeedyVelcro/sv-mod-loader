@@ -35,6 +35,8 @@ var _results: Array[ModLoadResult] = []
 
 # Override
 func _init(path: String):
+	assert(path.is_absolute_path(), "Mod directory path %s is not absolute" % path)
+	
 	if not DirAccess.dir_exists_absolute(path):
 		DirAccess.make_dir_recursive_absolute(path)
 	
