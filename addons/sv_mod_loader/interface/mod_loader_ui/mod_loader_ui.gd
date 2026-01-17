@@ -21,6 +21,8 @@ enum TitleType {
 	SCENE
 	}
 
+## Path of mod loader user settings file
+@export var user_settings_path: String = "user://mod_loader/user_settings.json"
 ## Path of directory where mod lists are stored. Passed through to child mod
 ## list editor on ready.
 @export var mod_list_path: String = "user://mod_lists"
