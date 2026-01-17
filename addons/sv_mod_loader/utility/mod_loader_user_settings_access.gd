@@ -22,11 +22,34 @@ func _init(path: String) -> void:
 
 
 ## Saves the user settings to disk
-func save_file() -> void:
-	pass # TODO
+func save_file(user_settings: ModLoaderUserSettings) -> void:
+	var dict: Dictionary = user_settings.serialize()
+	var json: String = JSON.stringify(dict, "\t")
+	
+	var file: FileAccess = FileAccess.open(_path, FileAccess.WRITE)
+	file.store_string(json)
 
 
 ## Loads the user settings from disk if they exist; otherwise returns default
 ## settings.
-func load_file(mod_list_name: String) -> ModLoaderUserSettings:
-	return null # TODO
+func load_file() -> ModLoaderUserSettings:
+	var file: FileAccess = FileAccess.open(_path, FileAccess.READ)
+	
+	if file == null:
+		push_error("Failed to open file: " + _path)
+	
+	var json_string = file.get_as_text()
+	
+	var json = JSON.new()
+	var error = json.parse(json_string)
+	
+	if error != OK:
+		push_error("Failed to parse JSON from file: " + _path)
+	
+	if not (json.data is Dictionary):
+		push_warning("Mod loader user settings was not a dictionary.")
+	
+	var user_settings: ModLoaderUserSettings = ModLoaderUserSettings.new()
+	user_settings.deserialize(json.data)
+	
+	return user_settings
