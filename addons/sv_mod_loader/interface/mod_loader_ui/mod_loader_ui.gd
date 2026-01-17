@@ -133,6 +133,10 @@ enum TitleType {
 
 ## Mod loader
 var _mod_loader: ModLoader
+## User settings access
+var _user_settings_access: ModLoaderUserSettingsAccess
+## User settings
+var _user_settings: ModLoaderUserSettings
 
 
 # Override
@@ -147,6 +151,9 @@ func _ready() -> void:
 	_mod_list_editor.populate()
 	
 	_about_button.visible = show_about_button
+	
+	_user_settings_access = ModLoaderUserSettingsAccess.new(user_settings_path)
+	_user_settings = _user_settings_access.load_file()
 	
 	_mod_loader = ModLoader.new(mod_path)
 	_mod_loader.finished.connect(_on_mod_loader_finished)
@@ -234,6 +241,10 @@ func _pass_through_values() -> void:
 
 # Signal connection
 func _on_mod_loader_finished() -> void:
+	# User settings can be changed by loading process (due to "ignore from now
+	# on" checkboxes) so we need to save any changes
+	_user_settings_access.save_file(_user_settings)
+	
 	get_tree().change_scene_to_file(play_scene)
 
 
