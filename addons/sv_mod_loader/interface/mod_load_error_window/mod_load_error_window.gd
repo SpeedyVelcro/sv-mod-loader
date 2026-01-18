@@ -42,6 +42,9 @@ signal skip
 	set(value):
 		retry_is_continue = value
 		_update_retry_is_continue()
+## User settings (So it can be changed by stuff like "don't ask me again"
+## checkboxes)
+@export var user_settings: ModLoaderUserSettings
 
 
 ## Label for displaying error message text
@@ -60,6 +63,13 @@ signal skip
 ## Cancel mod loading button
 @onready var _cancel_button: Button = get_node(
 	"PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/CancelButton")
+## "Don't ask me again" checkbox when loading untrusted mods
+@onready var _skip_untrusted_warning_check_box: CheckBox = get_node(
+	"PanelContainer/MarginContainer/VBoxContainer/SkipUntrustedWarningCheckbox")
+## Spacer to be displayed between error label and check box if there is a check
+## box for this error.
+@onready var _check_box_spacer: Control = get_node(
+	"PanelContainer/MarginContainer/VBoxContainer/CheckBoxSpacer")
 
 ## Configure the error window for the given error and show.
 func show_error(error: ModLoadResult):
@@ -67,6 +77,9 @@ func show_error(error: ModLoadResult):
 	can_cancel = error.error == ModLoadResult.LoadError.LOADING_UNOFFICIAL_MODS
 	can_skip = error.error != ModLoadResult.LoadError.LOADING_UNOFFICIAL_MODS
 	retry_is_continue = error.error == ModLoadResult.LoadError.LOADING_UNOFFICIAL_MODS
+	_skip_untrusted_warning_check_box.visible = error.error == ModLoadResult.LoadError.LOADING_UNOFFICIAL_MODS
+	
+	_check_box_spacer.visible = _skip_untrusted_warning_check_box.visible
 	
 	show() # For some reason, needs to be before updating error text or window expands to maximum vertical height
 	error_message = error.get_message()
@@ -139,3 +152,15 @@ func _on_error_message_label_finished() -> void:
 # Signal connection
 func _on_cancel_button_pressed() -> void:
 	hide()
+
+
+# Signal connection
+func _on_skip_untrusted_warning_checkbox_toggled(toggled_on: bool) -> void:
+	# "Don't ask me again" is misleading if you cancel, because future attempts
+	# to hit play won't cancel, they'll bypass the warning entirely.
+	_cancel_button.disabled = toggled_on
+	
+	if not is_instance_valid(user_settings):
+		return
+	
+	user_settings.hide_untrusted_warning = toggled_on
