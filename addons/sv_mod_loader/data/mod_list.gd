@@ -5,7 +5,14 @@ extends Resource
 ## This resource stores a user-configured mod load order. Methods are provided
 ## for serialization to a dictionary (JSON)
 
+## Dictionary key for [member name]
+const _NAME_KEY = "name"
+## Dictionary key for [member loadOrder]
+const _LOAD_ORDER_KEY = "loadOrder"
+
+## Name of the mod list
 @export var name: String
+## Load order of mods
 @export var load_order: Array[Mod]
 
 
@@ -20,9 +27,9 @@ func _init():
 func serialize(include_name: bool = true) -> Dictionary:
 	var dict: Dictionary = {}
 	
-	dict["loadOrder"] = _serialize_load_order()
+	dict[_LOAD_ORDER_KEY] = _serialize_load_order()
 	if include_name:
-		dict["name"] = name
+		dict[_NAME_KEY] = name
 	
 	return dict
 
@@ -53,11 +60,11 @@ func _serialize_load_order() -> Array:
 func deserialize(dict: Dictionary, include_name: bool = true) -> void:
 	_reset(include_name)
 	
-	if include_name and dict.has("name") and dict["name"] is String:
-		name = dict["name"]
+	if include_name and dict.has(_NAME_KEY) and dict[_NAME_KEY] is String:
+		name = dict[_NAME_KEY]
 	
-	if dict.has("loadOrder") and dict["loadOrder"] is Array:
-		for mod in dict["loadOrder"]:
+	if dict.has(_LOAD_ORDER_KEY) and dict[_LOAD_ORDER_KEY] is Array:
+		for mod in dict[_LOAD_ORDER_KEY]:
 			load_order.append(Mod.new())
 			if mod is Dictionary:
 				load_order.back().deserialize(mod)

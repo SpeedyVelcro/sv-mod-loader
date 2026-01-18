@@ -18,6 +18,8 @@ var _path: String
 
 # Override
 func _init(path: String) -> void:
+	assert(path.is_absolute_path(), "Mod list path %s is not absolute" % path)
+	
 	if not DirAccess.dir_exists_absolute(path):
 		DirAccess.make_dir_recursive_absolute(path)
 	
