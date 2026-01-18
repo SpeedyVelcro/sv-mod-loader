@@ -32,15 +32,20 @@ var _official_mods: Array[OfficialMod] = []
 ## Cumulative results of mod loading. When a mod is retried, it may appear
 ## multiple times.
 var _results: Array[ModLoadResult] = []
+## User-configured settings for mod loader. Pass in through [member _init] by
+## reference (i.e. do NOT pass in a copy), because mod loader can react to
+## changes
+var _user_settings: ModLoaderUserSettings
 
 # Override
-func _init(path: String):
+func _init(path: String, user_settings: ModLoaderUserSettings = ModLoaderUserSettings.new()):
 	assert(path.is_absolute_path(), "Mod directory path %s is not absolute" % path)
 	
 	if not DirAccess.dir_exists_absolute(path):
 		DirAccess.make_dir_recursive_absolute(path)
 	
 	_path = path
+	_user_settings = user_settings
 	
 	# Register with _load_order_tracker
 	mod_loaded.connect(LoadOrderTracker._on_ModLoader_mod_loaded)

@@ -159,7 +159,7 @@ func _ready() -> void:
 	_user_settings = _user_settings_access.load_file()
 	_settings_window.user_settings = _user_settings
 	
-	_mod_loader = ModLoader.new(mod_path)
+	_mod_loader = ModLoader.new(mod_path, _user_settings)
 	_mod_loader.finished.connect(_on_mod_loader_finished)
 
 ## Switches to the set "play scene". Set save_first to true to save all configs
