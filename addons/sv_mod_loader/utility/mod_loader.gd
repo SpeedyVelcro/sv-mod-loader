@@ -98,12 +98,13 @@ func load_all(mods: Array[Mod], required_mods: Array[ModRequirement] = [], verif
 	var _is_not_official_mod = func(m: Mod):
 		return not _official_mods.any(func(o: OfficialMod): return o.filename == m.filename)
 	
-	if _queued_mods.any(_is_not_official_mod):
-		var result = ModLoadResult.new()
-		result.status = ModLoadResult.Status.WARNING
-		result.error = ModLoadResult.LoadError.LOADING_UNOFFICIAL_MODS
-		
-		return [result]
+	if not _user_settings.hide_untrusted_warning:
+		if _queued_mods.any(_is_not_official_mod):
+			var result = ModLoadResult.new()
+			result.status = ModLoadResult.Status.WARNING
+			result.error = ModLoadResult.LoadError.LOADING_UNOFFICIAL_MODS
+			
+			return [result]
 	
 	return _continue_load_all()
 
