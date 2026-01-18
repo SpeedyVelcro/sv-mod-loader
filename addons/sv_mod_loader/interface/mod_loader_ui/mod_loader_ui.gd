@@ -158,6 +158,7 @@ func _ready() -> void:
 	_user_settings_access = ModLoaderUserSettingsAccess.new(user_settings_path)
 	_user_settings = _user_settings_access.load_file()
 	_settings_window.user_settings = _user_settings
+	_mod_load_error_window.user_settings = _user_settings
 	
 	_mod_loader = ModLoader.new(mod_path, _user_settings)
 	_mod_loader.finished.connect(_on_mod_loader_finished)
