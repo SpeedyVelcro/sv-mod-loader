@@ -33,6 +33,9 @@ func save_file(user_settings: ModLoaderUserSettings) -> void:
 ## Loads the user settings from disk if they exist; otherwise returns default
 ## settings.
 func load_file() -> ModLoaderUserSettings:
+	if not FileAccess.file_exists(_path):
+		return ModLoaderUserSettings.new()
+	
 	var file: FileAccess = FileAccess.open(_path, FileAccess.READ)
 	
 	if file == null:

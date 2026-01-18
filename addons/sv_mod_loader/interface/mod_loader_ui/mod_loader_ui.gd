@@ -128,7 +128,10 @@ enum TitleType {
 	"Panel/MarginContainer/HBoxContainer/VBoxContainer/TitleSceneParent")
 ## About window scene
 @onready var _about_window: Window = get_node("AboutWindow")
+## Mod load error window scene
 @onready var _mod_load_error_window: Window = get_node("ModLoadErrorWindow")
+## Settings window scene
+@onready var _settings_window: Window = get_node("SettingsWindow")
 
 
 ## Mod loader
@@ -154,6 +157,7 @@ func _ready() -> void:
 	
 	_user_settings_access = ModLoaderUserSettingsAccess.new(user_settings_path)
 	_user_settings = _user_settings_access.load_file()
+	_settings_window.user_settings = _user_settings
 	
 	_mod_loader = ModLoader.new(mod_path)
 	_mod_loader.finished.connect(_on_mod_loader_finished)
@@ -266,6 +270,11 @@ func _on_about_button_pressed() -> void:
 
 
 # Signal connection
+func _on_settings_button_pressed() -> void:
+	_settings_window.popup_centered()
+
+
+# Signal connection
 func _on_mod_load_error_window_retry() -> void:
 	var results = _mod_loader.retry_next_and_continue()
 	_handle_mod_load_results(results)
@@ -276,8 +285,15 @@ func _on_mod_load_error_window_skip() -> void:
 	_mod_loader.skip_next_and_continue()
 
 
+# Signal connection
+func _on_settings_window_finished_editing() -> void:
+	_user_settings_access.save_file(_user_settings)
+
+
 ## Called before destroy
 func _destructor() -> void:
+	_user_settings_access.save_file(_user_settings)
+	
 	if _mod_loader != null and _mod_loader.finished.is_connected(_on_mod_loader_finished):
 		_mod_loader.finished.disconnect(_on_mod_loader_finished)
 
