@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://dafvs4esxjtop" path="res://addons/sv_mod_loader/interface/mod_array_editor/mod_array_editor.gd" id="1_mocfe"]
 
 [node name="ModArrayEditor" type="Tree"]
+auto_translate_mode = 2
 offset_right = 256.0
 offset_bottom = 512.0
 size_flags_vertical = 3
