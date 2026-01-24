@@ -2,6 +2,9 @@ extends Window
 ## Error window that displays after failing to load a mod. Provides options
 ## for recovery.
 
+## Emitted when the player chooses to force loading the mod anyway, skipping
+## hash checks.
+signal force_load
 ## Emitted when player chooses that mod loader should retry loading the mod.
 signal retry
 ## Emitted when player chooses that mod loader should skip loading the failed
@@ -16,6 +19,13 @@ signal skip
 	set(value):
 		error_message = value
 		_update_error_message()
+## Allow forcing loading the next mod by skipping hash check.
+@export var can_force_load: bool = false:
+	get:
+		return can_force_load
+	set(value):
+		can_force_load = value
+		_update_can_force_load()
 ## Allow cancelling without aborting. Should only be allowed when no mods have
 ## been loaded yet, because loading mods is an irreversible action.
 @export var can_cancel: bool = false:
@@ -50,6 +60,9 @@ signal skip
 ## Label for displaying error message text
 @onready var _error_message_label: Label = get_node(
 	"PanelContainer/MarginContainer/VBoxContainer/ErrorMessageLabel")
+## Force load button (a.k.a. Load Anyway)
+@onready var _force_load_button: Button = get_node(
+	"PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/ForceLoadButton")
 ## Retry mod and continue button (a.k.a. continue, it's functionally the same
 ## under the hood)
 @onready var _retry_button: Button = get_node(
@@ -73,7 +86,8 @@ signal skip
 
 ## Configure the error window for the given error and show.
 func show_error(error: ModLoadResult):
-	# TODO: Also add a "retry and skip hash check" button if the error is a hash mismatch
+	can_force_load = error.error == ModLoadResult.LoadError.HASH_MISMATCH
+	
 	can_cancel = error.error == ModLoadResult.LoadError.LOADING_UNOFFICIAL_MODS
 	can_skip = error.error != ModLoadResult.LoadError.LOADING_UNOFFICIAL_MODS
 	retry_is_continue = error.error == ModLoadResult.LoadError.LOADING_UNOFFICIAL_MODS
@@ -99,6 +113,11 @@ func _update_error_message() -> void:
 	_error_message_label.text = error_message
 
 
+## Show appropriate buttons for errors where you can force load
+func _update_can_force_load() -> void:
+	_force_load_button.visible = can_force_load
+
+
 ## Show appropriate buttons for cancellable errors
 func _update_can_cancel() -> void:
 	_cancel_button.visible = can_cancel
@@ -112,7 +131,7 @@ func _update_can_skip() -> void:
 
 ## Sets retry button text according to setting
 func _update_retry_is_continue() -> void:
-	# TODO: Localisation
+	# TODO: Localisation (?? might be handled anyway by button)
 	_retry_button.text = "Continue" if retry_is_continue else "Retry"
 
 
@@ -124,6 +143,12 @@ func _on_panel_container_resized() -> void:
 	# but it doesn't seem to have gotten much traction. Maybe worth making a
 	# minimum reproducible example and raising as a bug?
 	size.y = get_child(0).size.y
+
+
+# Signal connection
+func _on_force_load_button_pressed() -> void:
+	hide()
+	force_load.emit()
 
 
 # Signal connection

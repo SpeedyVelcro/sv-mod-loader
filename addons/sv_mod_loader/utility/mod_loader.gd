@@ -128,7 +128,10 @@ func skip_next_and_continue() -> Array[ModLoadResult]:
 ## risks. 
 func force_load_next_and_continue() -> Array[ModLoadResult]:
 	var force = true
-	_load_next(force)
+	var success = _load_next(force)
+	
+	if (not success):
+		return _results
 	
 	return _continue_load_all()
 
@@ -151,31 +154,32 @@ func load_requirement(req: ModRequirement, verify_integrity: bool) -> ModLoadRes
 		result.error = ModLoadResult.LoadError.FILE_NOT_FOUND
 		return result
 	
-	# TODO: repetition from load_mod
-	if verify_integrity and req.md5_hash.is_empty() and req.sha256_hash.is_empty():
-		result.status = ModLoadResult.Status.FAILURE
-		result.error = ModLoadResult.LoadError.NO_HASH
-		return result
-	
-	if verify_integrity and not req.sha256_hash.is_empty():
-		var hash = FileAccess.get_sha256(req.path)
-		if hash != req.sha256_hash:
+	# TODO: checksum code is similar across mods and requirements. Could be cleaned up for DRY principle
+	if verify_integrity:
+		if req.md5_hash.is_empty() and req.sha256_hash.is_empty():
 			result.status = ModLoadResult.Status.FAILURE
-			result.error = ModLoadResult.LoadError.HASH_MISMATCH
-			result.hash_type = ModLoadResult.Hash.SHA_256
-			result.expected_hash = req.sha256_hash
-			result.actual_hash = hash
+			result.error = ModLoadResult.LoadError.NO_HASH
 			return result
-	
-	if verify_integrity and not req.md5_hash.is_empty():
-		var hash = FileAccess.get_md5(req.path)
-		if hash != req.md5_hash:
-			result.status = ModLoadResult.Status.FAILURE
-			result.error = ModLoadResult.LoadError.HASH_MISMATCH
-			result.hash_type = ModLoadResult.Hash.MD5
-			result.expected_hash = req.md5_hash
-			result.actual_hash = hash
-			return result
+		
+		if not req.sha256_hash.is_empty():
+			var hash = FileAccess.get_sha256(req.path)
+			if hash != req.sha256_hash:
+				result.status = ModLoadResult.Status.FAILURE
+				result.error = ModLoadResult.LoadError.HASH_MISMATCH
+				result.hash_type = ModLoadResult.Hash.SHA_256
+				result.expected_hash = req.sha256_hash
+				result.actual_hash = hash
+				return result
+		
+		if not req.md5_hash.is_empty():
+			var hash = FileAccess.get_md5(req.path)
+			if hash != req.md5_hash:
+				result.status = ModLoadResult.Status.FAILURE
+				result.error = ModLoadResult.LoadError.HASH_MISMATCH
+				result.hash_type = ModLoadResult.Hash.MD5
+				result.expected_hash = req.md5_hash
+				result.actual_hash = hash
+				return result
 	
 	var load_success = ProjectSettings.load_resource_pack(req.path)
 	
@@ -207,31 +211,32 @@ func load_mod(mod: Mod, ignore_official_mod_checksum: bool) -> ModLoadResult:
 	var filtered = _official_mods.filter(func(m): return m.filename == mod.filename)
 	official_mod = null if filtered.is_empty() else filtered.front()
 	
-	# TODO: repetition from load_requirement
-	if official_mod and official_mod.md5_hash.is_empty() and official_mod.sha256_hash.is_empty():
-		result.status = ModLoadResult.Status.FAILURE
-		result.error = ModLoadResult.LoadError.NO_HASH
-		return result
-	
-	if official_mod and not official_mod.sha256_hash.is_empty():
-		var hash = FileAccess.get_sha256(path)
-		if hash != official_mod.sha256_hash:
+	# TODO: checksum code is similar across mods and requirements. Could be cleaned up for DRY principle
+	if official_mod and not ignore_official_mod_checksum:
+		if official_mod.md5_hash.is_empty() and official_mod.sha256_hash.is_empty():
 			result.status = ModLoadResult.Status.FAILURE
-			result.error = ModLoadResult.LoadError.HASH_MISMATCH
-			result.hash_type = ModLoadResult.Hash.SHA_256
-			result.expected_hash = official_mod.sha256_hash
-			result.actual_hash = hash
+			result.error = ModLoadResult.LoadError.NO_HASH
 			return result
-	
-	if official_mod and not official_mod.md5_hash.is_empty():
-		var hash = FileAccess.get_md5(path)
-		if hash != official_mod.md5_hash:
-			result.status = ModLoadResult.Status.FAILURE
-			result.error = ModLoadResult.LoadError.HASH_MISMATCH
-			result.hash_type = ModLoadResult.Hash.MD5
-			result.expected_hash = official_mod.md5_hash
-			result.actual_hash = hash
-			return result
+		
+		if not official_mod.sha256_hash.is_empty():
+			var hash = FileAccess.get_sha256(path)
+			if hash != official_mod.sha256_hash:
+				result.status = ModLoadResult.Status.FAILURE
+				result.error = ModLoadResult.LoadError.HASH_MISMATCH
+				result.hash_type = ModLoadResult.Hash.SHA_256
+				result.expected_hash = official_mod.sha256_hash
+				result.actual_hash = hash
+				return result
+		
+		if not official_mod.md5_hash.is_empty():
+			var hash = FileAccess.get_md5(path)
+			if hash != official_mod.md5_hash:
+				result.status = ModLoadResult.Status.FAILURE
+				result.error = ModLoadResult.LoadError.HASH_MISMATCH
+				result.hash_type = ModLoadResult.Hash.MD5
+				result.expected_hash = official_mod.md5_hash
+				result.actual_hash = hash
+				return result
 	
 	var load_success = ProjectSettings.load_resource_pack(path)
 	
