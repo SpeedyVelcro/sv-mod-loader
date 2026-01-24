@@ -22,7 +22,7 @@ involving distributing an asset pack separately from the game, which
 would be required in order to start the game.
 
 ## Prerequisites
-Requires Godot 4.X
+Requires Godot 4.5
 
 To allow pop-up dialogs to show up deteched from the main window (instead of as
 an embedded window), disable
