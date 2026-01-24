@@ -12,7 +12,7 @@ loading of [`.pck`](https://docs.godotengine.org/en/stable/tutorials/export/expo
 files in a user-customisable way. When adding mod support to your game,
 it is your responsibility to either document the structure of your
 game, or simply make the source code available, so that modders know
-how to structure their game.
+how to structure their mod.
 
 Note that an alternative, [godot-mod-loader](https://github.com/GodotModding/godot-mod-loader),
 is probably more mature, stable, and feature-complete than SV Mod
