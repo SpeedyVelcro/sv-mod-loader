@@ -52,6 +52,9 @@ func populate() -> void:
 	
 	# Scan for mods
 	var mod_array: Array[Mod] = ModLoader.new(mod_path).get_mods()
+	# Get rid of required mods, since they'll be at the beginning and force-enabled anyway
+	# TODO: that funky rsplit at the end to get the filename from path should probably be moved to PathHelper (also it might cause a crash if the path is malformed)
+	mod_array = mod_array.filter(func (mod: Mod): return not required_mods.any(func(req: ModRequirement): return mod.filename == req.path.rsplit("/", true, 1)[1]))
 	_mod_array_editor.set_mod_array(mod_array)
 	
 	# Select starting mod list
