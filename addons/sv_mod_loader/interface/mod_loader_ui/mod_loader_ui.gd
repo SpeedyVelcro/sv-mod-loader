@@ -276,6 +276,12 @@ func _on_settings_button_pressed() -> void:
 
 
 # Signal connection
+func _on_mod_load_error_window_force_load() -> void:
+	var results = _mod_loader.force_load_next_and_continue()
+	_handle_mod_load_results(results)
+
+
+# Signal connection
 func _on_mod_load_error_window_retry() -> void:
 	var results = _mod_loader.retry_next_and_continue()
 	_handle_mod_load_results(results)

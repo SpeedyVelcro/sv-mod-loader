@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://dm0nrl5xyr54a" path="res://addons/sv_mod_loader/interface/mod_load_error_window/mod_load_error_window.gd" id="1_t7ew2"]
 
 [node name="ModLoadErrorWindow" type="Window"]
+oversampling_override = 1.0
 title = "Error"
 initial_position = 2
 size = Vector2i(620, 194)
@@ -55,6 +56,10 @@ layout_mode = 2
 theme_override_constants/separation = 16
 alignment = 1
 
+[node name="ForceLoadButton" type="Button" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "Load Anyway"
+
 [node name="RetryButton" type="Button" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 text = "Retry"
@@ -73,6 +78,7 @@ text = "Cancel"
 
 [connection signal="resized" from="PanelContainer" to="." method="_on_panel_container_resized"]
 [connection signal="toggled" from="PanelContainer/MarginContainer/VBoxContainer/SkipUntrustedWarningCheckbox" to="." method="_on_skip_untrusted_warning_checkbox_toggled"]
+[connection signal="pressed" from="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/ForceLoadButton" to="." method="_on_force_load_button_pressed"]
 [connection signal="pressed" from="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/RetryButton" to="." method="_on_retry_button_pressed"]
 [connection signal="pressed" from="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/SkipButton" to="." method="_on_skip_button_pressed"]
 [connection signal="pressed" from="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/AbortButton" to="." method="_on_abort_button_pressed"]
