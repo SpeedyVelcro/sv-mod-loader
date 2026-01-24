@@ -34,7 +34,7 @@ Clone the repository and copy the `addons` folder into the same folder
 as your `project.godot` file.
 
 ## Usage
-Place an instance of the scene `ModLoaderUI` - found in `addons/sv_mod_loader/interface/mod_loader_ui/tscn` -
+Place an instance of the scene `ModLoaderUI` - found in `addons/sv_mod_loader/interface/mod_loader_ui.tscn` -
 in the first scene of your game. The exported variables allow you to
 configure the mod loader. The only required variable is "Play Scene",
 which you should set to the scene you want to switch to when the user
