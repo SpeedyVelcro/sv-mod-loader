@@ -50,5 +50,11 @@ install some example mods for this game. The source code of those mods
 is located in the `example-mods` folder
 
 ## License
-See the [`LICENSE`](./LICENSE) file.
+See the [`LICENSE`](./LICENSE) file. Note that this repo includes
+third-party llibraries that may use different (but compatible)
+licenses, and/or have different copyright notices. For those, please
+see the following license files:
+```
+addons/gdUnit4/LICENSE
+```
 

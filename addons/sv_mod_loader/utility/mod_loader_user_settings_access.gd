@@ -13,7 +13,7 @@ var _path: String
 func _init(path: String) -> void:
 	assert(path.is_absolute_path(), "Mod loader user settings path %s is not absolute" % path)
 	
-	var dir: String = path.rsplit("/", true, 1)[0]
+	var dir: String = PathHelper.file_path_to_containing_dir(path)
 	
 	if not DirAccess.dir_exists_absolute(dir):
 		DirAccess.make_dir_recursive_absolute(dir)
