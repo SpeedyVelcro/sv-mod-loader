@@ -23,6 +23,11 @@ window/subwindows/embed_subwindows=false
 
 enabled=PackedStringArray("res://addons/gdUnit4/plugin.cfg")
 
+[gdunit4]
+
+settings/test/test_discovery=true
+ui/inspector/tree_sort_mode=1
+
 [input]
 
 move_up={
