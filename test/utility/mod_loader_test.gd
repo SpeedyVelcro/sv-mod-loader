@@ -126,6 +126,33 @@ func test_load_mod(filename: String, _test_parameters := [
 	assert_int(result.status).is_equal(ModLoadResult.Status.SUCCESS)
 
 
+func test_load_mod_requirement(display_name: String, filename: String, _test_parameters := [
+	["Foo Mod", "foo.pck"],
+	["Bar Mod", "bar.pck"]
+]):
+	# Arrange
+	var mocked_load_wrapper: LoadResourcePackWrapper = mock(LoadResourcePackWrapper)
+	do_return(true).on(mocked_load_wrapper).load_resource_pack(any_string())
+	var target := ModLoader.new(temp_mods_dir, ModLoaderUserSettings.new(), mocked_load_wrapper)
+	
+	var requirement := ModRequirement.new()
+	requirement.display_name = display_name
+	requirement.path = temp_mods_dir + "/" + filename
+	
+	_create_file(filename)
+	
+	# Act
+	var result := target.load_requirement(requirement, false)
+	
+	# Assert
+	verify(mocked_load_wrapper).load_resource_pack(temp_mods_dir + "/" + filename)
+	verify_no_more_interactions(mocked_load_wrapper)
+	
+	assert_str(result.display_name).is_equal(display_name)
+	assert_str(result.absolute_path).is_equal(ProjectSettings.globalize_path(temp_mods_dir + "/" + filename))
+	assert_int(result.status).is_equal(ModLoadResult.Status.SUCCESS)
+
+
 func _create_file(file: String):
 	_create_files([file])
 
