@@ -1,5 +1,5 @@
 class_name ModLoader
-extends Node
+extends Object
 ## Loads mods and gets information about mods from disk.
 ##
 ## A class that loads mod pcks. This class is stateful, storing information
