@@ -96,8 +96,38 @@ func test_load_nothing():
 	var result := target.load_all([], [])
 	
 	# Assert
-	assert_array(result).is_empty()
 	verify_no_interactions(mocked_load_wrapper)
+	assert_array(result).is_empty()
+
+
+func test_load_mod(filename: String, _test_parameters := [
+	["foo.pck"],
+	["bar.pck"]
+]):
+	# Arrange
+	var mocked_load_wrapper: LoadResourcePackWrapper = mock(LoadResourcePackWrapper)
+	do_return(true).on(mocked_load_wrapper).load_resource_pack(any_string())
+	var target := ModLoader.new(temp_mods_dir, ModLoaderUserSettings.new(), mocked_load_wrapper)
+	
+	var mod := Mod.new()
+	mod.filename = filename
+	
+	_create_file(filename)
+	
+	# Act
+	var result := target.load_mod(mod, false)
+	
+	# Assert
+	verify(mocked_load_wrapper).load_resource_pack(temp_mods_dir + "/" + filename)
+	verify_no_more_interactions(mocked_load_wrapper)
+	
+	assert_str(result.display_name).is_equal(filename)
+	assert_str(result.absolute_path).is_equal(ProjectSettings.globalize_path(temp_mods_dir + "/" + filename))
+	assert_int(result.status).is_equal(ModLoadResult.Status.SUCCESS)
+
+
+func _create_file(file: String):
+	_create_files([file])
 
 
 func _create_files(files: Array[String]):

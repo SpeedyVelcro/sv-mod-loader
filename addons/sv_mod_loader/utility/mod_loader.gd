@@ -206,7 +206,7 @@ func load_mod(mod: Mod, ignore_official_mod_checksum: bool) -> ModLoadResult:
 	result.absolute_path = ProjectSettings.globalize_path(path)
 	
 	if not FileAccess.file_exists(path):
-		result.Status = ModLoadResult.Status.FAILURE
+		result.status = ModLoadResult.Status.FAILURE
 		result.error = ModLoadResult.LoadError.FILE_NOT_FOUND
 		return result
 	
