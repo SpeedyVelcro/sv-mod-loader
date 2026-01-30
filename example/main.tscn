@@ -1,8 +1,8 @@
-[gd_scene load_steps=2 format=3 uid="uid://dkab354lm25x2"]
+[gd_scene format=3 uid="uid://dkab354lm25x2"]
 
 [ext_resource type="PackedScene" uid="uid://cxfqajstekahy" path="res://addons/sv_mod_loader/interface/mod_loader_ui/mod_loader_ui.tscn" id="1_g1igq"]
 
-[node name="Main" type="Node"]
+[node name="Main" type="Node" unique_id=1552769415]
 
-[node name="ModLoaderUI" parent="." instance=ExtResource("1_g1igq")]
+[node name="ModLoaderUI" parent="." unique_id=986935994 instance=ExtResource("1_g1igq")]
 play_scene = "res://example/ui/menu/menu.tscn"

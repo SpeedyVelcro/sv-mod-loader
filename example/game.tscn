@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://clu2e8c5gl0ea"]
+[gd_scene format=3 uid="uid://clu2e8c5gl0ea"]
 
 [ext_resource type="Script" uid="uid://duthx7kn6ukwp" path="res://example/game.gd" id="1_3uyy4"]
 [ext_resource type="PackedScene" uid="uid://biyulv6kqgwo7" path="res://example/entity/player/player.tscn" id="1_aaqr0"]
@@ -13,7 +13,7 @@ _data = {
 }
 point_count = 5
 
-[node name="Game" type="Node2D" node_paths=PackedStringArray("player", "bullet_timer", "pause_ui", "game_over_ui")]
+[node name="Game" type="Node2D" unique_id=215558802 node_paths=PackedStringArray("player", "bullet_timer", "pause_ui", "game_over_ui")]
 script = ExtResource("1_3uyy4")
 spawn_curve = SubResource("Curve2D_4e2sw")
 bullet_scene = ExtResource("2_d7fo3")
@@ -22,25 +22,25 @@ bullet_timer = NodePath("BulletTimer")
 pause_ui = NodePath("Interface/Pause")
 game_over_ui = NodePath("Interface/GameOver")
 
-[node name="Background" parent="." instance=ExtResource("3_2031v")]
+[node name="Background" parent="." unique_id=19520890 instance=ExtResource("3_2031v")]
 
-[node name="Player" parent="." instance=ExtResource("1_aaqr0")]
+[node name="Player" parent="." unique_id=1598811612 instance=ExtResource("1_aaqr0")]
 position = Vector2(576, 324)
 
-[node name="BulletTimer" type="Timer" parent="."]
+[node name="BulletTimer" type="Timer" parent="." unique_id=1394678410]
 autostart = true
 
-[node name="StaticBody2D" type="StaticBody2D" parent="."]
+[node name="StaticBody2D" type="StaticBody2D" parent="." unique_id=1889159865]
 collision_layer = 4
 
-[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="StaticBody2D"]
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="StaticBody2D" unique_id=97353359]
 polygon = PackedVector2Array(0, 0, 1152, 0, 1152, 648, 0, 648, 0, -64, -64, -64, -64, 704, 1216, 704, 1216, -64, 0, -64)
 
-[node name="Interface" type="CanvasLayer" parent="."]
+[node name="Interface" type="CanvasLayer" parent="." unique_id=993088007]
 
-[node name="Pause" parent="Interface" instance=ExtResource("4_vukwp")]
+[node name="Pause" parent="Interface" unique_id=54935752 instance=ExtResource("4_vukwp")]
 
-[node name="GameOver" parent="Interface" instance=ExtResource("5_s86jb")]
+[node name="GameOver" parent="Interface" unique_id=486470649 instance=ExtResource("5_s86jb")]
 
 [connection signal="death" from="Player" to="." method="_on_player_death"]
 [connection signal="timeout" from="BulletTimer" to="." method="_on_bullet_timer_timeout"]

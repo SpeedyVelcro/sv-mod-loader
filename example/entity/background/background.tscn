@@ -1,5 +1,5 @@
 [gd_scene format=3 uid="uid://b0vdferi3o7gh"]
 
-[node name="Background" type="Polygon2D"]
+[node name="Background" type="Polygon2D" unique_id=151586151]
 color = Color(0.2923, 0.731935, 0.79, 1)
 polygon = PackedVector2Array(0, 0, 1152, 0, 1152, 648, 0, 648)

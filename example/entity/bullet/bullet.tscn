@@ -1,4 +1,4 @@
-[gd_scene load_steps=4 format=3 uid="uid://d32ek3hyyach6"]
+[gd_scene format=3 uid="uid://d32ek3hyyach6"]
 
 [ext_resource type="Texture2D" uid="uid://dj1hrdddiopbv" path="res://example/art/bullet.png" id="1_3fmeg"]
 [ext_resource type="Script" uid="uid://di11xqltcdodk" path="res://example/entity/bullet/bullet.gd" id="1_inmwr"]
@@ -6,21 +6,21 @@
 [sub_resource type="CircleShape2D" id="CircleShape2D_dbphp"]
 radius = 8.0
 
-[node name="Bullet" type="RigidBody2D"]
+[node name="Bullet" type="RigidBody2D" unique_id=1467558508]
 collision_layer = 2
 gravity_scale = 0.0
 contact_monitor = true
 max_contacts_reported = 1
 script = ExtResource("1_inmwr")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=103191805]
 scale = Vector2(2, 2)
 texture = ExtResource("1_3fmeg")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=2017062785]
 shape = SubResource("CircleShape2D_dbphp")
 
-[node name="LifeTimer" type="Timer" parent="."]
+[node name="LifeTimer" type="Timer" parent="." unique_id=370634350]
 wait_time = 6.0
 one_shot = true
 autostart = true
