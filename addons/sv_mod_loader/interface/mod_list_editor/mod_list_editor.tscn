@@ -1,42 +1,42 @@
-[gd_scene load_steps=4 format=3 uid="uid://6huoh8opodh2"]
+[gd_scene format=3 uid="uid://6huoh8opodh2"]
 
 [ext_resource type="PackedScene" uid="uid://m0yyqaweebn7" path="res://addons/sv_mod_loader/interface/mod_array_editor/mod_array_editor.tscn" id="1_1mjct"]
 [ext_resource type="Script" uid="uid://jaf0dfmnwhl5" path="res://addons/sv_mod_loader/interface/mod_list_editor/mod_list_editor.gd" id="1_fvffs"]
 [ext_resource type="PackedScene" uid="uid://ebaiksgghdwb" path="res://addons/sv_mod_loader/interface/new_mod_list_window/new_mod_list_window.tscn" id="3_a6cuf"]
 
-[node name="ModListEditor" type="VBoxContainer"]
+[node name="ModListEditor" type="VBoxContainer" unique_id=2024636504]
 offset_right = 512.0
 offset_bottom = 512.0
 size_flags_horizontal = 3
 script = ExtResource("1_fvffs")
 
-[node name="ModArrayEditor" parent="." instance=ExtResource("1_1mjct")]
+[node name="ModArrayEditor" parent="." unique_id=1995272192 instance=ExtResource("1_1mjct")]
 layout_mode = 2
 
-[node name="ReferenceRect" type="ReferenceRect" parent="."]
+[node name="ReferenceRect" type="ReferenceRect" parent="." unique_id=502517370]
 custom_minimum_size = Vector2(0, 16)
 layout_mode = 2
 
-[node name="OptionButton" type="OptionButton" parent="."]
+[node name="OptionButton" type="OptionButton" parent="." unique_id=1193948431]
 auto_translate_mode = 2
 layout_mode = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="."]
+[node name="HBoxContainer" type="HBoxContainer" parent="." unique_id=1071865728]
 layout_mode = 2
 
-[node name="NewButton" type="Button" parent="HBoxContainer"]
+[node name="NewButton" type="Button" parent="HBoxContainer" unique_id=1987519273]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "New Mod List"
 
-[node name="DeleteButton" type="Button" parent="HBoxContainer"]
+[node name="DeleteButton" type="Button" parent="HBoxContainer" unique_id=1415374266]
 layout_mode = 2
 text = "Delete Mod List"
 
-[node name="NewModListWindow" parent="." instance=ExtResource("3_a6cuf")]
+[node name="NewModListWindow" parent="." unique_id=1262820334 instance=ExtResource("3_a6cuf")]
 visible = false
 
-[node name="DeleteModListWindow" type="Window" parent="."]
+[node name="DeleteModListWindow" type="Window" parent="." unique_id=2139154503]
 title = "Delete Mod List"
 initial_position = 2
 size = Vector2i(476, 122)
@@ -47,34 +47,34 @@ exclusive = true
 unresizable = true
 popup_window = true
 
-[node name="PanelContainer" type="PanelContainer" parent="DeleteModListWindow"]
+[node name="PanelContainer" type="PanelContainer" parent="DeleteModListWindow" unique_id=1354310057]
 offset_right = 40.0
 offset_bottom = 40.0
 
-[node name="MarginContainer" type="MarginContainer" parent="DeleteModListWindow/PanelContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="DeleteModListWindow/PanelContainer" unique_id=1542026017]
 layout_mode = 2
 theme_override_constants/margin_left = 32
 theme_override_constants/margin_top = 32
 theme_override_constants/margin_right = 32
 theme_override_constants/margin_bottom = 32
 
-[node name="VBoxContainer" type="VBoxContainer" parent="DeleteModListWindow/PanelContainer/MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="DeleteModListWindow/PanelContainer/MarginContainer" unique_id=1136662370]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="DeleteModListWindow/PanelContainer/MarginContainer/VBoxContainer"]
+[node name="Label" type="Label" parent="DeleteModListWindow/PanelContainer/MarginContainer/VBoxContainer" unique_id=1754020029]
 layout_mode = 2
 text = "Are you sure you want to delete the current mod list?"
 horizontal_alignment = 1
 
-[node name="HBoxContainer" type="HBoxContainer" parent="DeleteModListWindow/PanelContainer/MarginContainer/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="DeleteModListWindow/PanelContainer/MarginContainer/VBoxContainer" unique_id=829824859]
 layout_mode = 2
 alignment = 1
 
-[node name="DeleteConfirmButton" type="Button" parent="DeleteModListWindow/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="DeleteConfirmButton" type="Button" parent="DeleteModListWindow/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer" unique_id=88250221]
 layout_mode = 2
 text = "Yes"
 
-[node name="DeleteCancelButton" type="Button" parent="DeleteModListWindow/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="DeleteCancelButton" type="Button" parent="DeleteModListWindow/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer" unique_id=728531825]
 layout_mode = 2
 text = "No"
 

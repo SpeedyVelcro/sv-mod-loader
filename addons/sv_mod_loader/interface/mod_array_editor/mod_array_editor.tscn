@@ -1,8 +1,8 @@
-[gd_scene load_steps=2 format=3 uid="uid://m0yyqaweebn7"]
+[gd_scene format=3 uid="uid://m0yyqaweebn7"]
 
 [ext_resource type="Script" uid="uid://dafvs4esxjtop" path="res://addons/sv_mod_loader/interface/mod_array_editor/mod_array_editor.gd" id="1_mocfe"]
 
-[node name="ModArrayEditor" type="Tree"]
+[node name="ModArrayEditor" type="Tree" unique_id=590261900]
 auto_translate_mode = 2
 offset_right = 256.0
 offset_bottom = 512.0

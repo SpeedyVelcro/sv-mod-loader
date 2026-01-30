@@ -1,8 +1,9 @@
-[gd_scene load_steps=2 format=3 uid="uid://cuysorrkxvtts"]
+[gd_scene format=3 uid="uid://cuysorrkxvtts"]
 
 [ext_resource type="Script" uid="uid://cb7rbs6dpong3" path="res://addons/sv_mod_loader/interface/about_window/about_window.gd" id="1_js8un"]
 
-[node name="AboutWindow" type="Window"]
+[node name="AboutWindow" type="Window" unique_id=1985926840]
+oversampling_override = 1.0
 title = "About"
 initial_position = 2
 size = Vector2i(620, 135)
@@ -13,14 +14,14 @@ popup_window = true
 max_size = Vector2i(32768, 720)
 script = ExtResource("1_js8un")
 
-[node name="PanelContainer" type="PanelContainer" parent="."]
+[node name="PanelContainer" type="PanelContainer" parent="." unique_id=1327540240]
 anchors_preset = 10
 anchor_right = 1.0
 offset_bottom = 135.0
 grow_horizontal = 2
 size_flags_vertical = 0
 
-[node name="MarginContainer" type="MarginContainer" parent="PanelContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="PanelContainer" unique_id=1914569437]
 layout_mode = 2
 size_flags_vertical = 0
 theme_override_constants/margin_left = 32
@@ -28,25 +29,25 @@ theme_override_constants/margin_top = 32
 theme_override_constants/margin_right = 32
 theme_override_constants/margin_bottom = 32
 
-[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/MarginContainer" unique_id=461856678]
 layout_mode = 2
 size_flags_vertical = 0
 
-[node name="RichTextLabel" type="RichTextLabel" parent="PanelContainer/MarginContainer/VBoxContainer"]
+[node name="RichTextLabel" type="RichTextLabel" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=1323270646]
 layout_mode = 2
 size_flags_vertical = 0
 horizontal_alignment = 1
 
-[node name="MarginContainer" type="MarginContainer" parent="PanelContainer/MarginContainer/VBoxContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=1973141723]
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 size_flags_vertical = 0
 
-[node name="CenterContainer" type="CenterContainer" parent="PanelContainer/MarginContainer/VBoxContainer"]
+[node name="CenterContainer" type="CenterContainer" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=1679836185]
 layout_mode = 2
 size_flags_vertical = 0
 
-[node name="CloseButton" type="Button" parent="PanelContainer/MarginContainer/VBoxContainer/CenterContainer"]
+[node name="CloseButton" type="Button" parent="PanelContainer/MarginContainer/VBoxContainer/CenterContainer" unique_id=1775067132]
 layout_mode = 2
 text = "Close"
 
