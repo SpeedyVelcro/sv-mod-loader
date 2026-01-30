@@ -1,5 +1,5 @@
 class_name ModLoader
-extends Node
+extends Object
 ## Loads mods and gets information about mods from disk.
 ##
 ## A class that loads mod pcks. This class is stateful, storing information
@@ -36,9 +36,11 @@ var _results: Array[ModLoadResult] = []
 ## reference (i.e. do NOT pass in a copy), because mod loader can react to
 ## changes
 var _user_settings: ModLoaderUserSettings
+## ProjectSettings.load_resource_pack callable, injected at init for easy mocking
+var _load_resource_pack_wrapper: LoadResourcePackWrapper
 
 # Override
-func _init(path: String, user_settings: ModLoaderUserSettings = ModLoaderUserSettings.new()):
+func _init(path: String, user_settings := ModLoaderUserSettings.new(), load_resource_pack_wrapper := LoadResourcePackWrapper.new()):
 	assert(path.is_absolute_path(), "Mod directory path %s is not absolute" % path)
 	
 	if not DirAccess.dir_exists_absolute(path):
@@ -46,6 +48,7 @@ func _init(path: String, user_settings: ModLoaderUserSettings = ModLoaderUserSet
 	
 	_path = path
 	_user_settings = user_settings
+	_load_resource_pack_wrapper = load_resource_pack_wrapper
 	
 	# Register with _load_order_tracker
 	mod_loaded.connect(LoadOrderTracker._on_ModLoader_mod_loaded)
@@ -181,7 +184,7 @@ func load_requirement(req: ModRequirement, verify_integrity: bool) -> ModLoadRes
 				result.actual_hash = hash
 				return result
 	
-	var load_success = ProjectSettings.load_resource_pack(req.path)
+	var load_success = _load_resource_pack_wrapper.load_resource_pack(req.path)
 	
 	if not load_success:
 		result.Status = ModLoadResult.Status.FAILURE
@@ -203,7 +206,7 @@ func load_mod(mod: Mod, ignore_official_mod_checksum: bool) -> ModLoadResult:
 	result.absolute_path = ProjectSettings.globalize_path(path)
 	
 	if not FileAccess.file_exists(path):
-		result.Status = ModLoadResult.Status.FAILURE
+		result.status = ModLoadResult.Status.FAILURE
 		result.error = ModLoadResult.LoadError.FILE_NOT_FOUND
 		return result
 	
@@ -238,7 +241,7 @@ func load_mod(mod: Mod, ignore_official_mod_checksum: bool) -> ModLoadResult:
 				result.actual_hash = hash
 				return result
 	
-	var load_success = ProjectSettings.load_resource_pack(path)
+	var load_success = _load_resource_pack_wrapper.load_resource_pack(path)
 	
 	if not load_success:
 		result.Status = ModLoadResult.Status.FAILURE

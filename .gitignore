@@ -1,6 +1,9 @@
 # Godot 4+ specific ignores
 .godot/
 
+#gdUnit4 ignores
+reports/
+
 # Build files
 build/linux/SV Mod Loader Example Game.pck
 build/linux/SV Mod Loader Example Game.sh
@@ -9,3 +12,4 @@ example-mods/blue-player/build/blue-player.pck
 example-mods/yellow-player/build/yellow-player.pck
 example-mods/red-background/build/red-background.pck
 example-mods/2x-bullet-speed/build/2x-bullet-speed.pck
+
