@@ -1,0 +1,27 @@
+name: Install Godot Engine
+description: Installs the Godot Engine to the path for the duration of the current job, invokable with the command "godot"
+inputs:
+  version:
+    description: "Version, e.g. v4.6-stable"
+    required: true
+  sha_256:
+    description: "SHA-256 checksum of the zip file from the release page"
+    required: true
+  platform:
+    description: "Platform as it appears in the binary name, e.g. linux.x86_64"
+    default: "linux.x86_64"
+runs:
+  steps:
+    - shell: bash
+      env:
+        GODOT_FILE: "Godot_v${{ inputs.version }}_${{ inputs.platform }}"
+        GODOT_ZIP: "Godot_v${{ inputs.version }}_${{ inputs.platform }}.zip" # Does not work with mono builds as they use an underscore instead of a dot in the zip filenames
+        BIN_DIR: "install-godot-action-bin"
+      run: |
+        curl -O https://github.com/godotengine/godot/releases/download/${{ inputs.version }}/${GODOT_ZIP}
+        echo "${{ inputs.sha_256 }} ${GODOT_ZIP}" | sha256sum -c
+        unzip ${GODOT_ZIP}
+        rm ${GODOT_ZIP}
+        mkdir ${BIN_DIR}
+        mv ${GODOT_FILE} ${BIN_DIR}/godot
+        echo "${PWD}/${BIN_DIR}" >> "$GITHUB_PATH" # Documented at https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-commands#adding-a-system-path
