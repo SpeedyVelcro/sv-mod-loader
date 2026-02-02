@@ -1,0 +1,34 @@
+name: Build Godot Project
+on:
+  # TODO: check if these are write
+  workflow_call:
+    inputs:
+      project-file:
+        required: false
+        type: string
+        default: "./project.godot"
+
+env:
+  GODOT_VERSION: "4.6-stable"
+
+jobs:
+  variables:
+    name: Calculated Variables
+    steps:
+      id: godot-path
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v5
+      - name: Install Godot Engine
+        uses: "./.github/actions/install-godot.yml"
+        with:
+          version: "4.6-stable"
+          sha_256: "6bcc59dfd1d670e918c77eae06e82b9dc5699de13d353dc3a4b3b6b307b6dc06"
+          platform: "linux.x86_64"
+      - name: Build Example Game
+        run: make GODOT_PATH="${GODOT_PATH}"
+      - name: Build Example Mods
+        run: make example-mods GODOT_PATH="${GODOT_PATH}"
+

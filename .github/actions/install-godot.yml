@@ -2,7 +2,7 @@ name: Install Godot Engine
 description: Installs the Godot Engine to the path for the duration of the current job, invokable with the command "godot"
 inputs:
   version:
-    description: "Version, e.g. v4.6-stable"
+    description: "Version, e.g. 4.6-stable"
     required: true
   sha_256:
     description: "SHA-256 checksum of the zip file from the release page"
@@ -11,8 +11,9 @@ inputs:
     description: "Platform as it appears in the binary name, e.g. linux.x86_64"
     default: "linux.x86_64"
 runs:
+  using: "composite"
   steps:
-    - shell: bash
+    - shell: "bash"
       env:
         GODOT_FILE: "Godot_v${{ inputs.version }}_${{ inputs.platform }}"
         GODOT_ZIP: "Godot_v${{ inputs.version }}_${{ inputs.platform }}.zip" # Does not work with mono builds as they use an underscore instead of a dot in the zip filenames
