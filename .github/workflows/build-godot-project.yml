@@ -19,6 +19,11 @@ jobs:
           version: "4.6-stable"
           sha_256: "6bcc59dfd1d670e918c77eae06e82b9dc5699de13d353dc3a4b3b6b307b6dc06"
           platform: "linux.x86_64"
+      - name: Install Export Templates
+        uses: "./.github/actions/install-export-templates"
+        with:
+          version: "4.6-stable"
+          sha_256: "3b30ac8c1772f25f5dfa5f65922cab0a90e7b960176891237c5772515ebccc46"
       - name: Build Example Game
         run: make
       - name: Build Example Mods
