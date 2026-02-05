@@ -16,7 +16,8 @@ runs:
     - shell: "bash"
       env:
         GODOT_FILE: "Godot_v${{ inputs.version }}_${{ inputs.platform }}"
-        GODOT_ZIP: "Godot_v${{ inputs.version }}_${{ inputs.platform }}.zip" # Does not work with mono builds as they use an underscore instead of a dot in the zip filenames
+        GODOT_ZIP: "test"
+        # GODOT_ZIP: "Godot_v${{ inputs.version }}_${{ inputs.platform }}.zip" # Does not work with mono builds as they use an underscore instead of a dot in the zip filenames
         BIN_DIR: "install-godot-action-bin"
       run: |
         curl -O https://github.com/godotengine/godot/releases/download/${{ inputs.version }}/${GODOT_ZIP}
