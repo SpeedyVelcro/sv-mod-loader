@@ -6,8 +6,7 @@ MOD_DIRECTORY := ${HOME}/.local/share/godot/app_userdata/SV Mod Loader Example G
 all: linux
 
 linux:
-	mkdir -p build/linux
-	$(GODOT_PATH) --headless --export-release Linux "build/linux/SV Mod Loader Example Game.x86_64"
+	mkdir -p build/linux; $(GODOT_PATH) --headless --export-release Linux "build/linux/SV Mod Loader Example Game.x86_64"
 
 
 
