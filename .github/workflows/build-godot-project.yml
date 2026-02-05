@@ -20,7 +20,7 @@ jobs:
           sha_256: "6bcc59dfd1d670e918c77eae06e82b9dc5699de13d353dc3a4b3b6b307b6dc06"
           platform: "linux.x86_64"
       - name: Build Example Game
-        run: make GODOT_PATH="${GODOT_PATH}"
+        run: make
       - name: Build Example Mods
-        run: make example-mods GODOT_PATH="${GODOT_PATH}"
+        run: make example-mods
 
