@@ -1,21 +1,13 @@
 name: Build Godot Project
 on:
-  # TODO: check if these are write
-  workflow_call:
-    inputs:
-      project-file:
-        required: false
-        type: string
-        default: "./project.godot"
+  push:
+    branches:
+      - "*"
 
 env:
   GODOT_VERSION: "4.6-stable"
 
 jobs:
-  variables:
-    name: Calculated Variables
-    steps:
-      id: godot-path
   build:
     runs-on: ubuntu-latest
     steps:
