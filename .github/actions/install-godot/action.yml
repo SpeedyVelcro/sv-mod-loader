@@ -20,9 +20,9 @@ runs:
         BIN_DIR: "install-godot-action-bin"
       run: |
         curl -O "https://github.com/godotengine/godot/releases/download/${{ inputs.version }}/${{ env.GODOT_ZIP }}"
-        echo "${{ inputs.sha_256 }} ${GODOT_ZIP}" | sha256sum -c
-        unzip ${GODOT_ZIP}
-        rm ${GODOT_ZIP}
-        mkdir ${BIN_DIR}
-        mv ${GODOT_FILE} ${BIN_DIR}/godot
-        echo "${PWD}/${BIN_DIR}" >> "$GITHUB_PATH" # Documented at https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-commands#adding-a-system-path
+        echo "${{ inputs.sha_256 }} ${{ env.GODOT_ZIP }}" | sha256sum -c
+        unzip ${{ env.GODOT_ZIP }}
+        rm ${{ env.GODOT_ZIP }}
+        mkdir ${{ env.BIN_DIR }}
+        mv ${{ env.GODOT_FILE }} ${{ env.BIN_DIR }}/godot
+        echo "${PWD}/${{ env.BIN_DIR }}" >> "$GITHUB_PATH" # Documented at https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-commands#adding-a-system-path
