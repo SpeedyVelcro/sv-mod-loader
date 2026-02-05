@@ -18,7 +18,8 @@ runs:
         echo "${{ inputs.sha_256 }} ${{ env.TEMPLATES_ZIP }}" | sha256sum -c
         unzip ${{ env.TEMPLATES_ZIP }} # .tpz is just a renamed zip, see https://docs.godotengine.org/en/stable/tutorials/export/exporting_projects.html#export-templates
         rm ${{ env.TEMPLATES_ZIP }}
-        VER_DIR=${${{ inputs.version }}/%-stable/.stable} # TODO: unsure what the transformation is for non-stable releases
+        VERSION=${{ inputs.version }} # So it can be used in shell parameter expansion
+        VERSION_DIR=${VERSION/%-stable/.stable} # TODO: unsure what the transformation is for non-stable releases
         TEMPLATES_DIR="$HOME/.local/share/godot/export_templates/$VER_DIR"
         mkdir -p $TEMPLATES_DIR
         mv ./templates/* $TEMPLATES_DIR
