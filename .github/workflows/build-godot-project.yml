@@ -26,6 +26,18 @@ jobs:
           sha_256: "3b30ac8c1772f25f5dfa5f65922cab0a90e7b960176891237c5772515ebccc46"
       - name: Build Example Game
         run: make
+      - name: Upload Example Game Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: example-game-linux
+          path: build/linux
       - name: Build Example Mods
         run: make example-mods
+      - name: Upload Example Mods Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: example-mods
+          path: |
+            example-mods/*/build
+            !example-mods/*/build/.gdignore
 
