@@ -56,7 +56,7 @@ jobs:
       - name: Run gdUnit4 Tests
         run: |
           # gdUnit4 requirements, see https://godot-gdunit-labs.github.io/gdUnit4/latest/advanced_testing/cmd/#preconditions-to-run-on-macos-and-linux
-          GODOT_BIN=$(command -v godot)
+          export GODOT_BIN=$(command -v godot)
           chmod +x ./addons/gdUnit4/runtest.sh
 
           ./addons/gdUnit4/runtest.sh -a ./test
