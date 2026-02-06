@@ -53,5 +53,5 @@ jobs:
           godot-version: "4.6"
           godot-status: "stable"
           paths: |
-            res://tests
+            res://test
           version: "v6.1.1"
