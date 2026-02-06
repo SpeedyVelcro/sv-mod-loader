@@ -23,5 +23,6 @@ runs:
         unzip ${{ env.GODOT_ZIP }}
         rm ${{ env.GODOT_ZIP }}
         BIN_DIR=${{ runner.temp }}/godot-bin
+        mkdir -p $BIN_DIR
         mv ${{ env.GODOT_FILE }} $BIN_DIR/godot
         echo "$BIN_DIR" >> "$GITHUB_PATH" # Documented at https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-commands#adding-a-system-path
