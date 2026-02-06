@@ -59,7 +59,7 @@ jobs:
           export GODOT_BIN=$(command -v godot)
           chmod +x ./addons/gdUnit4/runtest.sh
 
-          ./addons/gdUnit4/runtest.sh -a ./test --headless
+          ./addons/gdUnit4/runtest.sh -ca ./test --audio-driver Dummy --display-driver x11 --rendering-driver opengl3 --single-window
       - name: Upload gdUnit4 Report Artifact
         uses: actions/upload-artifact@v4
         with:
