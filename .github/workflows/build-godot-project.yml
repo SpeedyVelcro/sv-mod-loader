@@ -1,0 +1,58 @@
+name: Build and Test
+on:
+  push:
+    branches:
+      - "*"
+
+env:
+  GODOT_VERSION: "4.6-stable"
+
+jobs:
+  build:
+    name: Build All
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v5
+      - name: Install Godot Engine
+        uses: "./.github/actions/install-godot"
+        with:
+          version: "4.6-stable"
+          sha_256: "6bcc59dfd1d670e918c77eae06e82b9dc5699de13d353dc3a4b3b6b307b6dc06"
+          platform: "linux.x86_64"
+      - name: Install Export Templates
+        uses: "./.github/actions/install-export-templates"
+        with:
+          version: "4.6-stable"
+          sha_256: "3b30ac8c1772f25f5dfa5f65922cab0a90e7b960176891237c5772515ebccc46"
+      - name: Build Example Game
+        run: make
+      - name: Upload Example Game Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: example-game-linux
+          path: build/linux
+      - name: Build Example Mods
+        run: make example-mods
+      - name: Upload Example Mods Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: example-mods
+          path: |
+            example-mods/*/build
+            !example-mods/*/build/.gdignore
+  test:
+    name: Run Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v5
+      - name: Run gdUnit4 Tests
+        uses: MikeSchulze/gdUnit4-action@v1
+        with:
+          godot-version: "4.6"
+          godot-status: "stable"
+          paths: |
+            res://test
+          version: "v6.1.1"
+          publish-report: false # true causes failure due to read-only permission
