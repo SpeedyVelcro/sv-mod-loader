@@ -55,3 +55,4 @@ jobs:
           paths: |
             res://test
           version: "v6.1.1"
+          publish-report: false # true causes failure due to read-only permission
