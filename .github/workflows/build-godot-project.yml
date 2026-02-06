@@ -1,4 +1,4 @@
-name: Build Godot Project
+name: Build and Test
 on:
   push:
     branches:
@@ -9,6 +9,7 @@ env:
 
 jobs:
   build:
+    name: Build All
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repo
@@ -40,4 +41,28 @@ jobs:
           path: |
             example-mods/*/build
             !example-mods/*/build/.gdignore
+  test:
+    name: Run Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v5
+      - name: Install Godot Engine
+        uses: "./.github/actions/install-godot"
+        with:
+          version: "4.6-stable"
+          sha_256: "6bcc59dfd1d670e918c77eae06e82b9dc5699de13d353dc3a4b3b6b307b6dc06"
+          platform: "linux.x86_64"
+      - name: Run gdUnit4 Tests
+        run: |
+          # gdUnit4 requirements, see https://godot-gdunit-labs.github.io/gdUnit4/latest/advanced_testing/cmd/#preconditions-to-run-on-macos-and-linux
+          GODOT_BIN=$(command -v godot)
+          chmod +x ./addons/g
+
+          ./addons/gdUnit4/runtest.sh -a ./test
+      - name: Upload gdUnit4 Report Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: gdunit4-reports
+          path: reports
 
