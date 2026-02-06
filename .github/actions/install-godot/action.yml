@@ -22,5 +22,6 @@ runs:
         echo "${{ inputs.sha_256 }} ${{ env.GODOT_ZIP }}" | sha256sum -c
         unzip ${{ env.GODOT_ZIP }}
         rm ${{ env.GODOT_ZIP }}
-        mv ${{ env.GODOT_FILE }} ${{ runner.temp }}/godot
-        echo "${{ runner.temp }}" >> "$GITHUB_PATH" # Documented at https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-commands#adding-a-system-path
+        BIN_DIR=${{ runner.temp }}/godot-bin
+        mv ${{ env.GODOT_FILE }} $BIN_DIR/godot
+        echo "$BIN_DIR" >> "$GITHUB_PATH" # Documented at https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-commands#adding-a-system-path
