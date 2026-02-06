@@ -191,6 +191,8 @@ func load_requirement(req: ModRequirement, verify_integrity: bool) -> ModLoadRes
 		result.error = ModLoadResult.LoadError.FAILED_TO_LOAD
 		return result
 	
+	_run_mod_init_hook()
+	
 	mod_loaded.emit(ActiveMod.from_requirement(req))
 	result.status = ModLoadResult.Status.SUCCESS
 	return result
@@ -248,6 +250,8 @@ func load_mod(mod: Mod, ignore_official_mod_checksum: bool) -> ModLoadResult:
 		result.error = ModLoadResult.LoadError.FAILED_TO_LOAD
 		return result
 	
+	_run_mod_init_hook()
+	
 	mod_loaded.emit(ActiveMod.from_mod(mod, path))
 	result.status = ModLoadResult.Status.SUCCESS
 	return result
@@ -301,6 +305,27 @@ func _load_next(force: bool = false) -> bool:
 		return true
 	
 	return true
+
+
+## Calls the mod init hook for the most recently loaded mod, or does nothing
+## if the last mod doesn't have one.
+func _run_mod_init_hook() -> void:
+	# TODO: More useful logs showing mod name
+	if not ResourceLoader.exists("res://mod_hook.gd"):
+		print("No mod hook file found") # Not an error because some mods e.g. asset replacers do not need this functionality
+		return
+	
+	var hook := ResourceLoader.load("res://mod_hook.gd", "", ResourceLoader.CacheMode.CACHE_MODE_IGNORE_DEEP)
+	
+	if hook is not Script:
+		push_error("Mod hook was loaded but was not a script.")
+		return
+	
+	if not hook.can_instantiate():
+		push_error("Cannot instantiate mod hook for some reason.")
+		return
+	
+	hook.new() # No need to store a reference, simply instantiating is enough to call _init()
 
 
 ## Called before destroy
