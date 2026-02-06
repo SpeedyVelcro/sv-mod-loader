@@ -17,12 +17,10 @@ runs:
       env:
         GODOT_FILE: "Godot_v${{ inputs.version }}_${{ inputs.platform }}"
         GODOT_ZIP: "Godot_v${{ inputs.version }}_${{ inputs.platform }}.zip" # Does not work with mono builds as they use an underscore instead of a dot in the zip filenames
-        BIN_DIR: "install-godot-action-bin"
       run: |
         curl -LO "https://github.com/godotengine/godot/releases/download/${{ inputs.version }}/${{ env.GODOT_ZIP }}"
         echo "${{ inputs.sha_256 }} ${{ env.GODOT_ZIP }}" | sha256sum -c
         unzip ${{ env.GODOT_ZIP }}
         rm ${{ env.GODOT_ZIP }}
-        mkdir ${{ env.BIN_DIR }}
-        mv ${{ env.GODOT_FILE }} ${{ env.BIN_DIR }}/godot
-        echo "${PWD}/${{ env.BIN_DIR }}" >> "$GITHUB_PATH" # Documented at https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-commands#adding-a-system-path
+        mv ${{ env.GODOT_FILE }} ${{ runner.temp }}/godot
+        echo "${{ runner.temp }}" >> "$GITHUB_PATH" # Documented at https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-commands#adding-a-system-path
