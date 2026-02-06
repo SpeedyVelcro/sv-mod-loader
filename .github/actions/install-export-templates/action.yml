@@ -23,4 +23,5 @@ runs:
         TEMPLATES_DIR="$HOME/.local/share/godot/export_templates/$VERSION_DIR"
         mkdir -p $TEMPLATES_DIR
         mv ./templates/* $TEMPLATES_DIR
+        rm -rf ./templates
 
