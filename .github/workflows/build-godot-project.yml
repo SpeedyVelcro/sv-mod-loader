@@ -57,7 +57,7 @@ jobs:
         run: |
           # gdUnit4 requirements, see https://godot-gdunit-labs.github.io/gdUnit4/latest/advanced_testing/cmd/#preconditions-to-run-on-macos-and-linux
           GODOT_BIN=$(command -v godot)
-          chmod +x ./addons/g
+          chmod +x ./addons/gdUnit4/runtest.sh
 
           ./addons/gdUnit4/runtest.sh -a ./test
       - name: Upload gdUnit4 Report Artifact
