@@ -38,6 +38,9 @@ var _results: Array[ModLoadResult] = []
 var _user_settings: ModLoaderUserSettings
 ## ProjectSettings.load_resource_pack callable, injected at init for easy mocking
 var _load_resource_pack_wrapper: LoadResourcePackWrapper
+## Path of the pck for resetting the mod hook
+var _reset_mod_hook_pck_path: String
+
 
 # Override
 func _init(path: String, user_settings := ModLoaderUserSettings.new(), load_resource_pack_wrapper := LoadResourcePackWrapper.new()):
@@ -52,6 +55,16 @@ func _init(path: String, user_settings := ModLoaderUserSettings.new(), load_reso
 	
 	# Register with _load_order_tracker
 	mod_loaded.connect(LoadOrderTracker._on_ModLoader_mod_loaded)
+	
+	# Create a pck for resetting the mod hook
+	const KEEP_TEMP_DIR = true # Required otherwise you get "Can't open pack-referenced file" errors when calling load()
+	var dir := DirAccess.create_temp("mod-loader", KEEP_TEMP_DIR)
+	assert(dir != null, "Failed to open dir: Error %d" % DirAccess.get_open_error())
+	_reset_mod_hook_pck_path = dir.get_current_dir() + "/reset_mod_hook.pck"
+	var packer := PCKPacker.new()
+	packer.pck_start(_reset_mod_hook_pck_path)
+	packer.add_file("res://mod_hook.gd", "res://addons/sv_mod_loader/utility/mod_hook.gd")
+	packer.flush()
 
 
 ## Gets all mod filenames in the mod directory
@@ -319,7 +332,8 @@ func _run_mod_init_hook() -> void:
 		print("No mod hook file found") # Not an error because some mods e.g. asset replacers do not need this functionality
 		return
 	
-	var hook := ResourceLoader.load("res://mod_hook.gd", "", ResourceLoader.CacheMode.CACHE_MODE_IGNORE_DEEP)
+	const CACHE_MODE = ResourceLoader.CacheMode.CACHE_MODE_IGNORE_DEEP # The whole point is that mods that use it replace the mod hook, so we don't want cached versions
+	var hook := ResourceLoader.load("res://mod_hook.gd", "", CACHE_MODE)
 	
 	if hook is not Script:
 		push_error("Mod hook was loaded but was not a script.")
@@ -336,19 +350,8 @@ func _reset_mod_hook():
 	# Ensure mod hooks aren't double-called by loading a fresh pck that replaces it with a dummy hook
 	# TODO: find a more lightweight way of removing a resource than creating a whole new .pck patch
 	# (NB: I have tried Resource.take_over_path() but it doesn't work as it seems to only affect the cache)
-	var dir := DirAccess.create_temp("sv-mod-loader-hook-removal")
-	assert(dir != null, "Failed to open dir: Error %d" % DirAccess.get_open_error())
-	var packer := PCKPacker.new()
-	packer.pck_start(dir.get_current_dir() + "/remove_hook.pck")
-	packer.add_file("res://mod_hook.gd", "res://addons/sv_mod_loader/utility/mod_hook.gd")
-	packer.flush()
-	var result = ProjectSettings.load_resource_pack(dir.get_current_dir() + "/remove_hook.pck")
+	var result = ProjectSettings.load_resource_pack(_reset_mod_hook_pck_path)
 	assert(result, "Failed to reset mod hook")
-	
-	# Curiously, that does not replace res://mod_hook.gd with the dummy unless we then immediately
-	# load the resource again. You can verify this by commenting out this line and then running
-	# the test utility > mod_loader_test > test_does_not_double_call_hooks and seeing that it fails.
-	ResourceLoader.load("res://mod_hook.gd", "", ResourceLoader.CacheMode.CACHE_MODE_IGNORE_DEEP)
 
 
 ## Called before destroy
