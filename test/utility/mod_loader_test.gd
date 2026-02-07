@@ -126,6 +126,27 @@ func test_load_mod(filename: String, _test_parameters := [
 	assert_int(result.status).is_equal(ModLoadResult.Status.SUCCESS)
 
 
+func test_load_mod_calls_hook():
+	# Arrange
+	var mocked_load_wrapper: LoadResourcePackWrapper = mock(LoadResourcePackWrapper)
+	do_return(true).on(mocked_load_wrapper).load_resource_pack(any_string())
+	var target := ModLoader.new(temp_mods_dir, ModLoaderUserSettings.new(), mocked_load_wrapper)
+	
+	var mod := Mod.new()
+	mod.filename = "test.pck"
+	_create_file(mod.filename)
+	
+	var hook_resource := load("res://test/utility/data/test_hook_1.gd")
+	hook_resource.take_over_path("res://mod_hook.gd")
+	var previous_called_times = TestHook1.called_times
+	
+	# Act
+	target.load_mod(mod, false)
+	
+	# Assert
+	assert_int(TestHook1.called_times - previous_called_times).is_equal(1)
+
+
 func test_load_mod_requirement(display_name: String, filename: String, _test_parameters := [
 	["Foo Mod", "foo.pck"],
 	["Bar Mod", "bar.pck"]
@@ -151,6 +172,27 @@ func test_load_mod_requirement(display_name: String, filename: String, _test_par
 	assert_str(result.display_name).is_equal(display_name)
 	assert_str(result.absolute_path).is_equal(ProjectSettings.globalize_path(temp_mods_dir + "/" + filename))
 	assert_int(result.status).is_equal(ModLoadResult.Status.SUCCESS)
+
+
+func test_load_mod_requirement_calls_hook():
+	# Arrange
+	var mocked_load_wrapper: LoadResourcePackWrapper = mock(LoadResourcePackWrapper)
+	do_return(true).on(mocked_load_wrapper).load_resource_pack(any_string())
+	var target := ModLoader.new(temp_mods_dir, ModLoaderUserSettings.new(), mocked_load_wrapper)
+	
+	var requirement := ModRequirement.new()
+	requirement.path = temp_mods_dir + "/test.pck"
+	_create_file("test.pck")
+	
+	var hook_resource := load("res://test/utility/data/test_hook_1.gd")
+	hook_resource.take_over_path("res://mod_hook.gd")
+	var previous_called_times = TestHook1.called_times
+	
+	# Act
+	target.load_requirement(requirement, false)
+	
+	# Assert
+	assert_int(TestHook1.called_times - previous_called_times).is_equal(1)
 
 
 func _create_file(file: String):
