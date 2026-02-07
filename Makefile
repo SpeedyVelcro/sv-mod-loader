@@ -10,7 +10,7 @@ linux:
 
 
 
-example-mods: example-mod-blue-player example-mod-yellow-player example-mod-red-background example-mod-2x-bullet-speed
+example-mods: example-mod-blue-player example-mod-yellow-player example-mod-red-background example-mod-2x-bullet-speed example-mod-bullet-trail
 
 example-mod-blue-player:
 	cd example-mods/blue-player; $(GODOT_PATH) --headless --export-pack Mod build/blue-player.pck
@@ -24,9 +24,12 @@ example-mod-red-background:
 example-mod-2x-bullet-speed:
 	cd example-mods/2x-bullet-speed; $(GODOT_PATH) --headless --export-pack Mod build/2x-bullet-speed.pck
 
+example-mod-bullet-trail:
+	cd example-mods/bullet-trail; $(GODOT_PATH) --headless --export-pack Mod build/bullet-trail.pck
 
 
-clean-example-mods: clean-example-mod-blue-player clean-example-mod-yellow-player clean-example-mod-red-background clean-example-mod-2x-bullet-speed
+
+clean-example-mods: clean-example-mod-blue-player clean-example-mod-yellow-player clean-example-mod-red-background clean-example-mod-2x-bullet-speed clean-example-mod-bullet-trail
 
 clean-example-mod-blue-player:
 	rm -f example-mods/blue-player/build/blue-player.pck
@@ -40,9 +43,12 @@ clean-example-mod-red-background:
 clean-example-mod-2x-bullet-speed:
 	rm -f example-mods/2x-bullet-speed/build/2x-bullet-speed.pck
 
+clean-example-mod-bullet-trail:
+	rm -f example-mods/bullet-trail/build/bullet-trail.pck
 
 
-install-example-mods: install-example-mod-blue-player install-example-mod-yellow-player install-example-mod-red-background install-example-mod-2x-bullet-speed
+
+install-example-mods: install-example-mod-blue-player install-example-mod-yellow-player install-example-mod-red-background install-example-mod-2x-bullet-speed install-example-mod-bullet-trail
 
 install-example-mod-blue-player: mod-directory
 	cp --update=all example-mods/blue-player/build/blue-player.pck "${MOD_DIRECTORY}/blue-player.pck"
@@ -56,9 +62,12 @@ install-example-mod-red-background: mod-directory
 install-example-mod-2x-bullet-speed: mod-directory
 	cp --update=all example-mods/2x-bullet-speed/build/2x-bullet-speed.pck "${MOD_DIRECTORY}/2x-bullet-speed.pck"
 
+install-example-mod-bullet-trail: mod-directory
+	cp --update=all example-mods/bullet-trail/build/bullet-trail.pck "${MOD_DIRECTORY}/bullet-trail.pck"
 
 
-uninstall-example-mods: uninstall-example-mod-blue-player uninstall-example-mod-yellow-player uninstall-example-mod-red-background uninstall-example-mod-2x-bullet-speed
+
+uninstall-example-mods: uninstall-example-mod-blue-player uninstall-example-mod-yellow-player uninstall-example-mod-red-background uninstall-example-mod-2x-bullet-speed uninstall-example-mod-bullet-trail
 
 uninstall-example-mod-blue-player:
 	rm -f "${MOD_DIRECTORY}/blue-player.pck"
@@ -71,6 +80,9 @@ uninstall-example-mod-red-background:
 
 uninstall-example-mod-2x-bullet-speed:
 	rm -f "${MOD_DIRECTORY}/2x-bullet-speed.pck"
+
+uninstall-example-mod-bullet-trail:
+	rm -f "${MOD_DIRECTORY}/bullet-trail.pck"
 
 
 

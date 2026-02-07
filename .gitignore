@@ -12,6 +12,7 @@ example-mods/blue-player/build/blue-player.pck
 example-mods/yellow-player/build/yellow-player.pck
 example-mods/red-background/build/red-background.pck
 example-mods/2x-bullet-speed/build/2x-bullet-speed.pck
+example-mods/bullet-trail/build/bullet-trail
 
 # Vim
 *.swp
