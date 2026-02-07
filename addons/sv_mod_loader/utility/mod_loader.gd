@@ -184,6 +184,7 @@ func load_requirement(req: ModRequirement, verify_integrity: bool) -> ModLoadRes
 				result.actual_hash = hash
 				return result
 	
+	_reset_mod_hook()
 	var load_success = _load_resource_pack_wrapper.load_resource_pack(req.path)
 	
 	if not load_success:
@@ -243,6 +244,7 @@ func load_mod(mod: Mod, ignore_official_mod_checksum: bool) -> ModLoadResult:
 				result.actual_hash = hash
 				return result
 	
+	_reset_mod_hook()
 	var load_success = _load_resource_pack_wrapper.load_resource_pack(path)
 	
 	if not load_success:
@@ -311,7 +313,9 @@ func _load_next(force: bool = false) -> bool:
 ## if the last mod doesn't have one.
 func _run_mod_init_hook() -> void:
 	# TODO: More useful logs showing mod name
+	# TODO: The mod hook path ("res://mod_hook.gd") should be a constant somewhere, maybe some kind of constants static?
 	if not ResourceLoader.exists("res://mod_hook.gd"):
+		# NB: This path might actually never happen now, because resetting the mod hook creates this file
 		print("No mod hook file found") # Not an error because some mods e.g. asset replacers do not need this functionality
 		return
 	
@@ -326,6 +330,25 @@ func _run_mod_init_hook() -> void:
 		return
 	
 	hook.new() # No need to store a reference, simply instantiating is enough to call _init()
+
+
+func _reset_mod_hook():
+	# Ensure mod hooks aren't double-called by loading a fresh pck that replaces it with a dummy hook
+	# TODO: find a more lightweight way of removing a resource than creating a whole new .pck patch
+	# (NB: I have tried Resource.take_over_path() but it doesn't work as it seems to only affect the cache)
+	var dir := DirAccess.create_temp("sv-mod-loader-hook-removal")
+	assert(dir != null, "Failed to open dir: Error %d" % DirAccess.get_open_error())
+	var packer := PCKPacker.new()
+	packer.pck_start(dir.get_current_dir() + "/remove_hook.pck")
+	packer.add_file("res://mod_hook.gd", "res://addons/sv_mod_loader/utility/mod_hook.gd")
+	packer.flush()
+	var result = ProjectSettings.load_resource_pack(dir.get_current_dir() + "/remove_hook.pck")
+	assert(result, "Failed to reset mod hook")
+	
+	# Curiously, that does not replace res://mod_hook.gd with the dummy unless we then immediately
+	# load the resource again. You can verify this by commenting out this line and then running
+	# the test utility > mod_loader_test > test_does_not_double_call_hooks and seeing that it fails.
+	ResourceLoader.load("res://mod_hook.gd", "", ResourceLoader.CacheMode.CACHE_MODE_IGNORE_DEEP)
 
 
 ## Called before destroy
