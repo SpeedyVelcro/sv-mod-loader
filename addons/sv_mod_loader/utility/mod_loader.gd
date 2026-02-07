@@ -56,15 +56,7 @@ func _init(path: String, user_settings := ModLoaderUserSettings.new(), load_reso
 	# Register with _load_order_tracker
 	mod_loaded.connect(LoadOrderTracker._on_ModLoader_mod_loaded)
 	
-	# Create a pck for resetting the mod hook
-	const KEEP_TEMP_DIR = true # Required otherwise you get "Can't open pack-referenced file" errors when calling load()
-	var dir := DirAccess.create_temp("mod-loader", KEEP_TEMP_DIR)
-	assert(dir != null, "Failed to open dir: Error %d" % DirAccess.get_open_error())
-	_reset_mod_hook_pck_path = dir.get_current_dir() + "/reset_mod_hook.pck"
-	var packer := PCKPacker.new()
-	packer.pck_start(_reset_mod_hook_pck_path)
-	packer.add_file("res://mod_hook.gd", "res://addons/sv_mod_loader/utility/mod_hook.gd")
-	packer.flush()
+	_reset_mod_hook_pck_path = _create_mod_reset_pck()
 
 
 ## Gets all mod filenames in the mod directory
@@ -346,12 +338,40 @@ func _run_mod_init_hook() -> void:
 	hook.new() # No need to store a reference, simply instantiating is enough to call _init()
 
 
+##  Ensure mod hooks aren't double-called by loading a fresh pck that replaces it with a dummy hook
 func _reset_mod_hook():
-	# Ensure mod hooks aren't double-called by loading a fresh pck that replaces it with a dummy hook
 	# TODO: find a more lightweight way of removing a resource than creating a whole new .pck patch
 	# (NB: I have tried Resource.take_over_path() but it doesn't work as it seems to only affect the cache)
 	var result = ProjectSettings.load_resource_pack(_reset_mod_hook_pck_path)
 	assert(result, "Failed to reset mod hook")
+
+
+## Creates a .pck file in the temp directory that can be loaded to reset the mod script.
+## Returns the path of the new .pck file.
+func _create_mod_reset_pck() -> String:
+	# Create a pck for resetting the mod hook
+	const KEEP_TEMP_DIR = true # Required otherwise you get "Can't open pack-referenced file" errors when calling load()
+	var dir := DirAccess.create_temp("mod-loader", KEEP_TEMP_DIR)
+	assert(dir != null, "Failed to open mod loader temp dir: Error %d" % DirAccess.get_open_error())
+	
+	var pck_path = dir.get_current_dir() + "/reset_mod_hook.pck"
+	var script_path = dir.get_current_dir() + "/mod_hook.gd"
+	
+	# It's not clear from docs whether PCKPacker.add_file() arg source_path can accept files
+	# under res:// after compilation, so to be safe we take the source code and create a new
+	# file anyway.
+	var script_text = load("res://addons/sv_mod_loader/utility/mod_hook.gd").source_code
+	var file := FileAccess.open(script_path, FileAccess.WRITE)
+	assert(file != null, "Failed to open file in mod loader temp dir: Error %d" % FileAccess.get_open_error())
+	file.store_string(script_text)
+	file.close()
+	
+	var packer := PCKPacker.new()
+	packer.pck_start(pck_path)
+	packer.add_file("res://mod_hook.gd", script_path)
+	packer.flush()
+	
+	return pck_path
 
 
 ## Called before destroy
