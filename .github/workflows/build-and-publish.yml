@@ -76,19 +76,16 @@ jobs:
         uses: actions/download-artifact@v8
         with:
           name: "example-mods"
-          skip_decompress: true
+          skip-decompress: true
           merge-multiple: true
-      - name: Debug log
-        run: |
-          tree -L 3
       - name: Release artifacts
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           gh release upload \
             "${{ github.ref_name }}" \
-            example-mods.* \
-            example-game-*.*
+            example-game-*.* \
+            example-mods.*
       - name: Copy patch notes
         env:
           GH_TOKEN: ${{ github.token }}
