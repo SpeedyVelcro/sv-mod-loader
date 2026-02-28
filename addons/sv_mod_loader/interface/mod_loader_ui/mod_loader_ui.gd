@@ -70,8 +70,13 @@ enum TitleType {
 @export var official_mods: Array[OfficialMod] = []
 
 @export_group("About")
-## Whether the about button should be displayed
+## Whether the about button should be displayed. Disable this if you do not want
+## an about menu at all.
 @export var show_about_button: bool = true
+## Whether the about button should show the default about menu when clicked. If
+## you disable this, consider connecting to the [signal about_open] signal to
+## know when to open your own custom about menu.
+@export var show_about_menu: bool = true
 ## Whether the about window text should recognise BBCode. Same behaviour as
 ## RichtTextLabel.bbcode_enabled.
 ##
@@ -267,7 +272,8 @@ func _on_play_button_pressed() -> void:
 # Signal connection
 func _on_about_button_pressed() -> void:
 	about_open.emit()
-	_about_window.popup_centered()
+	if show_about_menu:
+		_about_window.popup_centered()
 
 
 # Signal connection
