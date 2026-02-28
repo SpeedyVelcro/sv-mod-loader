@@ -78,6 +78,9 @@ jobs:
           name: "example-mods"
           skip_decompress: true
           merge-multiple: true
+      - name: Debug log
+        run: |
+          tree -L 3
       - name: Release artifacts
         env:
           GH_TOKEN: ${{ github.token }}
