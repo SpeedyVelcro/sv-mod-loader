@@ -53,29 +53,30 @@ func get_message() -> String:
 		LoadError.FILE_NOT_FOUND:
 			message += "File not found."
 		LoadError.HASH_MISMATCH:
-			message += "Mod is enabled for hash-checking, but the mod's hash
-					differs from the expected hash. The mod may have been
-					tampered with.
-					
-					Hash type: %s
-					
-					Expected hash: %s
-					
-					Actual hash: %s" % [get_hash_name(), expected_hash, actual_hash]
+			message += "Mod is enabled for hash-checking, but the mod's hash"
+			message += " differs from the expected hash. The mod may have been"
+			message += " tampered with."
+			message += "\n\n"
+			message += "Hash type: %s" % get_hash_name()
+			message += "\n\n"
+			message += "Expected hash: %s" % expected_hash
+			message += "\n\n"
+			message += "Actual hash: %s" % actual_hash
 		LoadError.NO_HASH:
-			message += "Developer (NOT the mod author) has enabled hash checking
-					but no expected hash was provided for the mod."
+			message += "Developer (NOT the mod author) has enabled hash"
+			message += " checking but no expected hash was provided for the mod."
 		LoadError.FAILED_TO_LOAD:
 			message += "Error while loading file."
 		LoadError.LOADING_UNOFFICIAL_MODS:
-			message += "WARNING: You are attempting to load unofficial mods.
-					
-					Mods have full access to the underlying game engine and are
-					capable of executing arbitrary code. RUNNING MODS FROM
-					UNTRUSTED SOURCES CAN BE EXTREMELY DANGEROUS. You should only
-					run mods you completely trust and know are safe.
-					
-					Do you trust the mods you are attempting to load, and wish
-					to continue?"
+			message += "WARNING: You are attempting to load unofficial mods."
+			message += "\n\n"
+			message += "Mods have full access to the underlying game engine and"
+			message += " are capable of executing arbitrary code. RUNNING MODS"
+			message += " FROM UNTRUSTED SOURCES CAN BE EXTREMELY DANGEROUS. You"
+			message += " should only run mods you completely trust and know are"
+			message += " safe."
+			message += "\n\n"
+			message += "Do you trust the mods you are attempting to load, and"
+			message += " wish to continue?"
 	
 	return message
