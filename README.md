@@ -30,8 +30,14 @@ an embedded window), disable
 in your project settings.
 
 ## Installation
-Clone the repository and copy the `addons` folder into the same folder
-as your `project.godot` file.
+Download the source code of the
+[latest release](https://github.com/SpeedyVelcro/sv-mod-loader/releases/latest).
+Extract the source code into a directory of your choice. Copy the
+`addons/sv_mod_loader` folder into the `addons` folder of your own
+project.
+
+If you do not have an `addons` folder, you can create it in the same
+folder as your `project.godot` file.
 
 ## Usage
 Place an instance of the scene `ModLoaderUI` - found in `addons/sv_mod_loader/interface/mod_loader_ui.tscn` -
