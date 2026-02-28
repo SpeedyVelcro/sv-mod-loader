@@ -1,4 +1,4 @@
-name: Build and Test
+name: Build, Test and Publish
 on:
   push:
     branches:
@@ -61,7 +61,7 @@ jobs:
   publish:
     name: Publish release
     needs: build
-    runs-on: ubuntu-latest:
+    runs-on: ubuntu-latest
     if: github.event_name == 'release' && github.event.action == 'created'
     steps:
       - name: Checkout Repo
