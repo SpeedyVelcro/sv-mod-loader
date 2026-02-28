@@ -64,8 +64,6 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event_name == 'release'
     steps:
-      - name: Checkout Repo
-        uses: actions/checkout@v5
       - name: Download example game (all platforms)
         uses: actions/download-artifact@v8
         with:
@@ -85,12 +83,16 @@ jobs:
           gh release upload \
             "${{ github.ref_name }}" \
             example-game-*.* \
-            example-mods.*
+            example-mods.* \
+            --repo "${{ github.repository }}"
+      - name: Checkout Repo
+        uses: actions/checkout@v5
       - name: Copy patch notes
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           gh release edit \
             "${{ github.ref_name }}" \
+            --repo "${{ github.repository }}" \
             --notes-file release-notes/$(if [ -f release-notes/${{ github.ref_name }}.md ]; then echo "${{ github.ref_name }}.md"; else echo "latest.md"; fi)
 
