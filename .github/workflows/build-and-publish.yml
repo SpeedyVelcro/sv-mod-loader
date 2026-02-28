@@ -71,11 +71,13 @@ jobs:
         with:
           pattern: example-game-*
           skip-decompress: true
+          merge-multiple: true
       - name: Download example mods
         uses: actions/download-artifact@v8
         with:
           name: "example-mods"
           skip_decompress: true
+          merge-multiple: true
       - name: Release artifacts
         env:
           GH_TOKEN: ${{ github.token }}
