@@ -35,7 +35,7 @@ jobs:
       - name: Package Game
         run: |
           tar -czf \
-            "sv-mod-loader-example-game-${{ github.ref_name }}.tar.gz"
+            "sv-mod-loader-example-game-${{ github.ref_name }}.tar.gz" \
             build/linux
       - name: Upload Example Game Artifact
         uses: actions/upload-artifact@v4
