@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repo
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7
       - name: Install Godot Engine
         uses: "./.github/actions/install-godot"
         with:
@@ -40,7 +40,7 @@ jobs:
             "../sv-mod-loader-example-game-linux.x86_64-${{ github.ref_name }}.tar.gz" \
             ./*
       - name: Upload Example Game Artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: example-game
           path: sv-mod-loader-example-game-*.*
@@ -57,7 +57,7 @@ jobs:
             "../sv-mod-loader-example-mods-${{ github.ref_name }}.tar.gz" \
             ./*)
       - name: Upload Example Mods Artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: example-mods
           path: sv-mod-loader-example-mods-*.*
@@ -66,7 +66,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repo
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7
       - name: Run gdUnit4 Tests
         uses: MikeSchulze/gdUnit4-action@v1
         with:
@@ -81,7 +81,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repo
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7
       - name: Archive Addon
         run: |
           mkdir zip_root
@@ -94,7 +94,7 @@ jobs:
             "../sv-mod-loader-addon-${{ github.ref_name }}.tar.gz" \
             ./*)
       - name: Upload Artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: addon-archives
           path: |
@@ -135,7 +135,7 @@ jobs:
             sv-mod-loader-example-mods-*.* \
             --repo "${{ github.repository }}"
       - name: Checkout Repo
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7
       - name: Copy patch notes
         env:
           GH_TOKEN: ${{ github.token }}
