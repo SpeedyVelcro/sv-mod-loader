@@ -82,7 +82,7 @@ jobs:
         run: |
           mkdir zip_root
           mkdir zip_root/addons
-          cp -r addons/sv-mod-loader zip_root/addons
+          cp -r addons/sv_mod_loader zip_root/addons
           zip -r \
             "sv-mod-loader-addon-${{ github.ref_name }}.zip" \
             zip_root/*
