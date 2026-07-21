@@ -134,6 +134,8 @@ jobs:
             sv-mod-loader-example-game-*.* \
             sv-mod-loader-example-mods-*.* \
             --repo "${{ github.repository }}"
+      - name: Checkout Repo
+        uses: actions/checkout@v5
       - name: Copy patch notes
         env:
           GH_TOKEN: ${{ github.token }}
