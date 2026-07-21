@@ -32,20 +32,31 @@ jobs:
           sha_256: "3b30ac8c1772f25f5dfa5f65922cab0a90e7b960176891237c5772515ebccc46"
       - name: Build Example Game
         run: make
+      - name: Package Game
+        run: |
+          tar -czf \
+            "sv-mod-loader-example-game-${{ github.ref_name }}.tar.gz"
+            build/linux
       - name: Upload Example Game Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: example-game-linux
-          path: build/linux
+          name: example-game
+          path: sv-mod-loader-example-game-*.*
       - name: Build Example Mods
         run: make example-mods
+      - name: Package Example Mods
+        run: |
+          zip -r \
+            "sv-mod-loader-example-mods-${{ github.ref_name }}.zip" \
+            example-mods/*/build/*.pck
+          tar -czf \
+            "sv-mod-loader-example-mods-${{ github.ref_name }}.tar.gz" \
+            example-mods/*/build/*.pck
       - name: Upload Example Mods Artifact
         uses: actions/upload-artifact@v4
         with:
           name: example-mods
-          path: |
-            example-mods/*/build
-            !example-mods/*/build/.gdignore
+          path: sv-mod-loader-example-mods-*.*
   test:
     name: Run Tests
     runs-on: ubuntu-latest
@@ -61,23 +72,53 @@ jobs:
             res://test
           version: "v6.1.1"
           publish-report: false # true causes failure due to read-only permission
+  archive-addon:
+    name: Package Addon
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v5
+      - name: Archive Addon
+        run: |
+          mkdir zip_root
+          mkdir zip_root/addons
+          cp -r addons/sv-mod-loader zip_root/addons
+          zip -r \
+            "sv-mod-loader-addon-${{ github.ref_name }}.zip" \
+            zip_root/*
+          tar -czf \
+            "sv-mod-loader-addon-${{ github.ref_name }}.tar.gz" \
+            zip_root/*
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: addon-archives
+          path: |
+            sv-mod-loader-addon-${{ github.ref_name }}.zip
+            sv-mod-loader-addon-${{ github.ref_name }}.tar.gz
   publish:
     name: Publish release
     needs: build
     runs-on: ubuntu-latest
     if: github.event_name == 'release'
     steps:
+      - name: Download packaged addons
+        uses: actions/download-artifact@v8
+        with:
+          name: addon-archives
+          skip-decompress: false
+          merge-multiple: false
       - name: Download example game (all platforms)
         uses: actions/download-artifact@v8
         with:
-          pattern: example-game-*
-          skip-decompress: true
+          name: example-game
+          skip-decompress: false
           merge-multiple: true
       - name: Download example mods
         uses: actions/download-artifact@v8
         with:
-          name: "example-mods"
-          skip-decompress: true
+          name: example-mods
+          skip-decompress: false
           merge-multiple: true
       - name: Release artifacts
         env:
@@ -85,11 +126,10 @@ jobs:
         run: |
           gh release upload \
             "${{ github.ref_name }}" \
-            example-game-*.* \
-            example-mods.* \
+            sv-mod-loader-addon-*.* \
+            sv-mod-loader-example-game-*.* \
+            sv-mod-loader-example-mods-*.* \
             --repo "${{ github.repository }}"
-      - name: Checkout Repo
-        uses: actions/checkout@v5
       - name: Copy patch notes
         env:
           GH_TOKEN: ${{ github.token }}
