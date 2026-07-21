@@ -34,7 +34,7 @@ jobs:
         run: make
       - name: Package Game
         run: |
-          mkdir zip_root
+          mkdir -p zip_root
           mv build/linux/* zip_root
           cd zip_root && tar -czf \
             "../sv-mod-loader-example-game-linux.x86_64-${{ github.ref_name }}.tar.gz" \
@@ -48,7 +48,7 @@ jobs:
         run: make example-mods
       - name: Package Example Mods
         run: |
-          mkdir zip_root
+          mkdir -p zip_root
           mv example-mods/*/build/*.pck zip_root
           (cd zip_root && zip -r \
             "../sv-mod-loader-example-mods-${{ github.ref_name }}.zip" \
