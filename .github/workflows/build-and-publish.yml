@@ -38,7 +38,7 @@ jobs:
           mv build/linux/* zip_root
           cd zip_root && tar -czf \
             "../sv-mod-loader-example-game-linux.x86_64-${{ github.ref_name }}.tar.gz" \
-            build/linux
+            ./*
       - name: Upload Example Game Artifact
         uses: actions/upload-artifact@v4
         with:
