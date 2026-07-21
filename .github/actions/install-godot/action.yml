@@ -13,15 +13,33 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - shell: "bash"
+    - name: Restore Cached Godot
+      id: cache-godot-restore
+      uses: actions/cache/restore@v6
+      with:
+        path: Godot_v${{ inputs.version }}_${{ inputs.platform }}
+        key: ${{ runner.os }}-${{ inputs.version }}-${{inputs.platform}}-${{inputs.sha_256}}-godot
+    - name: Get Godot
+      if: steps.cache-godot-restore.outputs.cache-hit != 'true'
+      shell: "bash"
       env:
-        GODOT_FILE: "Godot_v${{ inputs.version }}_${{ inputs.platform }}"
         GODOT_ZIP: "Godot_v${{ inputs.version }}_${{ inputs.platform }}.zip" # Does not work with mono builds as they use an underscore instead of a dot in the zip filenames
       run: |
         curl -LO "https://github.com/godotengine/godot/releases/download/${{ inputs.version }}/${{ env.GODOT_ZIP }}"
         echo "${{ inputs.sha_256 }} ${{ env.GODOT_ZIP }}" | sha256sum -c
         unzip ${{ env.GODOT_ZIP }}
         rm ${{ env.GODOT_ZIP }}
+    - name: Save Godot to Cache
+      id: cache-godot-save
+      uses: actions/cache/save@v6
+      with:
+        path: Godot_v${{ inputs.version }}_${{ inputs.platform }}
+        key: ${{ steps.cache-godot-restore.outputs.cache-primary-key }}
+    - name: Move Godot and Add to PATH
+      shell: "bash"
+      env:
+        GODOT_FILE: "Godot_v${{ inputs.version }}_${{ inputs.platform }}"
+      run: |
         BIN_DIR=${{ runner.temp }}/godot-bin
         mkdir -p $BIN_DIR
         mv ${{ env.GODOT_FILE }} $BIN_DIR/godot

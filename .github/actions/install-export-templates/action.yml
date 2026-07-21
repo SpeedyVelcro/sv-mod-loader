@@ -10,7 +10,15 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - shell: "bash"
+    - name: Restore Cached Export Templates
+      id: cache-export-templates-restore
+      uses: actions/cache/restore@v6
+      with:
+        path: templates
+        key: ${{ runner.os }}-${{ inputs.version }}-${{inputs.sha_256}}-godot
+    - name: Get Export Templates
+      shell: "bash"
+      if: steps.cache-export-templates-restore.outputs.cache-hit != 'true'
       env:
         TEMPLATES_ZIP: "Godot_v${{ inputs.version }}_export_templates.tpz" # Does not work with mono builds as they have a separate template archive
       run: |
@@ -18,6 +26,17 @@ runs:
         echo "${{ inputs.sha_256 }} ${{ env.TEMPLATES_ZIP }}" | sha256sum -c
         unzip ${{ env.TEMPLATES_ZIP }} # .tpz is just a renamed zip, see https://docs.godotengine.org/en/stable/tutorials/export/exporting_projects.html#export-templates
         rm ${{ env.TEMPLATES_ZIP }}
+    - name: Save Export Templates to Cache
+      id: cache-export-templates-save
+      uses: actions/cache/save@v6
+      with:
+        path: templates
+        key: ${{ steps.cache-export-templates-restore.outputs.cache-primary-key }}
+    - name: Install Export Templates
+      shell: "bash"
+      env:
+        TEMPLATES_ZIP: "Godot_v${{ inputs.version }}_export_templates.tpz" # Does not work with mono builds as they have a separate template archive
+      run: |
         VERSION=${{ inputs.version }} # So it can be used in shell parameter expansion
         VERSION_DIR=${VERSION/%-stable/.stable} # TODO: unsure what the transformation is for non-stable releases
         TEMPLATES_DIR="$HOME/.local/share/godot/export_templates/$VERSION_DIR"
