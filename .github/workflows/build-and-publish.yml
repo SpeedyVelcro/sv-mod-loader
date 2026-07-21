@@ -34,8 +34,10 @@ jobs:
         run: make
       - name: Package Game
         run: |
-          tar -czf \
-            "sv-mod-loader-example-game-${{ github.ref_name }}.tar.gz" \
+          mkdir zip_root
+          mv build/linux/* zip_root
+          cd zip_root && tar -czf \
+            "../sv-mod-loader-example-game-linux.x86_64-${{ github.ref_name }}.tar.gz" \
             build/linux
       - name: Upload Example Game Artifact
         uses: actions/upload-artifact@v4
@@ -46,12 +48,14 @@ jobs:
         run: make example-mods
       - name: Package Example Mods
         run: |
-          zip -r \
-            "sv-mod-loader-example-mods-${{ github.ref_name }}.zip" \
-            example-mods/*/build/*.pck
-          tar -czf \
-            "sv-mod-loader-example-mods-${{ github.ref_name }}.tar.gz" \
-            example-mods/*/build/*.pck
+          mkdir zip_root
+          mv example-mods/*/build/*.pck zip_root
+          (cd zip_root && zip -r \
+            "../sv-mod-loader-example-mods-${{ github.ref_name }}.zip" \
+            ./*)
+          (cd zip_root && tar -czf \
+            "../sv-mod-loader-example-mods-${{ github.ref_name }}.tar.gz" \
+            ./*)
       - name: Upload Example Mods Artifact
         uses: actions/upload-artifact@v4
         with:
@@ -83,12 +87,12 @@ jobs:
           mkdir zip_root
           mkdir zip_root/addons
           cp -r addons/sv_mod_loader zip_root/addons
-          zip -r \
-            "sv-mod-loader-addon-${{ github.ref_name }}.zip" \
-            zip_root/*
-          tar -czf \
-            "sv-mod-loader-addon-${{ github.ref_name }}.tar.gz" \
-            zip_root/*
+          (cd zip_root && zip -r \
+            "../sv-mod-loader-addon-${{ github.ref_name }}.zip" \
+            ./*)
+          (cd zip_root && tar -czf \
+            "../sv-mod-loader-addon-${{ github.ref_name }}.tar.gz" \
+            ./*)
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
