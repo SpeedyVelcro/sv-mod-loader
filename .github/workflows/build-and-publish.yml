@@ -76,7 +76,7 @@ jobs:
             res://test
           version: "v6.1.3"
           publish-report: false # true causes failure due to read-only permission
-  archive-addon:
+  package:
     name: Package Addon
     runs-on: ubuntu-latest
     steps:
@@ -102,7 +102,7 @@ jobs:
             sv-mod-loader-addon-${{ github.ref_name }}.tar.gz
   publish:
     name: Publish release
-    needs: build
+    needs: [build, package]
     runs-on: ubuntu-latest
     if: github.event_name == 'release'
     steps:
