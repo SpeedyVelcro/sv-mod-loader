@@ -5,8 +5,9 @@ inputs:
     description: "Version, e.g. 4.6-stable"
     required: true
   sha_256:
-    description: "SHA-256 checksum of the zip file from the release page"
-    required: true
+    description: "SHA-256 checksum of the zip file from the release page. If provided, then the action will fail on a checksum mismatch."
+    required: false
+    default: ""
 runs:
   using: "composite"
   steps:
@@ -15,7 +16,7 @@ runs:
       uses: actions/cache/restore@v6
       with:
         path: templates
-        key: ${{ runner.os }}-${{ inputs.version }}-${{inputs.sha_256}}-godot
+        key: ${{ runner.os }}-${{ inputs.version }}-templates
     - name: Get Export Templates
       shell: "bash"
       if: steps.cache-export-templates-restore.outputs.cache-hit != 'true'
@@ -23,7 +24,9 @@ runs:
         TEMPLATES_ZIP: "Godot_v${{ inputs.version }}_export_templates.tpz" # Does not work with mono builds as they have a separate template archive
       run: |
         curl -LO "https://github.com/godotengine/godot/releases/download/${{ inputs.version }}/${{ env.TEMPLATES_ZIP }}"
-        echo "${{ inputs.sha_256 }} ${{ env.TEMPLATES_ZIP }}" | sha256sum -c
+        if [[ -n "${{ inputs.sha_256 }}" ]] && ! (echo "${{ inputs.sha_256 }} ${{ env.TEMPLATES_ZIP }}" | sha256sum -c); then
+            exit 1
+        fi
         unzip ${{ env.TEMPLATES_ZIP }} # .tpz is just a renamed zip, see https://docs.godotengine.org/en/stable/tutorials/export/exporting_projects.html#export-templates
         rm ${{ env.TEMPLATES_ZIP }}
     - name: Save Export Templates to Cache
